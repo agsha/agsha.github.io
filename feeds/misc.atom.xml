@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog</title><link href="/" rel="alternate"></link><link href="/feeds/misc.atom.xml" rel="self"></link><id>/</id><updated>2016-03-02T10:20:00+00:00</updated><entry><title>http and https proxy with squid</title><link href="/http-and-https-proxy-with-squid.html" rel="alternate"></link><updated>2016-03-02T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-03-02:http-and-https-proxy-with-squid.html</id><summary type="html">&lt;h3&gt;On the client machine&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Find out the client subnet of the form &lt;code&gt;10.34.44.0/22&lt;/code&gt;. To do that, on the client machine, run &lt;code&gt;/sbin/ifconfig&lt;/code&gt; to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR &lt;a href="http://www.subnet-calculator.com/cidr.php"&gt;here&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;export variables: 
+  &lt;code&gt;export http_proxy=http://client.ip.ad.ress:port/
+  export https_proxy=http://client.ip.ad.ress:port/&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Caveat&lt;/h3&gt;
+&lt;p&gt;if you run sudo, make sure the variables are exported in root&lt;/p&gt;
+&lt;h3&gt;On the proxy machine&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Install squid: &lt;code&gt;sudo apt-get install squid&lt;/code&gt;. &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;change /etc/squid/squid.conf to add these lines
+   &lt;code&gt;acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
+   http_access allow wormhole # wormhole is just a name
+   icp_access allow wormhole&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;restart squid &lt;code&gt;sudo /etc/squid/squid.conf restart&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And thats it! &lt;code&gt;curl -L www.google.com&lt;/code&gt; (&lt;code&gt;-L&lt;/code&gt; to follow redirects) will work.&lt;/p&gt;
+&lt;p&gt;I needed this for &lt;code&gt;pip&lt;/code&gt;. With my setup, I can do &lt;code&gt;sudo export &amp;lt;blah&amp;gt;;export&amp;lt;blah&amp;gt;;pip install &amp;lt;package&amp;gt;&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;FYI, my squid version is&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
+Package: squid
+Status: install ok installed
+Priority: optional
+Section: web
+Installed-Size: 1864
+Maintainer: Luigi Gangitano &amp;lt;luigi@debian.org&amp;gt;
+Architecture: amd64
+Version: 2.7.STABLE9-4.1+deb7u1
+Replaces: squid-novm
+Depends: libc6 (&amp;gt;= 2.7), libcomerr2 (&amp;gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&amp;gt;= 1.10+dfsg~), libkrb5-3 (&amp;gt;= 1.6.dfsg.2), libldap-2.4-2 (&amp;gt;= 2.4.7), libpam0g (&amp;gt;= 0.99.7.1), netbase, adduser, logrotate (&amp;gt;= 3.5.4-1), squid-common (&amp;gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&amp;gt;= 3.2-14), perl-modules
+Pre-Depends: debconf (&amp;gt;= 1.2.9) | debconf-2.0
+Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&amp;gt;= 0.40), smbclient, winbind
+Conflicts: sarg (&amp;lt;&amp;lt; 1.1.1-2), squid-novm
+Conffiles:
+ /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe
+ /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311
+ /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e
+Description: Internet object cache (WWW proxy cache)
+ This package provides the Squid Internet Object Cache developed by
+ the National Laboratory for Applied Networking Research (NLANR) and
+ Internet volunteers.
+Homepage: http://www.squid-cache.org/
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="regex"></category></entry><entry><title>Regex recipes</title><link href="/regex-recipes.html" rel="alternate"></link><updated>2016-02-21T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-02-21:regex-recipes.html</id><summary type="html">&lt;p&gt;I find myself always having to google around a lot for common regex recipes. Surprisingly, the most common cases cannot be easily found without extensive grokking.&lt;/p&gt;
+&lt;h3&gt;Python examples&lt;/h3&gt;
+&lt;h4&gt;Common special characters:&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;\d&lt;/code&gt;: only digit, &lt;/p&gt;
+&lt;p&gt;Search for occurences of a regex string and replace it with something that depends on the actual value of the string.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;r&amp;quot;(blue|red)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;())),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blue socks and red shoes&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;output: &lt;code&gt;4 socks and 3 shoes&lt;/code&gt;&lt;/p&gt;</summary><category term="regex"></category></entry><entry><title>Setting up a ceph cluster</title><link href="/setting-up-a-ceph-cluster.html" rel="alternate"></link><updated>2016-02-07T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-02-07:setting-up-a-ceph-cluster.html</id><summary type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Furthermore, to launch a radosgw instance, you &lt;em&gt;need&lt;/em&gt; to have a section in your host file called &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and your  keyring should have a corresponding key section called  &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and you should have imported that key into ceph    via &lt;code&gt;sudo ceph auth import -i /etc/ceph/&amp;lt;keyring_file&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;All the three names must match: the one in ceph.conf, in the keyring and in &lt;code&gt;ceph auth list&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Oh, and yeah, do &lt;strong&gt;NOT&lt;/strong&gt; put a line like this in your &lt;code&gt;ceph.conf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;rgw &lt;span class="nv"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you do, you'l get weird messages like &lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Couldn't init storage provider (RADOS)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;and you'll go crazy trying to debug it.&lt;/p&gt;
+&lt;p&gt;So the working &lt;code&gt;ceph.conf&lt;/code&gt; with comments is: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;[&lt;/span&gt;global&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;fsid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; a7f64266-0894-4f1e-a635-d0aeaca0e993 &lt;span class="c1"&gt;#anything random, generated from uuidgen&lt;/span&gt;
+auth cluster &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
+auth service &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
+auth client &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
+osd journal &lt;span class="nv"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 1024
+filestore xattr use &lt;span class="nv"&gt;omap&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;
+osd pool default &lt;span class="nv"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt; 
+osd pool default min &lt;span class="nv"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; 
+osd pool default pg &lt;span class="nv"&gt;num&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;333&lt;/span&gt; 
+osd pool default pgp &lt;span class="nv"&gt;num&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;333&lt;/span&gt; 
+osd crush chooseleaf &lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; 
+&lt;span class="c1"&gt;# useful for debugging&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;mon&lt;span class="o"&gt;]&lt;/span&gt;
+  debug &lt;span class="nv"&gt;mon&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 20
+&lt;span class="o"&gt;[&lt;/span&gt;osd&lt;span class="o"&gt;]&lt;/span&gt;
+  debug &lt;span class="nv"&gt;osd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 20
+&lt;span class="o"&gt;[&lt;/span&gt;rgw&lt;span class="o"&gt;]&lt;/span&gt;
+  debug &lt;span class="nv"&gt;rgw&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;20
+&lt;span class="o"&gt;[&lt;/span&gt;mon.node1&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# as many sections as monitors&lt;/span&gt;
+  &lt;span class="nv"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; dev-d42sharath1-mon-a-0001-389313 &lt;span class="c1"&gt;#This NEEDS to be the actual hostname donno for what reasons&lt;/span&gt;
+  mon &lt;span class="nv"&gt;addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 10.33.29.199 &lt;span class="c1"&gt;# needs to be the actual address.&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;client.rgw.foo&lt;span class="o"&gt;]&lt;/span&gt;
+    &lt;span class="nv"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; dev-d42sharath1-rgw-a-0001-389309
+    &lt;span class="nv"&gt;keyring&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /etc/ceph/ceph.client.rgw.keyring
+    log &lt;span class="nv"&gt;file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /var/log/radosgw/client.radosgw.gateway.log
+    rgw &lt;span class="nv"&gt;frontends&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; civetweb &lt;span class="nv"&gt;port&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;80
+    rgw print &lt;span class="k"&gt;continue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="ceph"></category></entry></feed>

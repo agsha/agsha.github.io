@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>hiiiiiiiiiiiiiiiiii Blog Template for Bootstrap</title>
+
+
+    <!-- Custom styles for this template -->
+    <link href="theme/blog.css" rel="stylesheet">
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item active" href="#">Latest articles</a>
+          <a class="blog-nav-item" href="#">Archive</a>
+          <a class="blog-nav-item" href="#">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-12 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/http-and-https-proxy-with-squid.html" rel="bookmark" title="Permalink to http and https proxy with squid">http and https proxy with squid</a></h2>
+            <p class="blog-post-meta">2016-03-02T10:20:00+00:00</p>
+		    <h3>On the client machine</h3>
+<ul>
+<li>Find out the client subnet of the form <code>10.34.44.0/22</code>. To do that, on the client machine, run <code>/sbin/ifconfig</code> to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR <a href="http://www.subnet-calculator.com/cidr.php">here</a></li>
+<li>export variables: 
+  <code>export http_proxy=http://client.ip.ad.ress:port/
+  export https_proxy=http://client.ip.ad.ress:port/</code></li>
+</ul>
+<h3>Caveat</h3>
+<p>if you run sudo, make sure the variables are exported in root</p>
+<h3>On the proxy machine</h3>
+<ul>
+<li>Install squid: <code>sudo apt-get install squid</code>. </li>
+<li>
+<p>change /etc/squid/squid.conf to add these lines
+   <code>acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
+   http_access allow wormhole # wormhole is just a name
+   icp_access allow wormhole</code></p>
+</li>
+<li>
+<p>restart squid <code>sudo /etc/squid/squid.conf restart</code></p>
+</li>
+</ul>
+<p>And thats it! <code>curl -L www.google.com</code> (<code>-L</code> to follow redirects) will work.</p>
+<p>I needed this for <code>pip</code>. With my setup, I can do <code>sudo export &lt;blah&gt;;export&lt;blah&gt;;pip install &lt;package&gt;</code>. </p>
+<p>FYI, my squid version is</p>
+<div class="highlight"><pre>[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
+Package: squid
+Status: install ok installed
+Priority: optional
+Section: web
+Installed-Size: 1864
+Maintainer: Luigi Gangitano &lt;luigi@debian.org&gt;
+Architecture: amd64
+Version: 2.7.STABLE9-4.1+deb7u1
+Replaces: squid-novm
+Depends: libc6 (&gt;= 2.7), libcomerr2 (&gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&gt;= 1.10+dfsg~), libkrb5-3 (&gt;= 1.6.dfsg.2), libldap-2.4-2 (&gt;= 2.4.7), libpam0g (&gt;= 0.99.7.1), netbase, adduser, logrotate (&gt;= 3.5.4-1), squid-common (&gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&gt;= 3.2-14), perl-modules
+Pre-Depends: debconf (&gt;= 1.2.9) | debconf-2.0
+Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&gt;= 0.40), smbclient, winbind
+Conflicts: sarg (&lt;&lt; 1.1.1-2), squid-novm
+Conffiles:
+ /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe
+ /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311
+ /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e
+Description: Internet object cache (WWW proxy cache)
+ This package provides the Squid Internet Object Cache developed by
+ the National Laboratory for Applied Networking Research (NLANR) and
+ Internet volunteers.
+Homepage: http://www.squid-cache.org/
+</pre></div> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/regex-recipes.html" rel="bookmark" title="Permalink to Regex recipes">Regex recipes</a></h2>
+            <p class="blog-post-meta">2016-02-21T10:20:00+00:00</p>
+		    <p>I find myself always having to google around a lot for common regex recipes. Surprisingly, the most common cases cannot be easily found without extensive grokking.</p>
+<h3>Python examples</h3>
+<h4>Common special characters:</h4>
+<p><code>\d</code>: only digit, </p>
+<p>Search for occurences of a regex string and replace it with something that depends on the actual value of the string.</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">re</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">r&quot;(blue|red)&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())),</span> <span class="s2">&quot;blue socks and red shoes&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>output: <code>4 socks and 3 shoes</code></p> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/setting-up-a-ceph-cluster.html" rel="bookmark" title="Permalink to Setting up a ceph cluster">Setting up a ceph cluster</a></h2>
+            <p class="blog-post-meta">2016-02-07T10:20:00+00:00</p>
+		    <p>The instructions <a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/">here</a> mostly work. Except that the <code>ceph.conf</code> file  given there doesnt work. Because, when I issue <code>sudo /etc/init.d/ceph start mon.node1</code> in the end, It expects a section in <code>ceph.   conf</code> called <code>[mon.node1]</code></p>
+<p>Furthermore, to launch a radosgw instance, you <em>need</em> to have a section in your host file called <code>client.rgw.&lt;some_name&gt;</code> and your  keyring should have a corresponding key section called  <code>client.rgw.&lt;some_name&gt;</code> and you should have imported that key into ceph    via <code>sudo ceph auth import -i /etc/ceph/&lt;keyring_file&gt;</code>.</p>
+<p><strong>All the three names must match: the one in ceph.conf, in the keyring and in <code>ceph auth list</code></strong></p>
+<p>Oh, and yeah, do <strong>NOT</strong> put a line like this in your <code>ceph.conf</code>:</p>
+<div class="highlight"><pre>rgw <span class="nv">data</span> <span class="o">=</span> /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
+</pre></div>
+
+
+<p>If you do, you'l get weird messages like </p>
+<blockquote>
+<p>Couldn't init storage provider (RADOS)</p>
+</blockquote>
+<p>and you'll go crazy trying to debug it.</p>
+<p>So the working <code>ceph.conf</code> with comments is: </p>
+<div class="highlight"><pre><span class="o">[</span>global<span class="o">]</span>
+<span class="nv">fsid</span> <span class="o">=</span> a7f64266-0894-4f1e-a635-d0aeaca0e993 <span class="c1">#anything random, generated from uuidgen</span>
+auth cluster <span class="nv">required</span> <span class="o">=</span> cephx
+auth service <span class="nv">required</span> <span class="o">=</span> cephx
+auth client <span class="nv">required</span> <span class="o">=</span> cephx
+osd journal <span class="nv">size</span> <span class="o">=</span> 1024
+filestore xattr use <span class="nv">omap</span> <span class="o">=</span> <span class="nb">true</span>
+osd pool default <span class="nv">size</span> <span class="o">=</span> <span class="m">2</span> 
+osd pool default min <span class="nv">size</span> <span class="o">=</span> <span class="m">1</span> 
+osd pool default pg <span class="nv">num</span> <span class="o">=</span> <span class="m">333</span> 
+osd pool default pgp <span class="nv">num</span> <span class="o">=</span> <span class="m">333</span> 
+osd crush chooseleaf <span class="nb">type</span> <span class="o">=</span> <span class="m">1</span> 
+<span class="c1"># useful for debugging</span>
+<span class="o">[</span>mon<span class="o">]</span>
+  debug <span class="nv">mon</span> <span class="o">=</span> 20
+<span class="o">[</span>osd<span class="o">]</span>
+  debug <span class="nv">osd</span> <span class="o">=</span> 20
+<span class="o">[</span>rgw<span class="o">]</span>
+  debug <span class="nv">rgw</span><span class="o">=</span>20
+<span class="o">[</span>mon.node1<span class="o">]</span> <span class="c1"># as many sections as monitors</span>
+  <span class="nv">host</span> <span class="o">=</span> dev-d42sharath1-mon-a-0001-389313 <span class="c1">#This NEEDS to be the actual hostname donno for what reasons</span>
+  mon <span class="nv">addr</span> <span class="o">=</span> 10.33.29.199 <span class="c1"># needs to be the actual address.</span>
+<span class="o">[</span>client.rgw.foo<span class="o">]</span>
+    <span class="nv">host</span> <span class="o">=</span> dev-d42sharath1-rgw-a-0001-389309
+    <span class="nv">keyring</span> <span class="o">=</span> /etc/ceph/ceph.client.rgw.keyring
+    log <span class="nv">file</span> <span class="o">=</span> /var/log/radosgw/client.radosgw.gateway.log
+    rgw <span class="nv">frontends</span> <span class="o">=</span> civetweb <span class="nv">port</span><span class="o">=</span>80
+    rgw print <span class="k">continue</span> <span class="o">=</span> <span class="nb">false</span>
+</pre></div> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/my-super-post.html" rel="bookmark" title="Permalink to I finally setup a blog">I finally setup a blog</a></h2>
+            <p class="blog-post-meta">2016-02-02T23:30:00+00:00</p>
+		    <p>I finally setup my own blog! and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on [digitalocean](www.digitalocean.com).</p>
+<p>Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can ssh into and have root access. It cost me ~Re 300 per month for their most basic droplet. I set it up with a static ipv4.</p>
+<p>Since digitalocean has no DNS service, I bought a domain on [namecheap](www.namecheap.com) for Re 500 per year and pointed it to the droplet. I am hosting this as a static site powered by pelican. Using the built-in python server for now.</p>
+ 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+
+
+        </div><!-- /.blog-main -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  </body>
+</html>

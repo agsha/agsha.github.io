@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+          <title>A Pelican Blog</title>
+        <meta charset="utf-8" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="A Pelican Blog Full Atom Feed" />
+        <link href="/feeds/misc.atom.xml" type="application/atom+xml" rel="alternate" title="A Pelican Blog Categories Atom Feed" />
+
+
+    <meta name="tags" content="regex" />
+
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">A Pelican Blog <strong></strong></a></h1>
+        </header><!-- /#banner -->
+        <nav id="menu"><ul>
+        </ul></nav><!-- /#menu -->
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">
+      <a href="/http-and-https-proxy-with-squid.html" rel="bookmark"
+         title="Permalink to http and https proxy with squid">http and https proxy with squid</a></h2>
+ 
+  </header>
+  <footer class="post-info">
+    <time class="published" datetime="2016-03-02T10:20:00+00:00">
+      Wed 02 March 2016
+    </time>
+    <address class="vcard author">
+      By           <a class="url fn" href="/author/sharath-gururaj.html">Sharath Gururaj</a>
+    </address>
+  </footer><!-- /.post-info -->
+  <div class="entry-content">
+    <h3>On the client machine</h3>
+<ul>
+<li>Find out the client subnet of the form <code>10.34.44.0/22</code>. To do that, on the client machine, run <code>/sbin/ifconfig</code> to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR <a href="http://www.subnet-calculator.com/cidr.php">here</a></li>
+<li>export variables: 
+  <code>export http_proxy=http://client.ip.ad.ress:port/
+  export https_proxy=http://client.ip.ad.ress:port/</code></li>
+</ul>
+<h3>Caveat</h3>
+<p>if you run sudo, make sure the variables are exported in root</p>
+<h3>On the proxy machine</h3>
+<ul>
+<li>Install squid: <code>sudo apt-get install squid</code>. </li>
+<li>
+<p>change /etc/squid/squid.conf to add these lines
+   <code>acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
+   http_access allow wormhole # wormhole is just a name
+   icp_access allow wormhole</code></p>
+</li>
+<li>
+<p>restart squid <code>sudo /etc/squid/squid.conf restart</code></p>
+</li>
+</ul>
+<p>And thats it! <code>curl -L www.google.com</code> (<code>-L</code> to follow redirects) will work.</p>
+<p>I needed this for <code>pip</code>. With my setup, I can do <code>sudo export &lt;blah&gt;;export&lt;blah&gt;;pip install &lt;package&gt;</code>. </p>
+<p>FYI, my squid version is</p>
+<div class="highlight"><pre>[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
+Package: squid
+Status: install ok installed
+Priority: optional
+Section: web
+Installed-Size: 1864
+Maintainer: Luigi Gangitano &lt;luigi@debian.org&gt;
+Architecture: amd64
+Version: 2.7.STABLE9-4.1+deb7u1
+Replaces: squid-novm
+Depends: libc6 (&gt;= 2.7), libcomerr2 (&gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&gt;= 1.10+dfsg~), libkrb5-3 (&gt;= 1.6.dfsg.2), libldap-2.4-2 (&gt;= 2.4.7), libpam0g (&gt;= 0.99.7.1), netbase, adduser, logrotate (&gt;= 3.5.4-1), squid-common (&gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&gt;= 3.2-14), perl-modules
+Pre-Depends: debconf (&gt;= 1.2.9) | debconf-2.0
+Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&gt;= 0.40), smbclient, winbind
+Conflicts: sarg (&lt;&lt; 1.1.1-2), squid-novm
+Conffiles:
+ /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe
+ /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311
+ /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e
+Description: Internet object cache (WWW proxy cache)
+ This package provides the Squid Internet Object Cache developed by
+ the National Laboratory for Applied Networking Research (NLANR) and
+ Internet volunteers.
+Homepage: http://www.squid-cache.org/
+</pre></div>
+  </div><!-- /.entry-content -->
+</section>
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>,
+                which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+        </footer><!-- /#contentinfo -->
+</body>
+</html>
