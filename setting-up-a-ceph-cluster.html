@@ -1,39 +1,51 @@
+<!-- same as index.html, except that only one article is shown -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-          <title>A Pelican Blog</title>
-        <meta charset="utf-8" />
-        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="A Pelican Blog Full Atom Feed" />
-        <link href="/feeds/misc.atom.xml" type="application/atom+xml" rel="alternate" title="A Pelican Blog Categories Atom Feed" />
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Sharath's core dump</title>
 
 
-    <meta name="tags" content="ceph" />
+    <!-- Custom styles for this template -->
+    <link href="/theme/blog.css" rel="stylesheet">
 
-</head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="/">A Pelican Blog <strong></strong></a></h1>
-        </header><!-- /#banner -->
-        <nav id="menu"><ul>
-        </ul></nav><!-- /#menu -->
-<section id="content" class="body">
-  <header>
-    <h2 class="entry-title">
-      <a href="/setting-up-a-ceph-cluster.html" rel="bookmark"
-         title="Permalink to Setting up a ceph cluster">Setting up a ceph cluster</a></h2>
- 
-  </header>
-  <footer class="post-info">
-    <time class="published" datetime="2016-02-07T10:20:00+00:00">
-      Sun 07 February 2016
-    </time>
-    <address class="vcard author">
-      By           <a class="url fn" href="/author/sharath-gururaj.html">Sharath Gururaj</a>
-    </address>
-  </footer><!-- /.post-info -->
-  <div class="entry-content">
-    <p>The instructions <a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/">here</a> mostly work. Except that the <code>ceph.conf</code> file  given there doesnt work. Because, when I issue <code>sudo /etc/init.d/ceph start mon.node1</code> in the end, It expects a section in <code>ceph.   conf</code> called <code>[mon.node1]</code></p>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item active" href="/">Latest articles</a>
+          <a class="blog-nav-item" href="/archives.html">Archive</a>
+          <a class="blog-nav-item" href="/pages/about.html">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-12 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/setting-up-a-ceph-cluster.html" rel="bookmark" title="Permalink to Setting up a ceph cluster">Setting up a ceph cluster</a></h2>
+            <p class="blog-post-meta">Sun, 07 Feb 2016</p>
+		    <p>The instructions <a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/">here</a> mostly work. Except that the <code>ceph.conf</code> file  given there doesnt work. Because, when I issue <code>sudo /etc/init.d/ceph start mon.node1</code> in the end, It expects a section in <code>ceph.   conf</code> called <code>[mon.node1]</code></p>
 <p>Furthermore, to launch a radosgw instance, you <em>need</em> to have a section in your host file called <code>client.rgw.&lt;some_name&gt;</code> and your  keyring should have a corresponding key section called  <code>client.rgw.&lt;some_name&gt;</code> and you should have imported that key into ceph    via <code>sudo ceph auth import -i /etc/ceph/&lt;keyring_file&gt;</code>.</p>
 <p><strong>All the three names must match: the one in ceph.conf, in the keyring and in <code>ceph auth list</code></strong></p>
 <p>Oh, and yeah, do <strong>NOT</strong> put a line like this in your <code>ceph.conf</code>:</p>
@@ -75,14 +87,57 @@ osd crush chooseleaf <span class="nb">type</span> <span class="o">=</span> <span
     log <span class="nv">file</span> <span class="o">=</span> /var/log/radosgw/client.radosgw.gateway.log
     rgw <span class="nv">frontends</span> <span class="o">=</span> civetweb <span class="nv">port</span><span class="o">=</span>80
     rgw print <span class="k">continue</span> <span class="o">=</span> <span class="nb">false</span>
-</pre></div>
-  </div><!-- /.entry-content -->
-</section>
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>,
-                which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
-        </footer><!-- /#contentinfo -->
-</body>
+</pre></div> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+        </div><!-- /.blog-main -->
+
+      </div><!-- /.row -->
+
+		  <div id="disqus_thread"></div>
+		  <script>
+			  /**
+			  * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+			  * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+			  */
+			  /*
+			  var disqus_config = function () {
+				  this.page.url = setting-up-a-ceph-cluster.html; // Replace PAGE_URL with your page's canonical URL variable
+				  this.page.identifier = setup_ceph; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+			  };
+			  */
+			  (function() { // DON'T EDIT BELOW THIS LINE
+				  var d = document, s = d.createElement('script');
+
+				  s.src = '//agsha.disqus.com/embed.js';
+
+				  s.setAttribute('data-timestamp', +new Date());
+				  (d.head || d.body).appendChild(s);
+			  })();
+		  </script>
+		  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  </body>
 </html>

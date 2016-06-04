@@ -1,5 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>A Pelican Blog</title><link>/</link><description></description><atom:link href="/feeds/sharath-gururaj.rss.xml" rel="self"></atom:link><lastBuildDate>Wed, 02 Mar 2016 10:20:00 +0000</lastBuildDate><item><title>http and https proxy with squid</title><link>/http-and-https-proxy-with-squid.html</link><description>&lt;h3&gt;On the client machine&lt;/h3&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>A Pelican Blog</title><link>/</link><description></description><atom:link href="/feeds/sharath-gururaj.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 02 May 2016 22:20:00 +0000</lastBuildDate><item><title>C IDE with vim, cscope and grep (ag)</title><link>/c-ide-with-vim-cscope-and-grep-ag.html</link><description>&lt;h1&gt;Setup Cscope&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;First, Install cscope. &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Next, you need a &lt;code&gt;cscope.files&lt;/code&gt; with all the files that need to be indexed. In the source folder, you can do that with  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;find `pwd` -name &amp;quot;*.c&amp;quot; -o -name &amp;quot;*.cc&amp;quot; -o -name &amp;quot;*.h&amp;quot; &amp;gt; cscope.files
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;the &lt;code&gt;pwd&lt;/code&gt; is needed instead of &lt;code&gt;.&lt;/code&gt; because you need &lt;code&gt;find&lt;/code&gt; to print absolute pathnames.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Now, build the cscope database.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;cscope -q -R -b -i cscope.files
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This command will build &lt;code&gt;cscope.out&lt;/code&gt;. &lt;code&gt;-q&lt;/code&gt; to build an efficient database, &lt;code&gt;-b&lt;/code&gt; to build just the database. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Start up vim and issue the command&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;:cs add ~/code/ceph/cscope.out
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;which will add the cscope database. Vim has built in support for cscope in the form of the &lt;code&gt;:cs&lt;/code&gt; command. But it does &lt;em&gt;not&lt;/em&gt; have useful keybindings setup. For that, you need &lt;code&gt;cscopes_map.vim&lt;/code&gt; (which I've sourced in the &lt;code&gt;.vimrc&lt;/code&gt;). You're all set now. Some basic comands:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;C-\ s&lt;/code&gt; to find a symbol &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;C-\ c&lt;/code&gt; to find all callers&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;C-\ f&lt;/code&gt; to find global definitions&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:help cscope&lt;/code&gt; for more&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Setup ctags&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Install ctags.&lt;/li&gt;
+&lt;li&gt;cd to the source folder and build the ctags index with &lt;code&gt;ctags -R .&lt;/code&gt; (&lt;code&gt;-R&lt;/code&gt; is for recursive).&lt;/li&gt;
+&lt;li&gt;In vim, you need to do &lt;code&gt;:set tags=/path/to/tags&lt;/code&gt;. Unfortunately, you need to do this everytime you start vim. (how to avoid it?)&lt;/li&gt;
+&lt;li&gt;use &lt;code&gt;C-]&lt;/code&gt; to show a list of tags under the cursor. &lt;code&gt;C-o&lt;/code&gt; or &lt;code&gt;C-t&lt;/code&gt; to go back.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Some Vim shortcuts I would like to remember:&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;[[&lt;/code&gt; moves to the previous curly brace on column 0 (1?) &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Ctrl-O&lt;/code&gt; and &lt;code&gt;Ctrl-I&lt;/code&gt; last location before jump&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;[{&lt;/code&gt; jump to begining of current block! (Or you can search backward for &lt;code&gt;{&lt;/code&gt;!&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sharath Gururaj</dc:creator><pubDate>Mon, 02 May 2016 22:20:00 +0000</pubDate><guid>tag:,2016-05-02:c-ide-with-vim-cscope-and-grep-ag.html</guid><category>misc</category></item><item><title>http and https proxy with squid</title><link>/http-and-https-proxy-with-squid.html</link><description>&lt;h3&gt;On the client machine&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;Find out the client subnet of the form &lt;code&gt;10.34.44.0/22&lt;/code&gt;. To do that, on the client machine, run &lt;code&gt;/sbin/ifconfig&lt;/code&gt; to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR &lt;a href="http://www.subnet-calculator.com/cidr.php"&gt;here&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;export variables: 

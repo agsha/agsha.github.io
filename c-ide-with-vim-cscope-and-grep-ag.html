@@ -43,12 +43,55 @@
         <div class="col-sm-12 blog-main">
 
           <div class="blog-post">
-            <h2 class="blog-post-title"><a href="/i-finally-setup-a-blog.html" rel="bookmark" title="Permalink to I finally setup a blog">I finally setup a blog</a></h2>
-            <p class="blog-post-meta">Tue, 02 Feb 2016</p>
-		    <p><strong>I finally setup my own blog!</strong> and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on <a href="www.digitalocean.com">digital ocean</a>. </p>
-<p>Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can ssh into and have   root access. It cost me ~Re 300 per month for their most basic droplet. I set it up with a static ipv4.</p>
-<p>Since digitalocean has no DNS service, I bought a domain on <a href="www.namecheap.com">namecheap</a> for Re 500 per year and pointed it to the droplet. I   am hosting this as a static site powered by pelican. Using the built-in python server for now.  </p>
-<p><strong>UPDATE (11th may 2016):</strong> Paying monthly to digital ocean was getting to be a pain. So I have moved to github pages, which is just as simple.  </p> 
+            <h2 class="blog-post-title"><a href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="bookmark" title="Permalink to C IDE with vim, cscope and grep (ag)">C IDE with vim, cscope and grep (ag)</a></h2>
+            <p class="blog-post-meta">Mon, 02 May 2016</p>
+		    <h1>Setup Cscope</h1>
+<ul>
+<li>First, Install cscope. </li>
+<li>
+<p>Next, you need a <code>cscope.files</code> with all the files that need to be indexed. In the source folder, you can do that with  </p>
+<div class="highlight"><pre>find `pwd` -name &quot;*.c&quot; -o -name &quot;*.cc&quot; -o -name &quot;*.h&quot; &gt; cscope.files
+</pre></div>
+
+
+<p>the <code>pwd</code> is needed instead of <code>.</code> because you need <code>find</code> to print absolute pathnames.</p>
+</li>
+<li>
+<p>Now, build the cscope database.</p>
+<div class="highlight"><pre>cscope -q -R -b -i cscope.files
+</pre></div>
+
+
+<p>This command will build <code>cscope.out</code>. <code>-q</code> to build an efficient database, <code>-b</code> to build just the database. </p>
+</li>
+<li>
+<p>Start up vim and issue the command</p>
+<div class="highlight"><pre>:cs add ~/code/ceph/cscope.out
+</pre></div>
+
+
+<p>which will add the cscope database. Vim has built in support for cscope in the form of the <code>:cs</code> command. But it does <em>not</em> have useful keybindings setup. For that, you need <code>cscopes_map.vim</code> (which I've sourced in the <code>.vimrc</code>). You're all set now. Some basic comands:</p>
+<ul>
+<li><code>C-\ s</code> to find a symbol </li>
+<li><code>C-\ c</code> to find all callers</li>
+<li><code>C-\ f</code> to find global definitions</li>
+<li><code>:help cscope</code> for more</li>
+</ul>
+</li>
+</ul>
+<h1>Setup ctags</h1>
+<ul>
+<li>Install ctags.</li>
+<li>cd to the source folder and build the ctags index with <code>ctags -R .</code> (<code>-R</code> is for recursive).</li>
+<li>In vim, you need to do <code>:set tags=/path/to/tags</code>. Unfortunately, you need to do this everytime you start vim. (how to avoid it?)</li>
+<li>use <code>C-]</code> to show a list of tags under the cursor. <code>C-o</code> or <code>C-t</code> to go back.</li>
+</ul>
+<h1>Some Vim shortcuts I would like to remember:</h1>
+<ul>
+<li><code>[[</code> moves to the previous curly brace on column 0 (1?) </li>
+<li><code>Ctrl-O</code> and <code>Ctrl-I</code> last location before jump</li>
+<li><code>[{</code> jump to begining of current block! (Or you can search backward for <code>{</code>!</li>
+</ul> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>
@@ -64,8 +107,8 @@
 			  */
 			  /*
 			  var disqus_config = function () {
-				  this.page.url = i-finally-setup-a-blog.html; // Replace PAGE_URL with your page's canonical URL variable
-				  this.page.identifier = my_blog; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+				  this.page.url = c-ide-with-vim-cscope-and-grep-ag.html; // Replace PAGE_URL with your page's canonical URL variable
+				  this.page.identifier = c_ide; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
 			  };
 			  */
 			  (function() { // DON'T EDIT BELOW THIS LINE
