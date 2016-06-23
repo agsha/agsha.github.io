@@ -43,6 +43,70 @@
         <div class="col-sm-12 blog-main">
 
           <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/a-bangalore-software-engineers-first-trip-to-bali.html" rel="bookmark" title="Permalink to A bangalore software engineer's first trip to Bali">A bangalore software engineer's first trip to Bali</a></h2>
+            <p class="blog-post-meta">Thu, 23 Jun 2016</p>
+		    <p>I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.</p>
+<h3>Flight</h3>
+<p>If you're leaving from bangalore, then consider going first to kochi or chennai, and then going to Bali. It worked out cheaper for me. Flight from Blore to kochi was ~ INR 1000 and flight from kochi to Bali was ~ INR 15000. A direct flight from Blore to Bali was in comparison around INR 24000 </p>
+<h3>Currency conversion</h3>
+<p>Take USD to Bali, not INR. None of the banks I saw exchanged INR for IDR (Indonesian rupiah). On the other hand, literally every other street has 'money changing' shops which changes USD to IDR (And they are legit). I strongly recommend buying dollars. </p>
+<p>I also had my ICICI debit card that worked pretty seamlessly in Bali. I called up ICICI beforehand that I would be using it in Bali. The card was declined in a couple of shops but accepted at around 90% of the shops. I could also draw IDR from most ATMS. For transaction in shops, ICICI charges 3% + competitive currency conversion. For ATM cash withdrawal, ICICI charges INR 125 + 3% of money withdrawn. Most services in Bali don't accept cards. So whenever you can use the card, use it.</p>
+<p>Something that I did not do, but I should have is that I should have checked with ICICI what happens in the even I lose my debit card and am short of cash. </p>
+<h3>Getting around in Bali</h3>
+<p>Bali is a pretty small place. Most places are within an hour or two driving distance. Definitely get a rental motorbike in Bali. Its super convenient. They charge ~INR 300 per day of rental. Public transportation is almost non existant from what I saw. Although, legally, you need an international driving license to ride a motorbike, It is generally tolerated. Even when caught by the police, the fines are low. Around INR 500. I got caught by the police once: when I was driving on the
+wrong direction of a one way. I paid around INR 500 as fine and the police dusted my bike seat and showed me the direction to my destination and helped me along the way. You can see firangs (obviously not Balinese) zipping along in bikes all over Bali. </p>
+<h3>Bargain hard</h3>
+<p>Every service in Bali is overpriced, and it is expected that you bargain. Usually you can get a 35% - 50% reduction in the quoted price. Balinese are very friendly (and sympathetic) towards indians as compared to firangs and it is possible to strike better deals than what firangs can manage. So don't be shy to ask for a discount. </p>
+<h3>Names and the caste system in Bali.</h3>
+<p>There are only four first names in Bali: Ketut, komang, wayan, Made (pronounced Madi). The way it works is:
+Let <code>String[] A = {"Ketut", "komang", "wayan", "Made"}</code> be a string array where the index is 0-based. i.e., <code>A[0]</code> is <code>"ketut"</code>. Now if you're the <code>x</code> <sup>th</sup> eldest son (where the eldest son is <code>1</code>, and so on), then your first name is <code>A[(x-1)%4]</code> </p>
+<h3>Telephone SIM card and 3G</h3>
+<p>The very first thing you should do when you land is Bali is: you should get a local SIM card with a 3G data limit of ~2GB.</p>
+<p>3G Coverage in Bali is excellent and google maps is your friend in Bali. Oh yeah. <strong>Definitely carry a extra battery pack for you cell phone</strong>. Its a life saver.</p>
+<h3>Airport food is costly</h3>
+<h3>Voltage specs in Bali</h3>
+<h3>Places to visit.</h3> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/the-affair-between-iostat-and-fio.html" rel="bookmark" title="Permalink to The affair between iostat and fio">The affair between iostat and fio</a></h2>
+            <p class="blog-post-meta">Thu, 02 Jun 2016</p>
+		    <p>In the following analysis, I'm going to assume you already know what <code>fio</code> and <code>iostat</code> is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers</p>
+<h3>fio output</h3>
+<div class="highlight"><pre>[sharath.g@prod-d42ar-osd-a-00050-409388 /home/sharath.g]$ sudo fio --name=global --bs=4k --ioengine=libaio --iodepth=1 --runtime=120 --time_based --size=3G --group_reporting --disable_lat=1 --disable_clat=1 --disable_slat=1 --clat_percentiles=0  --filename=/var/lib/ceph/osd/ceph-153/fio/my_journal  --name=regular_read --rw=randread
+regular_read: (g=0): rw=randread, bs=4K-4K/4K-4K, ioengine=libaio, iodepth=1
+2.0.8
+Starting 1 process
+Jobs: 1 (f=1): [r] [100.0% done] [1112K/0K /s] [278 /0  iops] [eta 00m:00s]
+regular_read: (groupid=0, jobs=1): err= 0: pid=501549
+  read : io=126112KB, bw=1050.1KB/s, iops=262 , runt=120001msec
+    bw (KB/s)  : min=  785, max= 1338, per=100.00%, avg=1051.79, stdev=91.21
+  cpu          : usr=0.19%, sys=0.96%, ctx=19643, majf=0, minf=21
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &gt;=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &gt;=64=0.0%
+     issued    : total=r=31528/w=0/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+   READ: io=126112KB, aggrb=1050KB/s, minb=1050KB/s, maxb=1050KB/s, mint=120001msec, maxt=120001msec
+
+Disk stats (read/write):
+  vdb: ios=19591/0, merge=0/0, ticks=118660/0, in_queue=118644, util=99.08%
+</pre></div>
+
+
+<h3>iostat output</h3>
+<div class="highlight"><pre>[sharath.g@prod-d42ar-osd-a-00050-409388 /home/sharath.g]$ iostat -x  -d 2 /dev/vdb
+Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
+vdb               0.00     0.00  165.00    0.00   660.00     0.00     8.00     0.99    6.02    6.02    0.00   6.02  99.40
+</pre></div> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+
+          <div class="blog-post">
             <h2 class="blog-post-title"><a href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="bookmark" title="Permalink to C IDE with vim, cscope and grep (ag)">C IDE with vim, cscope and grep (ag)</a></h2>
             <p class="blog-post-meta">Mon, 02 May 2016</p>
 		    <h1>Setup Cscope</h1>
