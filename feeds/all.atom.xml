@@ -33,33 +33,94 @@ its gravelly and rocky. Very uncomfortable. Beti-balug beach in seminyak has nic
 &lt;p&gt;Bali uses the same kind of round pins that we use in india. Not the flat rectangular pins from US. But one major problem: The socket is "hollow" &lt;a href="https://www.tripadvisor.com/LocationPhotoDirectLink-g1465999-d1539040-i79297910-The_Wangsa_Private_Estate-Tanjung_Benoa_Nusa_Dua_Peninsula_Bali.html"&gt;like this&lt;/a&gt;. So if your charger body is bulky, it won't fit inside the hollowness of the sockets. None of my chargers from india fit in the socket. Luckily every airbnb that I stayed had a Bali adapter
 or a Bali charger that allowed me to charge.&lt;/p&gt;</summary><category term="misc"></category></entry><entry><title>The affair between iostat and fio</title><link href="/the-affair-between-iostat-and-fio.html" rel="alternate"></link><updated>2016-06-02T16:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-06-02:the-affair-between-iostat-and-fio.html</id><summary type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
 &lt;h3&gt;fio output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;[sharath.g@prod-d42ar-osd-a-00050-409388 /home/sharath.g]$ sudo fio --name=global --bs=4k --ioengine=libaio --iodepth=1 --runtime=120 --time_based --size=3G --group_reporting --disable_lat=1 --disable_clat=1 --disable_slat=1 --clat_percentiles=0  --filename=/var/lib/ceph/osd/ceph-153/fio/my_journal  --name=regular_read --rw=randread
+&lt;div class="highlight"&gt;&lt;pre&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /mnt/vdb1]$ sudo fio --name=global --bs=4k --ioengine=libaio --iodepth=1 --runtime=120 --time_based --size=3G --group_reporting --disable_lat=1 --disable_clat=1 --disable_slat=1 --clat_percentiles=0  --filename=/mnt/vdb1/fio/myfile --name=regular_read --rw=randread
 regular_read: (g=0): rw=randread, bs=4K-4K/4K-4K, ioengine=libaio, iodepth=1
 2.0.8
 Starting 1 process
-Jobs: 1 (f=1): [r] [100.0% done] [1112K/0K /s] [278 /0  iops] [eta 00m:00s]
-regular_read: (groupid=0, jobs=1): err= 0: pid=501549
-  read : io=126112KB, bw=1050.1KB/s, iops=262 , runt=120001msec
-    bw (KB/s)  : min=  785, max= 1338, per=100.00%, avg=1051.79, stdev=91.21
-  cpu          : usr=0.19%, sys=0.96%, ctx=19643, majf=0, minf=21
-  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &amp;gt;=64=0.0%
-     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &amp;gt;=64=0.0%
-     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &amp;gt;=64=0.0%
-     issued    : total=r=31528/w=0/d=0, short=r=0/w=0/d=0
-
-Run status group 0 (all jobs):
-   READ: io=126112KB, aggrb=1050KB/s, minb=1050KB/s, maxb=1050KB/s, mint=120001msec, maxt=120001msec
-
-Disk stats (read/write):
-  vdb: ios=19591/0, merge=0/0, ticks=118660/0, in_queue=118644, util=99.08%
+regular_read: Laying out IO file(s) (1 file(s) / 3072MB)
+Jobs: 1 (f=1): [r] [24.0% done] [672K/0K /s] [168 /0  iops] [eta 01m:32s]
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ sudo fio --name=global --bs=4k --ioengine=libaio --iodepth=1 --runtime=30 --time_based --size=3G --group_reporting --disable_lat=1 --disable_clat=1 --disable_slat=1 --clat_percentiles=0  --filename=/mnt/vdb1/fio/myfile --name=regular_read --rw=randread
+regular_read: (g=0): rw=randread, bs=4K-4K/4K-4K, ioengine=libaio, iodepth=1
+2.0.8
+Starting 1 process
+Jobs: 1 (f=1): [r] [100.0% done] [708K/0K /s] [177 /0  iops] [eta 00m:00s]
+regular_read: (groupid=0, jobs=1): err= 0: pid=28099
+  read : io=21060KB, bw=718776 B/s, iops=175 , runt= 30003msec
+    bw (KB/s)  : min=  640, max=  798, per=100.00%, avg=702.34, stdev=36.92
+  cpu          : usr=0.09%, sys=0.44%, ctx=5274, majf=0, minf=20
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &amp;gt;=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &amp;gt;=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &amp;gt;=64=0.0%
+     issued    : total=r=5265/w=0/d=0, short=r=0/w=0/d=0&lt;/p&gt;
+&lt;p&gt;Run status group 0 (all jobs):
+   READ: io=21060KB, aggrb=701KB/s, minb=701KB/s, maxb=701KB/s, mint=30003msec, maxt=30003msec&lt;/p&gt;
+&lt;p&gt;Disk stats (read/write):
+  vdb: ios=5251/0, merge=0/0, ticks=29828/0, in_queue=29820, util=99.40%&lt;/p&gt;
+&lt;p&gt;analysis:
+  read : io=21060KB, bw=718776 B/s, iops=175 , runt= 30003msec
+issued    : total=r=5265/w=0/d=0, short=r=0/w=0/d=0
+Disk stats (read/write):
+  vdb: ios=5251/0, merge=0/0, ticks=29828/0, in_queue=29820, util=99.40%&lt;/p&gt;
+&lt;p&gt;io = bw&lt;em&gt;runt
+io = iops&lt;/em&gt;runt&lt;em&gt;bs
+issued(r) = iops&lt;/em&gt;runt
+io = ios*bs&lt;/p&gt;
 &lt;h3&gt;iostat output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;[sharath.g@prod-d42ar-osd-a-00050-409388 /home/sharath.g]$ iostat -x  -d 2 /dev/vdb
+&lt;div class="highlight"&gt;&lt;pre&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb 
+Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
+vdb               0.00     0.00  179.00    0.00   716.00     0.00     8.00     1.00    5.59    5.59    0.00   5.58  99.80
+### some inferences
+From the line `read : io=78556KB, bw=670322 B/s, iops=163 , runt=120004msec` 
+we observe that `io = bw * runt`. Makes sense.
+
+```
+### iostat output
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;[sharath.g@prod-d42ar-osd-a-00050-409388 /home/sharath.g]$ iostat -x  -d 2 /dev/vdb
 Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
 vdb               0.00     0.00  165.00    0.00   660.00     0.00     8.00     0.99    6.02    6.02    0.00   6.02  99.40
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="misc"></category></entry><entry><title>C IDE with vim, cscope and grep (ag)</title><link href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="alternate"></link><updated>2016-05-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-05-02:c-ide-with-vim-cscope-and-grep-ag.html</id><summary type="html">&lt;h1&gt;Setup Cscope&lt;/h1&gt;
+````&lt;/p&gt;
+&lt;h3&gt;units&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;bs = bytes&lt;/code&gt;, &lt;code&gt;io = KB&lt;/code&gt; &lt;code&gt;bw=KBps&lt;/code&gt;, &lt;code&gt;runt = ms&lt;/code&gt; &lt;code&gt;r/s=number&lt;/code&gt; &lt;code&gt;avrq-sz=sectors (=512 bytes)&lt;/code&gt;&lt;/p&gt;
+&lt;h3&gt;some inferences&lt;/h3&gt;
+&lt;p&gt;From the line &lt;code&gt;read : io=78556KB, bw=670322 B/s, iops=163 , runt=120004msec&lt;/code&gt; 
+we observe that &lt;code&gt;io = bw * runt&lt;/code&gt;. Makes sense.&lt;/p&gt;
+&lt;h3&gt;libaio,read,sync=0,direct=0&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;bw = bs*iops&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;io = bs*iops*(runt/1000) / 1024&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rKB/s = r/s * (avgrq-sz*512) / 1024&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Observe the &lt;code&gt;r/s&lt;/code&gt;, &lt;code&gt;rKB/s&lt;/code&gt; and &lt;code&gt;avrq-sz&lt;/code&gt; graphs. Its very interesting. until block size of 4kb, the &lt;code&gt;iops&lt;/code&gt; value remains constant at 175. After this size, the &lt;code&gt;avrq-sz&lt;/code&gt; starts doubling (the file system minimum block size is 4kb but it can increase that block size upto 0.5 mb when we are trying to read bigger blocks). So after bs=4kb, iops drops because there is some time required to do sequential reads as well. It hits a low at 512kb because reading 512kb is eating into the time for making random reads. Now the &lt;code&gt;avrq-sz&lt;/code&gt; maxes out. Now a single fio read requires more than one 'sequential low level reads' so &lt;code&gt;r/s&lt;/code&gt; now increases steadily. Until the point of 16mb where each fio read equals 32 sequential reads at the block layer. This results in very high &lt;code&gt;r/s&lt;/code&gt; and the corresponding &lt;code&gt;rKB/s&lt;/code&gt; shows sequential-like bandwidths. So far so good! If you see the &lt;code&gt;bw&lt;/code&gt; column, its doubling all the way from 1 byte to 512kb. Until 4kb block size this is caused by simply reading more from the 4k filesystem block that is already read anyway. From 4k to 512k, the doubling is caused due to the doubling of file system block size that is being read. You can see from 4k to 512k block size, the &lt;code&gt;bw&lt;/code&gt; pretty much matches with &lt;code&gt;rKB/s&lt;/code&gt;. But what the heck happened after 1MB block size?!?! &lt;code&gt;bw&lt;/code&gt; has shot upto 1.3 GB/s, while rBK/s continues to be around 70MBps range. The linux page cache is causing this. If you see the &lt;code&gt;rKB/s&lt;/code&gt; column, we are doing around 70MBps. We can read the entire 3GB file in &lt;code&gt;3000/70 = 42&lt;/code&gt; seconds. For the rest 18 seconds, the requests are served through ram and the iops and bw shoots through the roof. Also observe that this is the first time that the file could be read entirely into the page cache. Because, for the previous run with &lt;code&gt;2^19&lt;/code&gt; the value of rKB/s is around 50MBps. In 60 seconds, it just managed to (or missed to ) read &lt;code&gt;50*60sec = 3G&lt;/code&gt; file. So we didnt observe cache effects for the previous run. After 2^20, the bw still keeps increasing, probably because we are filling up the page cache earlier in each run (due to increase in &lt;code&gt;rKB/s&lt;/code&gt;) . Furthermore it seems like fio does a &lt;code&gt;drop-cache&lt;/code&gt; to clear the cache before every run (which is good for us). Now observe the &lt;code&gt;iops&lt;/code&gt; graph. After the spectacular shootup at 2^20, the iops keeps halving. This makes perfect sense because the requests are being served from ram. ram being truly random access, the bandwidth has to remain constant. So if you double the block size, the iops should halve. Sweet! &lt;/p&gt;
+&lt;p&gt;Unexplained/TODO:
+I tried to explain the &lt;code&gt;r/s&lt;/code&gt; graph in more quantitative terms. If my theory holds, then the V shape from 2^16 to 2^23 is caused by seek_time + sequential_throughput.
+i.e. to read a block of &lt;code&gt;x kb&lt;/code&gt;, time taken should be &lt;code&gt;seek_time + sequential_throughput_sec_per_kb*x&lt;/code&gt;
+Now you can actually calculate &lt;code&gt;seek_time&lt;/code&gt; and &lt;code&gt;sequential_throughput&lt;/code&gt; with the values at 2^17 and 2^18&lt;/p&gt;
+&lt;p&gt;When you extrapolate it to other values, I get &lt;code&gt;2^19 = 85 r/s&lt;/code&gt;, &lt;code&gt;2^20 = 107 r/s&lt;/code&gt;, &lt;code&gt;2^21 = 123 r/s&lt;/code&gt; and &lt;code&gt;2^22 is 133 r/s&lt;/code&gt;. This doesnt quite match up with the observed values in the graph. Maybe some other cache is coming into effect here ?&lt;/p&gt;
+&lt;h3&gt;sync,read,sync=0,direct=0&lt;/h3&gt;
+&lt;p&gt;This is another interesting graph where we observe quite a different phenomenon. First, let's consider the &lt;code&gt;util&lt;/code&gt; column. We observe that until bs=7, the disk is actually underutilized. This means that until bs=7, the entire goddamn process is bottlenecked on CPU. Indeed, when I checked % cpu utilization through top, the CPU was at humming at 100%. Looking at the iops graph, it is constant until bs=7. We conclude that 900K iops is the theoritical maximum that the linux kernel can perform. So 1.1 microseconds per system call. Useful number to remember! 
+Looking at the &lt;code&gt;r/s&lt;/code&gt; graph, it is fairly simple. Until bs=7, values keeps doubling. Why? when we double the fio block size, iops being constant, the kernel can read data twice as fast and will thus issue disk reads twice as fast. After bs=8, the number of &lt;code&gt;r/s&lt;/code&gt; have completely saturated. This is the time when the disk is 100% utilized and cpu/kernel/memory is no longer the bottleneck. The &lt;code&gt;rKB/s&lt;/code&gt; is uninteresting since it is simply following &lt;code&gt;r/s&lt;/code&gt; (because &lt;code&gt;avgrq-sz&lt;/code&gt; is constant). But note that we get around 140 MBps for sequential throughput. &lt;/p&gt;
+&lt;p&gt;Now lets tackle &lt;code&gt;iops&lt;/code&gt;. We already explained the constant iops until bs=7. From bs=8, A couple of things are happening here. First note the &lt;code&gt;io&lt;/code&gt; column. For bs=8, we have read 11GB of data, so in the middle of the 60 second run, the entire file was page-cached in memory and the rest of time was served purely from ram. So the reduction in iops is because for some fraction of the 60 second time, we are actually bottlenecked on hard disk. For subsequent values of bs, the fraction of time of hard-disk bottleneck remains constant (and hence the fraction of time cpu bottlenecked also remains constant) but in the cpu bottleneck phase, since the block size has doubled, iops will have to halve. Note that in the initial stages values after bs=7. i.e., for bs=8, 9, 10 the decrease in iops is less than half. This is because the system_call/kernel overhead is still the majority of time. As block size gets bigger, The time copying from kernel space to user space overwhelms the systemCall/kernel time, and we observe proper halving of iops (see iops values bs=15). This also explains why &lt;code&gt;bw&lt;/code&gt; saturates after bs=15. It is caused because once kernel/systemCall time became negligible, the bandwidth is simply &lt;code&gt;iops*bs&lt;/code&gt;. This remains true for all subsequent values of bs.&lt;/p&gt;
+&lt;p&gt;The story with &lt;code&gt;bw&lt;/code&gt; is similar. Up until bs=7, the bw has exactly doubled, because fio was 100% CPU bottlenecked. Starting from bs=8, there is a component that cannot be increased (when bottleneck is hard-disk) and there is a component that can be doubled (when bottleneck is cpu and 1microsecond system call processing time). So the average increase is 1.64 times previous value&lt;/p&gt;
+&lt;h4&gt;Quantitative explanation&lt;/h4&gt;
+&lt;p&gt;Assume the following numbers:
+&lt;em&gt; Time to make one system call irrespective of block size = 1.1 microseconds
+&lt;/em&gt; RAM-to-RAM copy bandwidth 4.6 GBps (i.e., to copy from kernel space to user space)&lt;/p&gt;
+&lt;p&gt;For bs=2^9, at the rate of 138 MBps disk read speed, the disk was busy for 3G/138MBps = 22.6 seconds. Number of fio io operations for the first 22.6 seconds= 3G/2^9 = 6291456.
+For the next 60 - 22.6 = 37.4 seconds, requests were served purely from copying data from page cache to user space (RAM-to-RAM copy). Time for each io operation = 1.1 microseconds + 2^9 / 4.8GBps = 1.2 microseconds. So in 37.4 seconds, number of fio operations = 37.4 / 1.2 microseconds = 31.16 million fio operations. So net io operations = 31.16 million + 6291456 = 37458122. 
+iops calculated over 60 seconds = 37458122/60 = 624302. This differs from actual value of 617759 by 1%.
+The actual percentages of error using this method (starting from bs=512) is 
+0.80, 3.64, 3.32, 9.78, 11.94, 13.33, 15.65, 15.38, 0.99, 10.13, 5.77, 3.85, 2.75, 3.17, 3.66, 12.44
+Even with 15% error, its not too shabby i guess, in the face of other complications such as page faults and TLB misses&lt;/p&gt;
+&lt;p&gt;Unexplained:
+The &lt;code&gt;avgrq-sz&lt;/code&gt; seems to be stuck at 512 sectors. Why? we saw in the case of &lt;code&gt;libaio,randread,sync=0,direct=0&lt;/code&gt; that &lt;code&gt;avgrq-sz&lt;/code&gt; went upto 1024 sectors. &lt;/p&gt;
+&lt;p&gt;explain the &lt;code&gt;bw&lt;/code&gt; from 2^16 onwards&lt;/p&gt;
+&lt;p&gt;Quantitatively verify if the theories make sense. &lt;/p&gt;</summary><category term="misc"></category></entry><entry><title>C IDE with vim, cscope and grep (ag)</title><link href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="alternate"></link><updated>2016-05-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-05-02:c-ide-with-vim-cscope-and-grep-ag.html</id><summary type="html">&lt;h1&gt;Setup Cscope&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;First, Install cscope. &lt;/li&gt;
 &lt;li&gt;
@@ -157,6 +218,7 @@ Homepage: http://www.squid-cache.org/
 &lt;h3&gt;Python examples&lt;/h3&gt;
 &lt;h4&gt;Common special characters:&lt;/h4&gt;
 &lt;p&gt;&lt;code&gt;\d&lt;/code&gt;: only digit, &lt;/p&gt;
+&lt;h4&gt;Search and replace&lt;/h4&gt;
 &lt;p&gt;Search for occurences of a regex string and replace it with something that depends on the actual value of the string.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
 &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;r&amp;quot;(blue|red)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -164,7 +226,12 @@ Homepage: http://www.squid-cache.org/
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;output: &lt;code&gt;4 socks and 3 shoes&lt;/code&gt;&lt;/p&gt;</summary><category term="regex"></category></entry><entry><title>Setting up a ceph cluster</title><link href="/setting-up-a-ceph-cluster.html" rel="alternate"></link><updated>2016-02-07T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-02-07:setting-up-a-ceph-cluster.html</id><summary type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;output: &lt;code&gt;4 socks and 3 shoes&lt;/code&gt;&lt;/p&gt;
+&lt;h4&gt;Find all ip addresses in a text&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;p = re.compile(r&amp;quot;\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}[^0-9]&amp;quot;)
+s = &amp;quot;Runbook:blah blah  IP:10.34.249.124 blah blah IP:10.33.157.166&amp;quot;
+print p.findall(s)
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="regex"></category></entry><entry><title>Setting up a ceph cluster</title><link href="/setting-up-a-ceph-cluster.html" rel="alternate"></link><updated>2016-02-07T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-02-07:setting-up-a-ceph-cluster.html</id><summary type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Furthermore, to launch a radosgw instance, you &lt;em&gt;need&lt;/em&gt; to have a section in your host file called &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and your  keyring should have a corresponding key section called  &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and you should have imported that key into ceph    via &lt;code&gt;sudo ceph auth import -i /etc/ceph/&amp;lt;keyring_file&amp;gt;&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;All the three names must match: the one in ceph.conf, in the keyring and in &lt;code&gt;ceph auth list&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Oh, and yeah, do &lt;strong&gt;NOT&lt;/strong&gt; put a line like this in your &lt;code&gt;ceph.conf&lt;/code&gt;:&lt;/p&gt;
