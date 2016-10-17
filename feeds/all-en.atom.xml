@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog</title><link href="/" rel="alternate"></link><link href="/feeds/all-en.atom.xml" rel="self"></link><id>/</id><updated>2016-06-23T00:30:00+00:00</updated><entry><title>A bangalore software engineer's first trip to Bali</title><link href="/a-bangalore-software-engineers-first-trip-to-bali.html" rel="alternate"></link><updated>2016-06-23T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-06-23:a-bangalore-software-engineers-first-trip-to-bali.html</id><summary type="html">&lt;p&gt;I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog</title><link href="/" rel="alternate"></link><link href="/feeds/all-en.atom.xml" rel="self"></link><id>/</id><updated>2016-08-23T00:30:00+00:00</updated><entry><title>Notes about kafka metrics</title><link href="/notes-about-kafka-metrics.html" rel="alternate"></link><updated>2016-08-23T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-08-23:notes-about-kafka-metrics.html</id><summary type="html">&lt;h1&gt;Notes about kafka metrics&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Bytes in&lt;/strong&gt; is number of bytes from external producers only. It does not include, for example, the bytes read by followers during replication. So &lt;code&gt;bytes_in = message_produce_rate * average_message_size&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bytes out&lt;/strong&gt; includes data sent to follower also.&lt;/p&gt;</summary><category term="misc"></category></entry><entry><title>A bangalore software engineer's first trip to Bali</title><link href="/a-bangalore-software-engineers-first-trip-to-bali.html" rel="alternate"></link><updated>2016-06-23T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-06-23:a-bangalore-software-engineers-first-trip-to-bali.html</id><summary type="html">&lt;p&gt;I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.&lt;/p&gt;
 &lt;h3&gt;Flight&lt;/h3&gt;
 &lt;p&gt;If you're leaving from bangalore, then consider going first to kochi or chennai, and then going to Bali. It worked out cheaper for me. Flight from Blore to kochi was ~ INR 1000 and flight from kochi to Bali was ~ INR 15000. A direct flight from Blore to Bali was in comparison around INR 24000. An aside: airport food is annoyingly expensive and not good at all. Strongly recommend &lt;em&gt;packing&lt;/em&gt; enough food to last you till your destination --- including layovers. &lt;/p&gt;
 &lt;p&gt;If you're travelling in Air Asia, beware! They're the stingiest aircraft I've ever flown in. They don't even offer water for free, even on international routes. Let alone food. Furthermore, &lt;strong&gt;check-in baggage is not free!&lt;/strong&gt; it cost me around 5000 Rupees extra for one piece of check-in luggage. Oh, yes. If you forget to call and pay for check-in baggage before hand, then the cost is &lt;em&gt;really&lt;/em&gt; exorbitant if you check-in at the airport counter.&lt;/p&gt;
@@ -31,65 +33,57 @@ its gravelly and rocky. Very uncomfortable. Beti-balug beach in seminyak has nic
 &lt;p&gt;Little off the main touristy spot (its a separate island). I never visited it but I wish I had. Its got lots of stuff to do according to &lt;a href="https://indonesia.tripcanvas.co/bali/unique-places-in-bali/page/3/"&gt;this link&lt;/a&gt;&lt;/p&gt;
 &lt;h3&gt;Voltage specs in Bali&lt;/h3&gt;
 &lt;p&gt;Bali uses the same kind of round pins that we use in india. Not the flat rectangular pins from US. But one major problem: The socket is "hollow" &lt;a href="https://www.tripadvisor.com/LocationPhotoDirectLink-g1465999-d1539040-i79297910-The_Wangsa_Private_Estate-Tanjung_Benoa_Nusa_Dua_Peninsula_Bali.html"&gt;like this&lt;/a&gt;. So if your charger body is bulky, it won't fit inside the hollowness of the sockets. None of my chargers from india fit in the socket. Luckily every airbnb that I stayed had a Bali adapter
-or a Bali charger that allowed me to charge.&lt;/p&gt;</summary><category term="misc"></category></entry><entry><title>The affair between iostat and fio</title><link href="/the-affair-between-iostat-and-fio.html" rel="alternate"></link><updated>2016-06-02T16:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-06-02:the-affair-between-iostat-and-fio.html</id><summary type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
+or a Bali charger that allowed me to charge.&lt;/p&gt;
+&lt;h3&gt;Cost of the trip.&lt;/h3&gt;
+&lt;p&gt;This will of course vary a lot for person to person so your mileage may vary. The numbers are for two people for 8 days.
+The costs below are &lt;em&gt;excluding&lt;/em&gt; hotel bookings and flights.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Type&lt;/th&gt;
+&lt;th&gt;Cost&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;transport&lt;/td&gt;
+&lt;td&gt;Rs 10,200&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;entertainment&lt;/td&gt;
+&lt;td&gt;Rs 25,000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;food&lt;/td&gt;
+&lt;td&gt;Rs 16,000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;shopping&lt;/td&gt;
+&lt;td&gt;Rs 17,000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The excrutiangly detailed breakup of costs is &lt;a href="https://docs.google.com/spreadsheets/d/1uVaI5bQ702zNCqu6tZL-GoIzKm4CGlxRkincuRJys5k/edit?usp=sharing"&gt;here&lt;/a&gt;&lt;/p&gt;</summary><category term="misc"></category></entry><entry><title>The affair between iostat and fio</title><link href="/the-affair-between-iostat-and-fio.html" rel="alternate"></link><updated>2016-06-02T16:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-06-02:the-affair-between-iostat-and-fio.html</id><summary type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
 &lt;h3&gt;fio output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /mnt/vdb1]$ sudo fio --name=global --bs=4k --ioengine=libaio --iodepth=1 --runtime=120 --time_based --size=3G --group_reporting --disable_lat=1 --disable_clat=1 --disable_slat=1 --clat_percentiles=0  --filename=/mnt/vdb1/fio/myfile --name=regular_read --rw=randread
-regular_read: (g=0): rw=randread, bs=4K-4K/4K-4K, ioengine=libaio, iodepth=1
-2.0.8
-Starting 1 process
-regular_read: Laying out IO file(s) (1 file(s) / 3072MB)
-Jobs: 1 (f=1): [r] [24.0% done] [672K/0K /s] [168 /0  iops] [eta 01m:32s]
+&lt;div class="highlight"&gt;&lt;pre&gt;io = bw*runt
+io = iops*runt*bs
+issued(r) = iops*runt
+io = ios*bs
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ sudo fio --name=global --bs=4k --ioengine=libaio --iodepth=1 --runtime=30 --time_based --size=3G --group_reporting --disable_lat=1 --disable_clat=1 --disable_slat=1 --clat_percentiles=0  --filename=/mnt/vdb1/fio/myfile --name=regular_read --rw=randread
-regular_read: (g=0): rw=randread, bs=4K-4K/4K-4K, ioengine=libaio, iodepth=1
-2.0.8
-Starting 1 process
-Jobs: 1 (f=1): [r] [100.0% done] [708K/0K /s] [177 /0  iops] [eta 00m:00s]
-regular_read: (groupid=0, jobs=1): err= 0: pid=28099
-  read : io=21060KB, bw=718776 B/s, iops=175 , runt= 30003msec
-    bw (KB/s)  : min=  640, max=  798, per=100.00%, avg=702.34, stdev=36.92
-  cpu          : usr=0.09%, sys=0.44%, ctx=5274, majf=0, minf=20
-  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &amp;gt;=64=0.0%
-     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &amp;gt;=64=0.0%
-     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &amp;gt;=64=0.0%
-     issued    : total=r=5265/w=0/d=0, short=r=0/w=0/d=0&lt;/p&gt;
-&lt;p&gt;Run status group 0 (all jobs):
-   READ: io=21060KB, aggrb=701KB/s, minb=701KB/s, maxb=701KB/s, mint=30003msec, maxt=30003msec&lt;/p&gt;
-&lt;p&gt;Disk stats (read/write):
-  vdb: ios=5251/0, merge=0/0, ticks=29828/0, in_queue=29820, util=99.40%&lt;/p&gt;
-&lt;p&gt;analysis:
-  read : io=21060KB, bw=718776 B/s, iops=175 , runt= 30003msec
-issued    : total=r=5265/w=0/d=0, short=r=0/w=0/d=0
-Disk stats (read/write):
-  vdb: ios=5251/0, merge=0/0, ticks=29828/0, in_queue=29820, util=99.40%&lt;/p&gt;
-&lt;p&gt;io = bw&lt;em&gt;runt
-io = iops&lt;/em&gt;runt&lt;em&gt;bs
-issued(r) = iops&lt;/em&gt;runt
-io = ios*bs&lt;/p&gt;
 &lt;h3&gt;iostat output&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb 
 Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
 vdb               0.00     0.00  179.00    0.00   716.00     0.00     8.00     1.00    5.59    5.59    0.00   5.58  99.80
-### some inferences
-From the line `read : io=78556KB, bw=670322 B/s, iops=163 , runt=120004msec` 
-we observe that `io = bw * runt`. Makes sense.
-
-```
-### iostat output
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;[sharath.g@prod-d42ar-osd-a-00050-409388 /home/sharath.g]$ iostat -x  -d 2 /dev/vdb
-Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
-vdb               0.00     0.00  165.00    0.00   660.00     0.00     8.00     0.99    6.02    6.02    0.00   6.02  99.40
-````&lt;/p&gt;
-&lt;h3&gt;units&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;bs = bytes&lt;/code&gt;, &lt;code&gt;io = KB&lt;/code&gt; &lt;code&gt;bw=KBps&lt;/code&gt;, &lt;code&gt;runt = ms&lt;/code&gt; &lt;code&gt;r/s=number&lt;/code&gt; &lt;code&gt;avrq-sz=sectors (=512 bytes)&lt;/code&gt;&lt;/p&gt;
 &lt;h3&gt;some inferences&lt;/h3&gt;
 &lt;p&gt;From the line &lt;code&gt;read : io=78556KB, bw=670322 B/s, iops=163 , runt=120004msec&lt;/code&gt; 
 we observe that &lt;code&gt;io = bw * runt&lt;/code&gt;. Makes sense.&lt;/p&gt;
+&lt;h3&gt;units&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;bs = bytes&lt;/code&gt;, &lt;code&gt;io = KB&lt;/code&gt; &lt;code&gt;bw=KBps&lt;/code&gt;, &lt;code&gt;runt = ms&lt;/code&gt; &lt;code&gt;r/s=number&lt;/code&gt; &lt;code&gt;avrq-sz=sectors (=512 bytes)&lt;/code&gt;&lt;/p&gt;
 &lt;h3&gt;libaio,read,sync=0,direct=0&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;bw = bs*iops&lt;/code&gt;&lt;/li&gt;
@@ -120,7 +114,51 @@ Even with 15% error, its not too shabby i guess, in the face of other complicati
 &lt;p&gt;Unexplained:
 The &lt;code&gt;avgrq-sz&lt;/code&gt; seems to be stuck at 512 sectors. Why? we saw in the case of &lt;code&gt;libaio,randread,sync=0,direct=0&lt;/code&gt; that &lt;code&gt;avgrq-sz&lt;/code&gt; went upto 1024 sectors. &lt;/p&gt;
 &lt;p&gt;explain the &lt;code&gt;bw&lt;/code&gt; from 2^16 onwards&lt;/p&gt;
-&lt;p&gt;Quantitatively verify if the theories make sense. &lt;/p&gt;</summary><category term="misc"></category></entry><entry><title>C IDE with vim, cscope and grep (ag)</title><link href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="alternate"></link><updated>2016-05-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-05-02:c-ide-with-vim-cscope-and-grep-ag.html</id><summary type="html">&lt;h1&gt;Setup Cscope&lt;/h1&gt;
+&lt;p&gt;Quantitatively verify if the theories make sense. &lt;/p&gt;
+&lt;h3&gt;sync,read,sync=1,direct=1&lt;/h3&gt;
+&lt;p&gt;From bs=2^15 onwards, everything is straightforward. First, notice that iops follows r/s and bw follows rKB/s. This is expected for direct=1. So we can ignore those. 
+The total time for an read operation = 1.1 microseconds (system call) + bs / (hdd bw = 130 MBps) + bs / (RAM bw = 4.8 BGps)&lt;/p&gt;
+&lt;p&gt;The RAM bw is due to copying from kernel space to user space. &lt;/p&gt;
+&lt;p&gt;The error percentages from computing r/s vs the actual r/s is as follows:
+ 5.72%, 5.19%, 6.72%, 5.22%, 5.25%, 5.68%, 6.52%, 8.25%, 11.86%, 19.85%&lt;/p&gt;
+&lt;h5&gt;Unexplained&lt;/h5&gt;
+&lt;p&gt;I am not able to explain what is going on for bs=2^{15, 16, 17}&lt;/p&gt;
+&lt;h3&gt;sync,read,sync=0,direct={0,1}&lt;/h3&gt;
+&lt;p&gt;This case is exactly the same as sync=1 because read operations are always sync=1. The sync=0 flag has no effect.&lt;/p&gt;
+&lt;h3&gt;sync,randread,sync=0,direct=0&lt;/h3&gt;
+&lt;p&gt;First, let us tackle the part of the graph until bs=2^19. Let's concentrate on r/s. In the beginning, the r/s is mainly influenced by the 5ms seek time for random read. This translates to ~170 reads per second. For later values of bs, starting from bs=2^15, the r/s starts dipping. What is happenning is that for bigger blocks, time taken to read a full block (at the rate of 130 MBps) starts dominating, which leads to a dip in r/s. &lt;/p&gt;
+&lt;p&gt;Time taken for a read = 5ms (seek time) + bs / 110 MBps(hdd read throughput)&lt;/p&gt;
+&lt;p&gt;The errors of computed vs actual r/s until bs=19 is as follows:
+0.48%, 2.19%, 2.77%, 3.96%, 1.61%, 2.19%, 1.03%, 2.17%, 2.15%, 2.11%, 2.03%, 0.72%, 2.12%, 2.65%, 0.79%, 4.34%, 3.28%, -1.75%, 3.80%, 0.98%
+As you can see, its remarkably accurate&lt;/p&gt;
+&lt;p&gt;For rKB/s, the computed value is r/s * avgrq-sz
+When we measure the difference between computed rKB/s and actual rKB/s, we get:
+0.48%, 2.19%, 2.77%, 3.96%, 1.61%, 2.19%, 1.03%, 2.17%, 2.15%, 2.11%, 2.03%, 0.72%, 2.12%, 2.65%, 0.79%, 4.34%, 3.28%, -1.75%, 3.80%, 0.98%
+The error rates are exactly the same as r/s which stresses that &lt;code&gt;rKB/s&lt;/code&gt; is a computed value rather than an independant value.&lt;/p&gt;
+&lt;p&gt;For the bw graph. It is simply following &lt;code&gt;rKB/s&lt;/code&gt; until bs=19&lt;/p&gt;
+&lt;p&gt;The iops graph is explained simply as &lt;code&gt;bw/bs&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;It is also easy to explain the graph from bs=20 onwards. Each fio block translates into bs/avrq-sq sequential disk read operations. For example, A fio block of size 2 MB results in 4 sequential reads (each of 1024 sectors = 0.5 MB). That explains the sudden increase in r/s after bs=19. 
+If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughput varying between 110-120MBps) with the formula &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;computed_read_s = (bs / (1024*512)) / (5.6*10**-3 + bs/(120*2**20) )
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The errors against actual values are as follows:
+0.38%, 0.92%, -1.21%, -4.98%, -1.99%&lt;/p&gt;
+&lt;p&gt;As always, the &lt;code&gt;rKB/s&lt;/code&gt; is r/s*avgrq-sz&lt;/p&gt;
+&lt;p&gt;The iops and the bw graph is more interesting. Another thing that happened at bs=19 was that the page-cache was completely filled. (see the io column) This results in requests being served from RAM which explains the tremendous shootup in fio iops and fio bw&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;number of ios for reading the 3G file into memory = 3G/bs ------&amp;gt; (3)
+time to read it from hard disk = 3G/rKBps
+time for which requests were served from page-cache = 60-3G/rKBps   ----&amp;gt; (1)
+Time of a single page-cache io operation = 1.1 microseconds + bs / (4.8 GBps = ram  bandwidth) ----&amp;gt; (2)
+expected iops = ((3)+(1)/(2)) / 60
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With the above formula, the errors of expected vs actual are 
+10.11%, 1.39%, 2.22%, 3.41%, 9.97%&lt;/p&gt;
+&lt;p&gt;The 10% variation is not unreasonable with the complicated L* cache hierarchies of modern processors&lt;/p&gt;
+&lt;p&gt;The bw graph is simply iops * bs&lt;/p&gt;</summary><category term="misc"></category></entry><entry><title>C IDE with vim, cscope and grep (ag)</title><link href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="alternate"></link><updated>2016-05-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-05-02:c-ide-with-vim-cscope-and-grep-ag.html</id><summary type="html">&lt;h1&gt;Setup Cscope&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;First, Install cscope. &lt;/li&gt;
 &lt;li&gt;

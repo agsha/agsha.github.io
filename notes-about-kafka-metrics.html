@@ -1,4 +1,4 @@
-
+<!-- same as index.html, except that only one article is shown -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -29,8 +29,8 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item" href="/">Latest articles</a>
-          <a class="blog-nav-item active" href="/archives.html">Archive</a>
+          <a class="blog-nav-item active" href="/">Latest articles</a>
+          <a class="blog-nav-item" href="/archives.html">Archive</a>
           <a class="blog-nav-item" href="/pages/about.html">About</a>
         </nav>
       </div>
@@ -41,41 +41,51 @@
       <div class="row">
 
         <div class="col-sm-12 blog-main">
-			<br><br><br>
 
-		  Tue, 23 Aug 2016:&nbsp;&nbsp;&nbsp;<a href="/notes-about-kafka-metrics.html" rel="bookmark" title="Permalink to Notes about kafka metrics">Notes about kafka metrics</a>
-          <br/>
-		  Thu, 23 Jun 2016:&nbsp;&nbsp;&nbsp;<a href="/a-bangalore-software-engineers-first-trip-to-bali.html" rel="bookmark" title="Permalink to A bangalore software engineer's first trip to Bali">A bangalore software engineer's first trip to Bali</a>
-          <br/>
-		  Thu, 02 Jun 2016:&nbsp;&nbsp;&nbsp;<a href="/the-affair-between-iostat-and-fio.html" rel="bookmark" title="Permalink to The affair between iostat and fio">The affair between iostat and fio</a>
-          <br/>
-		  Mon, 02 May 2016:&nbsp;&nbsp;&nbsp;<a href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="bookmark" title="Permalink to C IDE with vim, cscope and grep (ag)">C IDE with vim, cscope and grep (ag)</a>
-          <br/>
-		  Wed, 02 Mar 2016:&nbsp;&nbsp;&nbsp;<a href="/http-and-https-proxy-with-squid.html" rel="bookmark" title="Permalink to http and https proxy with squid">http and https proxy with squid</a>
-          <br/>
-		  Sun, 21 Feb 2016:&nbsp;&nbsp;&nbsp;<a href="/regex-recipes.html" rel="bookmark" title="Permalink to Regex recipes">Regex recipes</a>
-          <br/>
-		  Sun, 07 Feb 2016:&nbsp;&nbsp;&nbsp;<a href="/setting-up-a-ceph-cluster.html" rel="bookmark" title="Permalink to Setting up a ceph cluster">Setting up a ceph cluster</a>
-          <br/>
-		  Tue, 02 Feb 2016:&nbsp;&nbsp;&nbsp;<a href="/i-finally-setup-a-blog.html" rel="bookmark" title="Permalink to I finally setup a blog">I finally setup a blog</a>
-          <br/>
-		  <br><br><br>
-
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/notes-about-kafka-metrics.html" rel="bookmark" title="Permalink to Notes about kafka metrics">Notes about kafka metrics</a></h2>
+            <p class="blog-post-meta">Tue, 23 Aug 2016</p>
+		    <h1>Notes about kafka metrics</h1>
+<p><strong>Bytes in</strong> is number of bytes from external producers only. It does not include, for example, the bytes read by followers during replication. So <code>bytes_in = message_produce_rate * average_message_size</code></p>
+<p><strong>Bytes out</strong> includes data sent to follower also.</p> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
         </div><!-- /.blog-main -->
 
       </div><!-- /.row -->
 
+		  <div id="disqus_thread"></div>
+		  <script>
+			  /**
+			  * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+			  * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+			  */
+			  /*
+			  var disqus_config = function () {
+				  this.page.url = notes-about-kafka-metrics.html; // Replace PAGE_URL with your page's canonical URL variable
+				  this.page.identifier = notes-about-kafka-metrics; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+			  };
+			  */
+			  (function() { // DON'T EDIT BELOW THIS LINE
+				  var d = document, s = d.createElement('script');
+
+				  s.src = '//agsha.disqus.com/embed.js';
+
+				  s.setAttribute('data-timestamp', +new Date());
+				  (d.head || d.body).appendChild(s);
+			  })();
+		  </script>
+		  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
     </div><!-- /.container -->
 
-	<!--
-	This page is too short for the footer
-	<footer class="blog-footer">
+    <footer class="blog-footer">
       <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
       <p>
         <a href="#">Back to top</a>
       </p>
     </footer>
-	-->
+
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
