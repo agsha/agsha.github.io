@@ -14,7 +14,7 @@
 
 
     <!-- Custom styles for this template -->
-    <link href="/theme/blog.css" rel="stylesheet">
+    <link href="theme/blog.css" rel="stylesheet">
 
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -29,9 +29,9 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item active" href="/">Latest articles</a>
-          <a class="blog-nav-item" href="/archives.html">Archive</a>
-          <a class="blog-nav-item" href="/pages/about.html">About</a>
+          <a class="blog-nav-item active" href="#">Latest articles</a>
+          <a class="blog-nav-item" href="#">Archive</a>
+          <a class="blog-nav-item" href="#">About</a>
         </nav>
       </div>
     </div>
@@ -50,7 +50,7 @@
 <li>First, Install cscope. </li>
 <li>
 <p>Next, you need a <code>cscope.files</code> with all the files that need to be indexed. In the source folder, you can do that with  </p>
-<div class="highlight"><pre>find `pwd` -name &quot;*.c&quot; -o -name &quot;*.cc&quot; -o -name &quot;*.h&quot; &gt; cscope.files
+<div class="highlight"><pre><span></span><span class="n">find</span> <span class="ss">`pwd`</span> <span class="o">-</span><span class="n">name</span> <span class="s2">&quot;*.c&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="o">-</span><span class="n">name</span> <span class="s2">&quot;*.cc&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="o">-</span><span class="n">name</span> <span class="s2">&quot;*.h&quot;</span> <span class="o">&gt;</span> <span class="n">cscope</span><span class="p">.</span><span class="n">files</span>
 </pre></div>
 
 
@@ -58,7 +58,7 @@
 </li>
 <li>
 <p>Now, build the cscope database.</p>
-<div class="highlight"><pre>cscope -q -R -b -i cscope.files
+<div class="highlight"><pre><span></span><span class="err">cscope -q -R -b -i cscope.files</span>
 </pre></div>
 
 
@@ -66,7 +66,7 @@
 </li>
 <li>
 <p>Start up vim and issue the command</p>
-<div class="highlight"><pre>:cs add ~/code/ceph/cscope.out
+<div class="highlight"><pre><span></span><span class="err">:cs add ~/code/ceph/cscope.out</span>
 </pre></div>
 
 

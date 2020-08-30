@@ -1,7 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog</title><link href="/" rel="alternate"></link><link href="/feeds/sharath-gururaj.atom.xml" rel="self"></link><id>/</id><updated>2016-08-23T00:30:00+00:00</updated><entry><title>Notes about kafka metrics</title><link href="/notes-about-kafka-metrics.html" rel="alternate"></link><updated>2016-08-23T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-08-23:notes-about-kafka-metrics.html</id><summary type="html">&lt;h1&gt;Notes about kafka metrics&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog - Sharath Gururaj</title><link href="/" rel="alternate"></link><link href="/feeds/sharath-gururaj.atom.xml" rel="self"></link><id>/</id><updated>2018-07-07T00:30:00+00:00</updated><entry><title>The quest for high throughput RPC</title><link href="/the-quest-for-high-throughput-rpc.html" rel="alternate"></link><published>2018-07-07T00:30:00+00:00</published><updated>2018-07-07T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2018-07-07:/the-quest-for-high-throughput-rpc.html</id><summary type="html">&lt;p&gt;In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around &lt;code&gt;1000 req/sec&lt;/code&gt;, whereas a prototype implementation of this technique gives around &lt;code&gt;4 million req/sec&lt;/code&gt; for a “hello world” rpc …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around &lt;code&gt;1000 req/sec&lt;/code&gt;, whereas a prototype implementation of this technique gives around &lt;code&gt;4 million req/sec&lt;/code&gt; for a “hello world” rpc&lt;/p&gt;
+&lt;p&gt;Lots of companies these days use a microservices architecture, where the application as a whole is split into multiple smaller microservices communicating over the network. What follows in the post is heavy on numbers, which admittedly is boring to parse and makes it a little dry. A nanosec, microsec and a millisec might all just seem like a really small amount of time for humans but the distance between them is vast. If we were to blow up the numbers to human scale and make a nanosec as a second, then it would take one nanosec to pick up a pen next to your laptop, one microsec is a 20 min bike ride, and 1 millisec is a bike ride from bangalore to indore!&lt;/p&gt;
+&lt;p&gt;For the time being, I’m going to consider two communicating processes on localhost so we don’t have to worry about network transmission latency for now
+Our goal is to exchange 100 byte messages as fast as we can between two processes with a cap on (say 95% percentile) latency (say, &lt;code&gt;&amp;lt;5 ms&lt;/code&gt;)&lt;/p&gt;
+&lt;h2&gt;Dropwizard and web services&lt;/h2&gt;
+&lt;p&gt;If we hook up a simple dropwizard app with a “hello world” GET api and hit it with apache bench (ab) on localhost laptop with a single connection, I get around &lt;code&gt;1000 req/sec&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;If I pump up the number of concurrent connections, I get around &lt;code&gt;7000 req/s&lt;/code&gt; with around 100 connections (I hit ulimit after that on mac).&lt;/p&gt;
+&lt;p&gt;How good or bad is that?&lt;/p&gt;
+&lt;p&gt;For an absolute theoretical limit, we can compare it to the rate at which CPUs can read and write streaming data to/from memory. From my measurements, each core can stream data from RAM at around 1GB/sec.
+so 1GBps means 10 million req/s with 100 byte messages. When compared to the 800 req/s for a single connection, this is disappointing indeed.&lt;/p&gt;
+&lt;p&gt;Of course, dropwizard does a lot more than simply stream data to/from memory. It has to parse http, send the packet down on the tcp stack and do the whole thing back on the rx side.&lt;/p&gt;
+&lt;p&gt;So how much time does it take for a packet to traverse the tcp stack? I’ve measured that it takes around ~25 microseconds ballpark to go down or come up the tcp stack. This is also in agreement with some online benchmarks. If we take this into account, it should take around 1/(50 usec) or ~2000 req/sec per core (pair). Compared to this, 800 req/s seems to be a bit too slow, even with the added http parsing.&lt;/p&gt;
+&lt;p&gt;With multiple cores and a large number of connections, I was able to crank up dropwizard to around 20K req/sec, but it requires many 100’s of connections to parallelize the processing. But keeping in mind the 10 million req/sec, this is still disappointing&lt;/p&gt;
+&lt;p&gt;The problem with using jetty/dropwizard for RPC is that, fundamentally, the architectures these web servers are tuned for entirely different things. Web servers are meant to operate on the internet, where a server can hold many tens of thousands of browser connections, with each browser connection being mostly idle and bursty for a short while. This does not map well to a Data Center environment where a server is talking to only about a dozen other services, and the connections are long lived and required to be very high throughput.&lt;/p&gt;
+&lt;p&gt;I believe this is causing a systemic performance problem in software companies. For example, we are all aware that disk and database access is orders of magnitude slower than cpu/network. Why then do we put ~20 dropwizard boxes in front of a mysql DB? Shouldn’t it be the other way round? 1 (or a few for redundancy) dropwizard box fronting multiple sharded mysql instances? This webserver problem leads to a vicious cycle: Each client needs to also employ multiple boxes just to generate the paralellism and connections to load a server.&lt;/p&gt;
+&lt;p&gt;The summary so far:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;type&lt;/th&gt;
+&lt;th&gt;throughput&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;dropwizard single connection&lt;/td&gt;
+&lt;td&gt;1000 req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;dropwizard 100 connections&lt;/td&gt;
+&lt;td&gt;7000 req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TCP packet round trip&lt;/td&gt;
+&lt;td&gt;20k req/s (ballpark)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CPU streaming from RAM&lt;/td&gt;
+&lt;td&gt;10M req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Unix domain sockets&lt;/h2&gt;
+&lt;p&gt;Anyway, to continue with our quest for high throughput, lets skip web servers altogether.&lt;/p&gt;
+&lt;p&gt;With Unix domain sockets (which works only on localhost), we can bypass the entire tcp stack and take a much shorter route through the kernel. With UDS and a netty server (the default implementation in specter), we have measured around 10K req/s on a single core. Compare this to 800 req/s for dropwizard and 20K req/s if we were to traverse the TCP stack). With all cores (~10 cores), I measured around 40K req/s. This is much better than web servers. But still slow, considering
+* we’re skipping the entire tcp stack
+* the 1GBps CPU-memory bandwidth&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;type&lt;/th&gt;
+&lt;th&gt;throughput&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;UDS single connection&lt;/td&gt;
+&lt;td&gt;10K req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;UDS multiple connections&lt;/td&gt;
+&lt;td&gt;40K req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Grpc and HTTP2&lt;/h2&gt;
+&lt;p&gt;Another fundamental problem with all the previous frameworks are that they operate in inherently thread-request-response modes. i.e., the client thread sends a request and waits for a response. We would be able to achieve much better results if we operate in streaming mode, where the client is streaming multiple requests and the server is streaming back multiple responses. For this, we use HTTP2. It has two big advantages, the wire format is binary (not textual like HTTP) and it supports request streaming/pipelining&lt;/p&gt;
+&lt;p&gt;gRPC is a RPC mechanism using HTTP2. I haven’t explicitly measured the performance but according to the available online bencharks, they are able to do around 300K req/sec across two different machines, (which I assume will fall to ~150K) with both client and server on localhost.&lt;/p&gt;
+&lt;p&gt;Newer versions of jetty also support HTTP2. I tested out with a barebones embedded HTTP2 jetty server and I was able to get ~40K req/sec which is comparable to the UDS performance. Although less than gRPC, This is impressive considering that jetty has to parse HTTP as well as traverse the tcp stack, which UDS avoids. (Also remember that UDS is operating in request-response mode, not streaming mode)&lt;/p&gt;
+&lt;h2&gt;Raw sockets&lt;/h2&gt;
+&lt;p&gt;All this begs the question: what is the fundamental limit for streaming data across a TCP connection? I threw up a small experiment with raw sockets in java on localhost and to my surprise, I was able to get the full 1GBps even with the tcp stack. Then where are we going wrong? why aren’t we able to achieve this with existing frameworks and even with http2?
+When I was running the TCP streaming test, I realized that the key to high throughput is batching. The cost of traversing the tcp stack is roughly the same whether we send 1 byte or 1kB or 1MB. This is very apparent in the tests. With small messages, the throughput is approx 10K req/s. As we double the message size, the throughput keeps doubling, until it reaches 1GBps. So it makes sense to introduce a small “linger” time to combine multiple messages and send it across at once. How big is “big” for TCP networks? From the tests, I found that ~ 10Kb payload size is able to saturate the network (and memory) line rates&lt;/p&gt;
+&lt;p&gt;None of the RPC frameworks that I know of employ this technique. Actually, Kafka producer employs batching but suffers from other architectural issues which prevents it from achieving full line rate (More on that in a future post). In fact, the trend is in the opposite direction, to reduce message latencies further and send across a message as soon as possible. For example, Aeron claims to reduce latency from 50 microsec to 30 microsec by using UDP. The latency improvement might be super important in finance but presents only a very marginal improvements in throughput.&lt;/p&gt;
+&lt;h2&gt;The new and shiny&lt;/h2&gt;
+&lt;p&gt;I wrote a client and a server which uses this batching technique over raw sockets. I batch small messages together until they reach a size of 20KB (or a timeout expires) and send big batches (~20kb) over tcp. The results were quite astounding. I was able to reach 3 million req/sec with 100 byte messages and only a single tcp connection and a single core (pair).&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;type&lt;/th&gt;
+&lt;th&gt;throughput&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;gRPC&lt;/td&gt;
+&lt;td&gt;150K req/s (haven't tested)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Jetty HTTP2 server with async client and req pipelining&lt;/td&gt;
+&lt;td&gt;40K req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Aeron&lt;/td&gt;
+&lt;td&gt;30K req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The code has almost no micro-optimizations (like object cache, zero copy, connection pools, etc) but it demostrates the effectiveness of this architecture.I am a little blown away by how much the throughput increasing with a simple technique. The best news is that the throughput remains virtually unaffected even over a 10Gbps network
+If you’re interested in checking out the code and trying it out on localhost or in our DC, here is the link.
+https://github.com/agsha/sharpc&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;type&lt;/th&gt;
+&lt;th&gt;throughput&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="color:red"&gt;New Batching RPC single TCP connection&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;3M req/s (haven't tested)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Summary&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Dropwizard/jetty has a well understood and rock solid programming model, but leaves a lot to be desired with respect to max throughput achievable.&lt;/li&gt;
+&lt;li&gt;Enabling HTTP2 is quite trivial for Jetty and can be expected to fetch ~30–50% increase in throughput&lt;/li&gt;
+&lt;li&gt;Maybe its time to consider a “true” RPC subsystem in software companies: like grpc or thrift&lt;/li&gt;
+&lt;li&gt;A batching algorithm can increase throughput by orders of magnitude compared to even high performance frameworks like grpc
+and here’s a cat of all the previous tables&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;type&lt;/th&gt;
+&lt;th&gt;throughput&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;dropwizard single connection&lt;/td&gt;
+&lt;td&gt;1000 req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;dropwizard 100 connections&lt;/td&gt;
+&lt;td&gt;7000 req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TCP packet round trip&lt;/td&gt;
+&lt;td&gt;20k req/s (ballpark)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CPU streaming from RAM&lt;/td&gt;
+&lt;td&gt;10M req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;UDS single connection&lt;/td&gt;
+&lt;td&gt;10K req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;UDS multiple connections&lt;/td&gt;
+&lt;td&gt;40K req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;gRPC&lt;/td&gt;
+&lt;td&gt;150K req/s (haven't tested)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Jetty HTTP2 server with async client and req pipelining&lt;/td&gt;
+&lt;td&gt;40K req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Aeron&lt;/td&gt;
+&lt;td&gt;30K req/s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="color:red"&gt;New Batching RPC single TCP connection&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;3M req/s (haven't tested)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>Notes about kafka metrics</title><link href="/notes-about-kafka-metrics.html" rel="alternate"></link><published>2016-08-23T00:30:00+00:00</published><updated>2016-08-23T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-08-23:/notes-about-kafka-metrics.html</id><content type="html">&lt;h1&gt;Notes about kafka metrics&lt;/h1&gt;
 &lt;p&gt;&lt;strong&gt;Bytes in&lt;/strong&gt; is number of bytes from external producers only. It does not include, for example, the bytes read by followers during replication. So &lt;code&gt;bytes_in = message_produce_rate * average_message_size&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Bytes out&lt;/strong&gt; includes data sent to follower also.&lt;/p&gt;</summary><category term="misc"></category></entry><entry><title>A bangalore software engineer's first trip to Bali</title><link href="/a-bangalore-software-engineers-first-trip-to-bali.html" rel="alternate"></link><updated>2016-06-23T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-06-23:a-bangalore-software-engineers-first-trip-to-bali.html</id><summary type="html">&lt;p&gt;I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bytes out&lt;/strong&gt; includes data sent to follower also.&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>A bangalore software engineer's first trip to Bali</title><link href="/a-bangalore-software-engineers-first-trip-to-bali.html" rel="alternate"></link><published>2016-06-23T00:30:00+00:00</published><updated>2016-06-23T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-06-23:/a-bangalore-software-engineers-first-trip-to-bali.html</id><summary type="html">&lt;p&gt;I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.&lt;/p&gt;
+&lt;h3&gt;Flight&lt;/h3&gt;
+&lt;p&gt;If you're …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.&lt;/p&gt;
 &lt;h3&gt;Flight&lt;/h3&gt;
 &lt;p&gt;If you're leaving from bangalore, then consider going first to kochi or chennai, and then going to Bali. It worked out cheaper for me. Flight from Blore to kochi was ~ INR 1000 and flight from kochi to Bali was ~ INR 15000. A direct flight from Blore to Bali was in comparison around INR 24000. An aside: airport food is annoyingly expensive and not good at all. Strongly recommend &lt;em&gt;packing&lt;/em&gt; enough food to last you till your destination --- including layovers. &lt;/p&gt;
 &lt;p&gt;If you're travelling in Air Asia, beware! They're the stingiest aircraft I've ever flown in. They don't even offer water for free, even on international routes. Let alone food. Furthermore, &lt;strong&gt;check-in baggage is not free!&lt;/strong&gt; it cost me around 5000 Rupees extra for one piece of check-in luggage. Oh, yes. If you forget to call and pay for check-in baggage before hand, then the cost is &lt;em&gt;really&lt;/em&gt; exorbitant if you check-in at the airport counter.&lt;/p&gt;
@@ -63,19 +236,23 @@ The costs below are &lt;em&gt;excluding&lt;/em&gt; hotel bookings and flights.&l
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;The excrutiangly detailed breakup of costs is &lt;a href="https://docs.google.com/spreadsheets/d/1uVaI5bQ702zNCqu6tZL-GoIzKm4CGlxRkincuRJys5k/edit?usp=sharing"&gt;here&lt;/a&gt;&lt;/p&gt;</summary><category term="misc"></category></entry><entry><title>The affair between iostat and fio</title><link href="/the-affair-between-iostat-and-fio.html" rel="alternate"></link><updated>2016-06-02T16:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-06-02:the-affair-between-iostat-and-fio.html</id><summary type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
+&lt;p&gt;The excrutiangly detailed breakup of costs is &lt;a href="https://docs.google.com/spreadsheets/d/1uVaI5bQ702zNCqu6tZL-GoIzKm4CGlxRkincuRJys5k/edit?usp=sharing"&gt;here&lt;/a&gt;&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>The affair between iostat and fio</title><link href="/the-affair-between-iostat-and-fio.html" rel="alternate"></link><published>2016-06-02T16:20:00+00:00</published><updated>2016-06-02T16:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-06-02:/the-affair-between-iostat-and-fio.html</id><summary type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
 &lt;h3&gt;fio output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;io = bw*runt
-io = iops*runt*bs
-issued(r) = iops*runt
-io = ios*bs
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;io = bw*runt&lt;/span&gt;
+&lt;span class="err"&gt;io = iops*runt*bs&lt;/span&gt;
+&lt;span class="err"&gt;issued(r …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
+&lt;h3&gt;fio output&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;io = bw*runt&lt;/span&gt;
+&lt;span class="err"&gt;io = iops*runt*bs&lt;/span&gt;
+&lt;span class="err"&gt;issued(r) = iops*runt&lt;/span&gt;
+&lt;span class="err"&gt;io = ios*bs&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h3&gt;iostat output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb 
-Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
-vdb               0.00     0.00  179.00    0.00   716.00     0.00     8.00     1.00    5.59    5.59    0.00   5.58  99.80
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb &lt;/span&gt;
+&lt;span class="c"&gt;Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util&lt;/span&gt;
+&lt;span class="err"&gt;vdb               0.00     0.00  179.00    0.00   716.00     0.00     8.00     1.00    5.59    5.59    0.00   5.58  99.80&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -103,8 +280,8 @@ Looking at the &lt;code&gt;r/s&lt;/code&gt; graph, it is fairly simple. Until bs
 &lt;p&gt;The story with &lt;code&gt;bw&lt;/code&gt; is similar. Up until bs=7, the bw has exactly doubled, because fio was 100% CPU bottlenecked. Starting from bs=8, there is a component that cannot be increased (when bottleneck is hard-disk) and there is a component that can be doubled (when bottleneck is cpu and 1microsecond system call processing time). So the average increase is 1.64 times previous value&lt;/p&gt;
 &lt;h4&gt;Quantitative explanation&lt;/h4&gt;
 &lt;p&gt;Assume the following numbers:
-&lt;em&gt; Time to make one system call irrespective of block size = 1.1 microseconds
-&lt;/em&gt; RAM-to-RAM copy bandwidth 4.6 GBps (i.e., to copy from kernel space to user space)&lt;/p&gt;
+* Time to make one system call irrespective of block size = 1.1 microseconds
+* RAM-to-RAM copy bandwidth 4.6 GBps (i.e., to copy from kernel space to user space)&lt;/p&gt;
 &lt;p&gt;For bs=2^9, at the rate of 138 MBps disk read speed, the disk was busy for 3G/138MBps = 22.6 seconds. Number of fio io operations for the first 22.6 seconds= 3G/2^9 = 6291456.
 For the next 60 - 22.6 = 37.4 seconds, requests were served purely from copying data from page cache to user space (RAM-to-RAM copy). Time for each io operation = 1.1 microseconds + 2^9 / 4.8GBps = 1.2 microseconds. So in 37.4 seconds, number of fio operations = 37.4 / 1.2 microseconds = 31.16 million fio operations. So net io operations = 31.16 million + 6291456 = 37458122. 
 iops calculated over 60 seconds = 37458122/60 = 624302. This differs from actual value of 617759 by 1%.
@@ -139,7 +316,7 @@ The error rates are exactly the same as r/s which stresses that &lt;code&gt;rKB/
 &lt;p&gt;The iops graph is explained simply as &lt;code&gt;bw/bs&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;It is also easy to explain the graph from bs=20 onwards. Each fio block translates into bs/avrq-sq sequential disk read operations. For example, A fio block of size 2 MB results in 4 sequential reads (each of 1024 sectors = 0.5 MB). That explains the sudden increase in r/s after bs=19. 
 If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughput varying between 110-120MBps) with the formula &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;computed_read_s = (bs / (1024*512)) / (5.6*10**-3 + bs/(120*2**20) )
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;computed_read_s = (bs / (1024*512)) / (5.6*10**-3 + bs/(120*2**20) )&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -147,23 +324,32 @@ If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughp
 0.38%, 0.92%, -1.21%, -4.98%, -1.99%&lt;/p&gt;
 &lt;p&gt;As always, the &lt;code&gt;rKB/s&lt;/code&gt; is r/s*avgrq-sz&lt;/p&gt;
 &lt;p&gt;The iops and the bw graph is more interesting. Another thing that happened at bs=19 was that the page-cache was completely filled. (see the io column) This results in requests being served from RAM which explains the tremendous shootup in fio iops and fio bw&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;number of ios for reading the 3G file into memory = 3G/bs ------&amp;gt; (3)
-time to read it from hard disk = 3G/rKBps
-time for which requests were served from page-cache = 60-3G/rKBps   ----&amp;gt; (1)
-Time of a single page-cache io operation = 1.1 microseconds + bs / (4.8 GBps = ram  bandwidth) ----&amp;gt; (2)
-expected iops = ((3)+(1)/(2)) / 60
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;number of ios for reading the 3G file into memory = 3G/bs ------&amp;gt; (3)&lt;/span&gt;
+&lt;span class="err"&gt;time to read it from hard disk = 3G/rKBps&lt;/span&gt;
+&lt;span class="err"&gt;time for which requests were served from page-cache = 60-3G/rKBps   ----&amp;gt; (1)&lt;/span&gt;
+&lt;span class="err"&gt;Time of a single page-cache io operation = 1.1 microseconds + bs / (4.8 GBps = ram  bandwidth) ----&amp;gt; (2)&lt;/span&gt;
+&lt;span class="err"&gt;expected iops = ((3)+(1)/(2)) / 60&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;With the above formula, the errors of expected vs actual are 
 10.11%, 1.39%, 2.22%, 3.41%, 9.97%&lt;/p&gt;
 &lt;p&gt;The 10% variation is not unreasonable with the complicated L* cache hierarchies of modern processors&lt;/p&gt;
-&lt;p&gt;The bw graph is simply iops * bs&lt;/p&gt;</summary><category term="misc"></category></entry><entry><title>C IDE with vim, cscope and grep (ag)</title><link href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="alternate"></link><updated>2016-05-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-05-02:c-ide-with-vim-cscope-and-grep-ag.html</id><summary type="html">&lt;h1&gt;Setup Cscope&lt;/h1&gt;
+&lt;p&gt;The bw graph is simply iops * bs&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>C IDE with vim, cscope and grep (ag)</title><link href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="alternate"></link><published>2016-05-02T22:20:00+00:00</published><updated>2016-05-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-05-02:/c-ide-with-vim-cscope-and-grep-ag.html</id><summary type="html">&lt;h1&gt;Setup Cscope&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;First, Install cscope. &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Next, you need a &lt;code&gt;cscope.files&lt;/code&gt; with all the files that need to be indexed. In the source folder, you can do that with  &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;find `pwd` -name &amp;quot;*.c&amp;quot; -o -name &amp;quot;*.cc&amp;quot; -o -name &amp;quot;*.h&amp;quot; &amp;gt; cscope.files
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt; &lt;span class="ss"&gt;`pwd`&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.c&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.cc&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.h&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cscope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;files&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;the &lt;code&gt;pwd&lt;/code&gt; is needed instead of &lt;code&gt;.&lt;/code&gt; because you need …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h1&gt;Setup Cscope&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;First, Install cscope. &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Next, you need a &lt;code&gt;cscope.files&lt;/code&gt; with all the files that need to be indexed. In the source folder, you can do that with  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt; &lt;span class="ss"&gt;`pwd`&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.c&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.cc&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.h&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cscope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;files&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -171,7 +357,7 @@ expected iops = ((3)+(1)/(2)) / 60
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Now, build the cscope database.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;cscope -q -R -b -i cscope.files
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;cscope -q -R -b -i cscope.files&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -179,7 +365,7 @@ expected iops = ((3)+(1)/(2)) / 60
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Start up vim and issue the command&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;:cs add ~/code/ceph/cscope.out
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;:cs add ~/code/ceph/cscope.out&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -204,7 +390,10 @@ expected iops = ((3)+(1)/(2)) / 60
 &lt;li&gt;&lt;code&gt;[[&lt;/code&gt; moves to the previous curly brace on column 0 (1?) &lt;/li&gt;
 &lt;li&gt;&lt;code&gt;Ctrl-O&lt;/code&gt; and &lt;code&gt;Ctrl-I&lt;/code&gt; last location before jump&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;[{&lt;/code&gt; jump to begining of current block! (Or you can search backward for &lt;code&gt;{&lt;/code&gt;!&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="misc"></category></entry><entry><title>http and https proxy with squid</title><link href="/http-and-https-proxy-with-squid.html" rel="alternate"></link><updated>2016-03-02T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-03-02:http-and-https-proxy-with-squid.html</id><summary type="html">&lt;h3&gt;On the client machine&lt;/h3&gt;
+&lt;/ul&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>http and https proxy with squid</title><link href="/http-and-https-proxy-with-squid.html" rel="alternate"></link><published>2016-03-02T10:20:00+00:00</published><updated>2016-03-02T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-03-02:/http-and-https-proxy-with-squid.html</id><summary type="html">&lt;h3&gt;On the client machine&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Find out the client subnet of the form &lt;code&gt;10.34.44.0/22&lt;/code&gt;. To do that, on the client machine, run &lt;code&gt;/sbin/ifconfig&lt;/code&gt; to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR &lt;a href="http://www.subnet-calculator.com/cidr.php"&gt;here&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;export variables …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h3&gt;On the client machine&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;Find out the client subnet of the form &lt;code&gt;10.34.44.0/22&lt;/code&gt;. To do that, on the client machine, run &lt;code&gt;/sbin/ifconfig&lt;/code&gt; to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR &lt;a href="http://www.subnet-calculator.com/cidr.php"&gt;here&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;export variables: 
@@ -229,51 +418,57 @@ expected iops = ((3)+(1)/(2)) / 60
 &lt;p&gt;And thats it! &lt;code&gt;curl -L www.google.com&lt;/code&gt; (&lt;code&gt;-L&lt;/code&gt; to follow redirects) will work.&lt;/p&gt;
 &lt;p&gt;I needed this for &lt;code&gt;pip&lt;/code&gt;. With my setup, I can do &lt;code&gt;sudo export &amp;lt;blah&amp;gt;;export&amp;lt;blah&amp;gt;;pip install &amp;lt;package&amp;gt;&lt;/code&gt;. &lt;/p&gt;
 &lt;p&gt;FYI, my squid version is&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
-Package: squid
-Status: install ok installed
-Priority: optional
-Section: web
-Installed-Size: 1864
-Maintainer: Luigi Gangitano &amp;lt;luigi@debian.org&amp;gt;
-Architecture: amd64
-Version: 2.7.STABLE9-4.1+deb7u1
-Replaces: squid-novm
-Depends: libc6 (&amp;gt;= 2.7), libcomerr2 (&amp;gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&amp;gt;= 1.10+dfsg~), libkrb5-3 (&amp;gt;= 1.6.dfsg.2), libldap-2.4-2 (&amp;gt;= 2.4.7), libpam0g (&amp;gt;= 0.99.7.1), netbase, adduser, logrotate (&amp;gt;= 3.5.4-1), squid-common (&amp;gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&amp;gt;= 3.2-14), perl-modules
-Pre-Depends: debconf (&amp;gt;= 1.2.9) | debconf-2.0
-Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&amp;gt;= 0.40), smbclient, winbind
-Conflicts: sarg (&amp;lt;&amp;lt; 1.1.1-2), squid-novm
-Conffiles:
- /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe
- /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311
- /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e
-Description: Internet object cache (WWW proxy cache)
- This package provides the Squid Internet Object Cache developed by
- the National Laboratory for Applied Networking Research (NLANR) and
- Internet volunteers.
-Homepage: http://www.squid-cache.org/
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="regex"></category></entry><entry><title>Regex recipes</title><link href="/regex-recipes.html" rel="alternate"></link><updated>2016-02-21T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-02-21:regex-recipes.html</id><summary type="html">&lt;p&gt;I find myself always having to google around a lot for common regex recipes. Surprisingly, the most common cases cannot be easily found without extensive grokking.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid&lt;/span&gt;
+&lt;span class="c"&gt;Package: squid&lt;/span&gt;
+&lt;span class="c"&gt;Status: install ok installed&lt;/span&gt;
+&lt;span class="c"&gt;Priority: optional&lt;/span&gt;
+&lt;span class="c"&gt;Section: web&lt;/span&gt;
+&lt;span class="c"&gt;Installed-Size: 1864&lt;/span&gt;
+&lt;span class="c"&gt;Maintainer: Luigi Gangitano &amp;lt;luigi@debian.org&amp;gt;&lt;/span&gt;
+&lt;span class="c"&gt;Architecture: amd64&lt;/span&gt;
+&lt;span class="c"&gt;Version: 2.7.STABLE9-4.1+deb7u1&lt;/span&gt;
+&lt;span class="c"&gt;Replaces: squid-novm&lt;/span&gt;
+&lt;span class="c"&gt;Depends: libc6 (&amp;gt;= 2.7), libcomerr2 (&amp;gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&amp;gt;= 1.10+dfsg~), libkrb5-3 (&amp;gt;= 1.6.dfsg.2), libldap-2.4-2 (&amp;gt;= 2.4.7), libpam0g (&amp;gt;= 0.99.7.1), netbase, adduser, logrotate (&amp;gt;= 3.5.4-1), squid-common (&amp;gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&amp;gt;= 3.2-14), perl-modules&lt;/span&gt;
+&lt;span class="c"&gt;Pre-Depends: debconf (&amp;gt;= 1.2.9) | debconf-2.0&lt;/span&gt;
+&lt;span class="c"&gt;Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&amp;gt;= 0.40), smbclient, winbind&lt;/span&gt;
+&lt;span class="c"&gt;Conflicts: sarg (&amp;lt;&amp;lt; 1.1.1-2), squid-novm&lt;/span&gt;
+&lt;span class="c"&gt;Conffiles:&lt;/span&gt;
+&lt;span class="c"&gt; /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe&lt;/span&gt;
+&lt;span class="c"&gt; /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311&lt;/span&gt;
+&lt;span class="c"&gt; /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e&lt;/span&gt;
+&lt;span class="c"&gt;Description: Internet object cache (WWW proxy cache)&lt;/span&gt;
+&lt;span class="c"&gt; This package provides the Squid Internet Object Cache developed by&lt;/span&gt;
+&lt;span class="c"&gt; the National Laboratory for Applied Networking Research (NLANR) and&lt;/span&gt;
+&lt;span class="c"&gt; Internet volunteers.&lt;/span&gt;
+&lt;span class="c"&gt;Homepage: http://www.squid-cache.org/&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="regex"></category></entry><entry><title>Regex recipes</title><link href="/regex-recipes.html" rel="alternate"></link><published>2016-02-21T10:20:00+00:00</published><updated>2016-02-21T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-21:/regex-recipes.html</id><summary type="html">&lt;p&gt;I find myself always having to google around a lot for common regex recipes. Surprisingly, the most common cases cannot be easily found without extensive grokking.&lt;/p&gt;
+&lt;h3&gt;Python examples&lt;/h3&gt;
+&lt;h4&gt;Common special characters:&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;\d&lt;/code&gt;: only digit, &lt;/p&gt;
+&lt;h4&gt;Search and replace&lt;/h4&gt;
+&lt;p&gt;Search for occurences of a regex string and replace it with something that …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I find myself always having to google around a lot for common regex recipes. Surprisingly, the most common cases cannot be easily found without extensive grokking.&lt;/p&gt;
 &lt;h3&gt;Python examples&lt;/h3&gt;
 &lt;h4&gt;Common special characters:&lt;/h4&gt;
 &lt;p&gt;&lt;code&gt;\d&lt;/code&gt;: only digit, &lt;/p&gt;
 &lt;h4&gt;Search and replace&lt;/h4&gt;
 &lt;p&gt;Search for occurences of a regex string and replace it with something that depends on the actual value of the string.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
-&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;r&amp;quot;(blue|red)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;(blue|red)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;())),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blue socks and red shoes&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;output: &lt;code&gt;4 socks and 3 shoes&lt;/code&gt;&lt;/p&gt;
 &lt;h4&gt;Find all ip addresses in a text&lt;/h4&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;p = re.compile(r&amp;quot;\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}[^0-9]&amp;quot;)
-s = &amp;quot;Runbook:blah blah  IP:10.34.249.124 blah blah IP:10.33.157.166&amp;quot;
-print p.findall(s)
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="regex"></category></entry><entry><title>Setting up a ceph cluster</title><link href="/setting-up-a-ceph-cluster.html" rel="alternate"></link><updated>2016-02-07T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-02-07:setting-up-a-ceph-cluster.html</id><summary type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;p = re.compile(r&amp;quot;\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}[^0-9]&amp;quot;)&lt;/span&gt;
+&lt;span class="err"&gt;s = &amp;quot;Runbook:blah blah  IP:10.34.249.124 blah blah IP:10.33.157.166&amp;quot;&lt;/span&gt;
+&lt;span class="err"&gt;print p.findall(s)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="regex"></category></entry><entry><title>Setting up a ceph cluster</title><link href="/setting-up-a-ceph-cluster.html" rel="alternate"></link><published>2016-02-07T10:20:00+00:00</published><updated>2016-02-07T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-07:/setting-up-a-ceph-cluster.html</id><summary type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Furthermore, to launch a radosgw instance, you &lt;em&gt;need&lt;/em&gt; to have …&lt;/p&gt;</summary><content type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Furthermore, to launch a radosgw instance, you &lt;em&gt;need&lt;/em&gt; to have a section in your host file called &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and your  keyring should have a corresponding key section called  &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and you should have imported that key into ceph    via &lt;code&gt;sudo ceph auth import -i /etc/ceph/&amp;lt;keyring_file&amp;gt;&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;All the three names must match: the one in ceph.conf, in the keyring and in &lt;code&gt;ceph auth list&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Oh, and yeah, do &lt;strong&gt;NOT&lt;/strong&gt; put a line like this in your &lt;code&gt;ceph.conf&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;rgw &lt;span class="nv"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;rgw &lt;span class="nv"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -283,12 +478,12 @@ print p.findall(s)
 &lt;/blockquote&gt;
 &lt;p&gt;and you'll go crazy trying to debug it.&lt;/p&gt;
 &lt;p&gt;So the working &lt;code&gt;ceph.conf&lt;/code&gt; with comments is: &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;[&lt;/span&gt;global&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;global&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;span class="nv"&gt;fsid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; a7f64266-0894-4f1e-a635-d0aeaca0e993 &lt;span class="c1"&gt;#anything random, generated from uuidgen&lt;/span&gt;
 auth cluster &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
 auth service &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
 auth client &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
-osd journal &lt;span class="nv"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 1024
+osd journal &lt;span class="nv"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1024&lt;/span&gt;
 filestore xattr use &lt;span class="nv"&gt;omap&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;
 osd pool default &lt;span class="nv"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt; 
 osd pool default min &lt;span class="nv"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; 
@@ -297,21 +492,22 @@ osd pool default pgp &lt;span class="nv"&gt;num&lt;/span&gt; &lt;span class="o"&
 osd crush chooseleaf &lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; 
 &lt;span class="c1"&gt;# useful for debugging&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;mon&lt;span class="o"&gt;]&lt;/span&gt;
-  debug &lt;span class="nv"&gt;mon&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 20
+  debug &lt;span class="nv"&gt;mon&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;20&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;osd&lt;span class="o"&gt;]&lt;/span&gt;
-  debug &lt;span class="nv"&gt;osd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 20
+  debug &lt;span class="nv"&gt;osd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;20&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;rgw&lt;span class="o"&gt;]&lt;/span&gt;
-  debug &lt;span class="nv"&gt;rgw&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;20
+  debug &lt;span class="nv"&gt;rgw&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;20&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;mon.node1&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# as many sections as monitors&lt;/span&gt;
   &lt;span class="nv"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; dev-d42sharath1-mon-a-0001-389313 &lt;span class="c1"&gt;#This NEEDS to be the actual hostname donno for what reasons&lt;/span&gt;
-  mon &lt;span class="nv"&gt;addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 10.33.29.199 &lt;span class="c1"&gt;# needs to be the actual address.&lt;/span&gt;
+  mon &lt;span class="nv"&gt;addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;10&lt;/span&gt;.33.29.199 &lt;span class="c1"&gt;# needs to be the actual address.&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;client.rgw.foo&lt;span class="o"&gt;]&lt;/span&gt;
     &lt;span class="nv"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; dev-d42sharath1-rgw-a-0001-389309
     &lt;span class="nv"&gt;keyring&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /etc/ceph/ceph.client.rgw.keyring
     log &lt;span class="nv"&gt;file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /var/log/radosgw/client.radosgw.gateway.log
-    rgw &lt;span class="nv"&gt;frontends&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; civetweb &lt;span class="nv"&gt;port&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;80
+    rgw &lt;span class="nv"&gt;frontends&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; civetweb &lt;span class="nv"&gt;port&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;80&lt;/span&gt;
     rgw print &lt;span class="k"&gt;continue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="ceph"></category></entry><entry><title>I finally setup a blog</title><link href="/i-finally-setup-a-blog.html" rel="alternate"></link><updated>2016-02-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:,2016-02-02:i-finally-setup-a-blog.html</id><summary type="html">&lt;p&gt;&lt;strong&gt;I finally setup my own blog!&lt;/strong&gt; and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on &lt;a href="www.digitalocean.com"&gt;digital ocean&lt;/a&gt;. &lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="ceph"></category></entry><entry><title>I finally setup a blog</title><link href="/i-finally-setup-a-blog.html" rel="alternate"></link><published>2016-02-02T22:20:00+00:00</published><updated>2016-02-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-02:/i-finally-setup-a-blog.html</id><summary type="html">&lt;p&gt;&lt;strong&gt;I finally setup my own blog!&lt;/strong&gt; and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on &lt;a href="www.digitalocean.com"&gt;digital ocean&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;I finally setup my own blog!&lt;/strong&gt; and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on &lt;a href="www.digitalocean.com"&gt;digital ocean&lt;/a&gt;. &lt;/p&gt;
 &lt;p&gt;Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can ssh into and have   root access. It cost me ~Re 300 per month for their most basic droplet. I set it up with a static ipv4.&lt;/p&gt;
 &lt;p&gt;Since digitalocean has no DNS service, I bought a domain on &lt;a href="www.namecheap.com"&gt;namecheap&lt;/a&gt; for Re 500 per year and pointed it to the droplet. I   am hosting this as a static site powered by pelican. Using the built-in python server for now.  &lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;UPDATE (11th may 2016):&lt;/strong&gt; Paying monthly to digital ocean was getting to be a pain. So I have moved to github pages, which is just as simple.  &lt;/p&gt;</summary><category term="misc"></category></entry></feed>
+&lt;p&gt;&lt;strong&gt;UPDATE (11th may 2016):&lt;/strong&gt; Paying monthly to digital ocean was getting to be a pain. So I have moved to github pages, which is just as simple.  &lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry></feed>

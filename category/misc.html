@@ -43,6 +43,14 @@
         <div class="col-sm-12 blog-main">
 
           <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/the-quest-for-high-throughput-rpc.html" rel="bookmark" title="Permalink to The quest for high throughput RPC">The quest for high throughput RPC</a></h2>
+            <p class="blog-post-meta">Sat, 07 Jul 2018</p>
+		    <p>In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around <code>1000 req/sec</code>, whereas a prototype implementation of this technique gives around <code>4 million req/sec</code> for a “hello world” rpc …</p> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+
+          <div class="blog-post">
             <h2 class="blog-post-title"><a href="/notes-about-kafka-metrics.html" rel="bookmark" title="Permalink to Notes about kafka metrics">Notes about kafka metrics</a></h2>
             <p class="blog-post-meta">Tue, 23 Aug 2016</p>
 		    <h1>Notes about kafka metrics</h1>
@@ -57,67 +65,7 @@
             <p class="blog-post-meta">Thu, 23 Jun 2016</p>
 		    <p>I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.</p>
 <h3>Flight</h3>
-<p>If you're leaving from bangalore, then consider going first to kochi or chennai, and then going to Bali. It worked out cheaper for me. Flight from Blore to kochi was ~ INR 1000 and flight from kochi to Bali was ~ INR 15000. A direct flight from Blore to Bali was in comparison around INR 24000. An aside: airport food is annoyingly expensive and not good at all. Strongly recommend <em>packing</em> enough food to last you till your destination --- including layovers. </p>
-<p>If you're travelling in Air Asia, beware! They're the stingiest aircraft I've ever flown in. They don't even offer water for free, even on international routes. Let alone food. Furthermore, <strong>check-in baggage is not free!</strong> it cost me around 5000 Rupees extra for one piece of check-in luggage. Oh, yes. If you forget to call and pay for check-in baggage before hand, then the cost is <em>really</em> exorbitant if you check-in at the airport counter.</p>
-<h3>Visa requirements for indians</h3>
-<p>This was the best part about the Bali trip. <strong>Bali has FREE visa-on-arrival for indians!</strong> Furthermore, they asked almost NO documents. He simply took one look at my passport and stamped "visa approved for 6 months". Even the immigration wait line was non-existent. The whole immigration process took around 2 minutes. Very pleasant experience.</p>
-<h3>Currency conversion</h3>
-<p>Take USD to Bali, not INR. None of the banks I saw exchanged INR for IDR (Indonesian rupiah). On the other hand, literally every other street has 'money changing' shops which changes USD to IDR (And they are legit). I strongly recommend buying dollars. </p>
-<p>I also had my ICICI debit card that worked pretty seamlessly in Bali. I called up ICICI beforehand that I would be using it in Bali. The card was declined in a couple of shops but accepted at around 90% of the shops. I could also draw IDR from most ATMS. For transaction in shops, ICICI charges 3% + competitive currency conversion. For ATM cash withdrawal, ICICI charges INR 125 + 3% of money withdrawn. Most services in Bali don't accept cards. So whenever you can use the card, use it.</p>
-<p>Something that I did not do, but I should have is that I should have checked with ICICI what happens in the even I lose my debit card and am short of cash. </p>
-<h3>Getting around in Bali</h3>
-<p>Bali is a pretty small place. Most places are within an hour or two driving distance. Definitely get a rental motorbike in Bali. Its super convenient. They charge ~INR 300 per day of rental. Public transportation is almost non existant from what I saw. Although, legally, you need an international driving license to ride a motorbike, It is generally tolerated. Even when caught by the police, the fines are low. Around INR 500. I got caught by the police once: when I was driving on the
-wrong direction of a one way. I paid around INR 500 as fine and the police dusted my bike seat and showed me the direction to my destination and helped me along the way. You can see firangs (obviously not Balinese) zipping along in bikes all over Bali. </p>
-<h3>Bargain hard</h3>
-<p>Every service in Bali is overpriced, and it is expected that you bargain. Usually you can get a 35% - 50% reduction in the quoted price. Balinese are very friendly (and sympathetic) towards indians as compared to firangs and it is possible to strike better deals than what firangs can manage. So don't be shy to ask for a discount. </p>
-<h3>Names and the caste system in Bali.</h3>
-<p>There are only four first names in Bali: Ketut, komang, wayan, Made (pronounced Madi). The way it works is:
-Let <code>String[] A = {"Ketut", "komang", "wayan", "Made"}</code> be a string array where the index is 0-based. i.e., <code>A[0]</code> is <code>"ketut"</code>. Now if you're the <code>x</code> <sup>th</sup> eldest son (where the eldest son is <code>1</code>, and so on), then your first name is <code>A[(x-1)%4]</code>. The last name of course is different. Curiously though, people always tell their first name (one of the four said names) when you ask them their name. </p>
-<h3>Telephone SIM card and 3G</h3>
-<p>The very first thing you should do when you land is Bali is: you should get a local SIM card with a 3G data limit of ~2GB.</p>
-<p>3G Coverage in Bali is excellent and google maps is your friend in Bali. Oh yeah. <strong>Definitely carry a extra battery pack (or power pack) for your cell phone</strong>. Its a life saver. This was easily the most important thing I carried to Bali</p>
-<h3>Places to visit.</h3>
-<p>If this is your first time in Bali, then from an indian point of view, and depending on how long you're planning to visit, this is your order of priority for places to stay. </p>
-<h4>Seminyak</h4>
-<p>Total party area with nice beaches and shopping, also accessible to other places like Uluwatu temple in the south and Tanah lot in the north. (No trip to Bali is complete without a visit to these two). Catch the sunset in both places. Its breathtaking. I did explore three or four beaches but I didnt like most of them. For example, kuta beach doesnt have a lot of 'beach' area (The distances from where the waves end to where the roads begin). Sanur beach totally sucked. It has white sands but
-its gravelly and rocky. Very uncomfortable. Beti-balug beach in seminyak has nice sand but not so popular and seems a little ghetto. The only one I liked was double-six beach. Its got everything. Beach chairs, soft sand, lots of restaurants nearby and tons of activities. Perfect for spending an entire day.</p>
-<h4>Ubud</h4>
-<p>Best place to stay is right next to monkey forest. Very cultural place and worth exploring the 'non-beachy' side of Bali. From there you can explore other areas in and near ubud, like tagalalong rice terrace, tegunnen water falls etc.</p>
-<h4>Nusa Penida</h4>
-<p>Little off the main touristy spot (its a separate island). I never visited it but I wish I had. Its got lots of stuff to do according to <a href="https://indonesia.tripcanvas.co/bali/unique-places-in-bali/page/3/">this link</a></p>
-<h3>Voltage specs in Bali</h3>
-<p>Bali uses the same kind of round pins that we use in india. Not the flat rectangular pins from US. But one major problem: The socket is "hollow" <a href="https://www.tripadvisor.com/LocationPhotoDirectLink-g1465999-d1539040-i79297910-The_Wangsa_Private_Estate-Tanjung_Benoa_Nusa_Dua_Peninsula_Bali.html">like this</a>. So if your charger body is bulky, it won't fit inside the hollowness of the sockets. None of my chargers from india fit in the socket. Luckily every airbnb that I stayed had a Bali adapter
-or a Bali charger that allowed me to charge.</p>
-<h3>Cost of the trip.</h3>
-<p>This will of course vary a lot for person to person so your mileage may vary. The numbers are for two people for 8 days.
-The costs below are <em>excluding</em> hotel bookings and flights.</p>
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>Cost</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>transport</td>
-<td>Rs 10,200</td>
-</tr>
-<tr>
-<td>entertainment</td>
-<td>Rs 25,000</td>
-</tr>
-<tr>
-<td>food</td>
-<td>Rs 16,000</td>
-</tr>
-<tr>
-<td>shopping</td>
-<td>Rs 17,000</td>
-</tr>
-</tbody>
-</table>
-<p>The excrutiangly detailed breakup of costs is <a href="https://docs.google.com/spreadsheets/d/1uVaI5bQ702zNCqu6tZL-GoIzKm4CGlxRkincuRJys5k/edit?usp=sharing">here</a></p> 
+<p>If you're …</p> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>
@@ -127,100 +75,9 @@ The costs below are <em>excluding</em> hotel bookings and flights.</p>
             <p class="blog-post-meta">Thu, 02 Jun 2016</p>
 		    <p>In the following analysis, I'm going to assume you already know what <code>fio</code> and <code>iostat</code> is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers</p>
 <h3>fio output</h3>
-<div class="highlight"><pre>io = bw*runt
-io = iops*runt*bs
-issued(r) = iops*runt
-io = ios*bs
-</pre></div>
-
-
-<h3>iostat output</h3>
-<div class="highlight"><pre>[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb 
-Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
-vdb               0.00     0.00  179.00    0.00   716.00     0.00     8.00     1.00    5.59    5.59    0.00   5.58  99.80
-</pre></div>
-
-
-<h3>some inferences</h3>
-<p>From the line <code>read : io=78556KB, bw=670322 B/s, iops=163 , runt=120004msec</code> 
-we observe that <code>io = bw * runt</code>. Makes sense.</p>
-<h3>units</h3>
-<p><code>bs = bytes</code>, <code>io = KB</code> <code>bw=KBps</code>, <code>runt = ms</code> <code>r/s=number</code> <code>avrq-sz=sectors (=512 bytes)</code></p>
-<h3>libaio,read,sync=0,direct=0</h3>
-<ul>
-<li><code>bw = bs*iops</code></li>
-<li><code>io = bs*iops*(runt/1000) / 1024</code></li>
-<li><code>rKB/s = r/s * (avgrq-sz*512) / 1024</code></li>
-</ul>
-<p>Observe the <code>r/s</code>, <code>rKB/s</code> and <code>avrq-sz</code> graphs. Its very interesting. until block size of 4kb, the <code>iops</code> value remains constant at 175. After this size, the <code>avrq-sz</code> starts doubling (the file system minimum block size is 4kb but it can increase that block size upto 0.5 mb when we are trying to read bigger blocks). So after bs=4kb, iops drops because there is some time required to do sequential reads as well. It hits a low at 512kb because reading 512kb is eating into the time for making random reads. Now the <code>avrq-sz</code> maxes out. Now a single fio read requires more than one 'sequential low level reads' so <code>r/s</code> now increases steadily. Until the point of 16mb where each fio read equals 32 sequential reads at the block layer. This results in very high <code>r/s</code> and the corresponding <code>rKB/s</code> shows sequential-like bandwidths. So far so good! If you see the <code>bw</code> column, its doubling all the way from 1 byte to 512kb. Until 4kb block size this is caused by simply reading more from the 4k filesystem block that is already read anyway. From 4k to 512k, the doubling is caused due to the doubling of file system block size that is being read. You can see from 4k to 512k block size, the <code>bw</code> pretty much matches with <code>rKB/s</code>. But what the heck happened after 1MB block size?!?! <code>bw</code> has shot upto 1.3 GB/s, while rBK/s continues to be around 70MBps range. The linux page cache is causing this. If you see the <code>rKB/s</code> column, we are doing around 70MBps. We can read the entire 3GB file in <code>3000/70 = 42</code> seconds. For the rest 18 seconds, the requests are served through ram and the iops and bw shoots through the roof. Also observe that this is the first time that the file could be read entirely into the page cache. Because, for the previous run with <code>2^19</code> the value of rKB/s is around 50MBps. In 60 seconds, it just managed to (or missed to ) read <code>50*60sec = 3G</code> file. So we didnt observe cache effects for the previous run. After 2^20, the bw still keeps increasing, probably because we are filling up the page cache earlier in each run (due to increase in <code>rKB/s</code>) . Furthermore it seems like fio does a <code>drop-cache</code> to clear the cache before every run (which is good for us). Now observe the <code>iops</code> graph. After the spectacular shootup at 2^20, the iops keeps halving. This makes perfect sense because the requests are being served from ram. ram being truly random access, the bandwidth has to remain constant. So if you double the block size, the iops should halve. Sweet! </p>
-<p>Unexplained/TODO:
-I tried to explain the <code>r/s</code> graph in more quantitative terms. If my theory holds, then the V shape from 2^16 to 2^23 is caused by seek_time + sequential_throughput.
-i.e. to read a block of <code>x kb</code>, time taken should be <code>seek_time + sequential_throughput_sec_per_kb*x</code>
-Now you can actually calculate <code>seek_time</code> and <code>sequential_throughput</code> with the values at 2^17 and 2^18</p>
-<p>When you extrapolate it to other values, I get <code>2^19 = 85 r/s</code>, <code>2^20 = 107 r/s</code>, <code>2^21 = 123 r/s</code> and <code>2^22 is 133 r/s</code>. This doesnt quite match up with the observed values in the graph. Maybe some other cache is coming into effect here ?</p>
-<h3>sync,read,sync=0,direct=0</h3>
-<p>This is another interesting graph where we observe quite a different phenomenon. First, let's consider the <code>util</code> column. We observe that until bs=7, the disk is actually underutilized. This means that until bs=7, the entire goddamn process is bottlenecked on CPU. Indeed, when I checked % cpu utilization through top, the CPU was at humming at 100%. Looking at the iops graph, it is constant until bs=7. We conclude that 900K iops is the theoritical maximum that the linux kernel can perform. So 1.1 microseconds per system call. Useful number to remember! 
-Looking at the <code>r/s</code> graph, it is fairly simple. Until bs=7, values keeps doubling. Why? when we double the fio block size, iops being constant, the kernel can read data twice as fast and will thus issue disk reads twice as fast. After bs=8, the number of <code>r/s</code> have completely saturated. This is the time when the disk is 100% utilized and cpu/kernel/memory is no longer the bottleneck. The <code>rKB/s</code> is uninteresting since it is simply following <code>r/s</code> (because <code>avgrq-sz</code> is constant). But note that we get around 140 MBps for sequential throughput. </p>
-<p>Now lets tackle <code>iops</code>. We already explained the constant iops until bs=7. From bs=8, A couple of things are happening here. First note the <code>io</code> column. For bs=8, we have read 11GB of data, so in the middle of the 60 second run, the entire file was page-cached in memory and the rest of time was served purely from ram. So the reduction in iops is because for some fraction of the 60 second time, we are actually bottlenecked on hard disk. For subsequent values of bs, the fraction of time of hard-disk bottleneck remains constant (and hence the fraction of time cpu bottlenecked also remains constant) but in the cpu bottleneck phase, since the block size has doubled, iops will have to halve. Note that in the initial stages values after bs=7. i.e., for bs=8, 9, 10 the decrease in iops is less than half. This is because the system_call/kernel overhead is still the majority of time. As block size gets bigger, The time copying from kernel space to user space overwhelms the systemCall/kernel time, and we observe proper halving of iops (see iops values bs=15). This also explains why <code>bw</code> saturates after bs=15. It is caused because once kernel/systemCall time became negligible, the bandwidth is simply <code>iops*bs</code>. This remains true for all subsequent values of bs.</p>
-<p>The story with <code>bw</code> is similar. Up until bs=7, the bw has exactly doubled, because fio was 100% CPU bottlenecked. Starting from bs=8, there is a component that cannot be increased (when bottleneck is hard-disk) and there is a component that can be doubled (when bottleneck is cpu and 1microsecond system call processing time). So the average increase is 1.64 times previous value</p>
-<h4>Quantitative explanation</h4>
-<p>Assume the following numbers:
-<em> Time to make one system call irrespective of block size = 1.1 microseconds
-</em> RAM-to-RAM copy bandwidth 4.6 GBps (i.e., to copy from kernel space to user space)</p>
-<p>For bs=2^9, at the rate of 138 MBps disk read speed, the disk was busy for 3G/138MBps = 22.6 seconds. Number of fio io operations for the first 22.6 seconds= 3G/2^9 = 6291456.
-For the next 60 - 22.6 = 37.4 seconds, requests were served purely from copying data from page cache to user space (RAM-to-RAM copy). Time for each io operation = 1.1 microseconds + 2^9 / 4.8GBps = 1.2 microseconds. So in 37.4 seconds, number of fio operations = 37.4 / 1.2 microseconds = 31.16 million fio operations. So net io operations = 31.16 million + 6291456 = 37458122. 
-iops calculated over 60 seconds = 37458122/60 = 624302. This differs from actual value of 617759 by 1%.
-The actual percentages of error using this method (starting from bs=512) is 
-0.80, 3.64, 3.32, 9.78, 11.94, 13.33, 15.65, 15.38, 0.99, 10.13, 5.77, 3.85, 2.75, 3.17, 3.66, 12.44
-Even with 15% error, its not too shabby i guess, in the face of other complications such as page faults and TLB misses</p>
-<p>Unexplained:
-The <code>avgrq-sz</code> seems to be stuck at 512 sectors. Why? we saw in the case of <code>libaio,randread,sync=0,direct=0</code> that <code>avgrq-sz</code> went upto 1024 sectors. </p>
-<p>explain the <code>bw</code> from 2^16 onwards</p>
-<p>Quantitatively verify if the theories make sense. </p>
-<h3>sync,read,sync=1,direct=1</h3>
-<p>From bs=2^15 onwards, everything is straightforward. First, notice that iops follows r/s and bw follows rKB/s. This is expected for direct=1. So we can ignore those. 
-The total time for an read operation = 1.1 microseconds (system call) + bs / (hdd bw = 130 MBps) + bs / (RAM bw = 4.8 BGps)</p>
-<p>The RAM bw is due to copying from kernel space to user space. </p>
-<p>The error percentages from computing r/s vs the actual r/s is as follows:
- 5.72%, 5.19%, 6.72%, 5.22%, 5.25%, 5.68%, 6.52%, 8.25%, 11.86%, 19.85%</p>
-<h5>Unexplained</h5>
-<p>I am not able to explain what is going on for bs=2^{15, 16, 17}</p>
-<h3>sync,read,sync=0,direct={0,1}</h3>
-<p>This case is exactly the same as sync=1 because read operations are always sync=1. The sync=0 flag has no effect.</p>
-<h3>sync,randread,sync=0,direct=0</h3>
-<p>First, let us tackle the part of the graph until bs=2^19. Let's concentrate on r/s. In the beginning, the r/s is mainly influenced by the 5ms seek time for random read. This translates to ~170 reads per second. For later values of bs, starting from bs=2^15, the r/s starts dipping. What is happenning is that for bigger blocks, time taken to read a full block (at the rate of 130 MBps) starts dominating, which leads to a dip in r/s. </p>
-<p>Time taken for a read = 5ms (seek time) + bs / 110 MBps(hdd read throughput)</p>
-<p>The errors of computed vs actual r/s until bs=19 is as follows:
-0.48%, 2.19%, 2.77%, 3.96%, 1.61%, 2.19%, 1.03%, 2.17%, 2.15%, 2.11%, 2.03%, 0.72%, 2.12%, 2.65%, 0.79%, 4.34%, 3.28%, -1.75%, 3.80%, 0.98%
-As you can see, its remarkably accurate</p>
-<p>For rKB/s, the computed value is r/s * avgrq-sz
-When we measure the difference between computed rKB/s and actual rKB/s, we get:
-0.48%, 2.19%, 2.77%, 3.96%, 1.61%, 2.19%, 1.03%, 2.17%, 2.15%, 2.11%, 2.03%, 0.72%, 2.12%, 2.65%, 0.79%, 4.34%, 3.28%, -1.75%, 3.80%, 0.98%
-The error rates are exactly the same as r/s which stresses that <code>rKB/s</code> is a computed value rather than an independant value.</p>
-<p>For the bw graph. It is simply following <code>rKB/s</code> until bs=19</p>
-<p>The iops graph is explained simply as <code>bw/bs</code></p>
-<p>It is also easy to explain the graph from bs=20 onwards. Each fio block translates into bs/avrq-sq sequential disk read operations. For example, A fio block of size 2 MB results in 4 sequential reads (each of 1024 sectors = 0.5 MB). That explains the sudden increase in r/s after bs=19. 
-If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughput varying between 110-120MBps) with the formula </p>
-<div class="highlight"><pre>computed_read_s = (bs / (1024*512)) / (5.6*10**-3 + bs/(120*2**20) )
-</pre></div>
-
-
-<p>The errors against actual values are as follows:
-0.38%, 0.92%, -1.21%, -4.98%, -1.99%</p>
-<p>As always, the <code>rKB/s</code> is r/s*avgrq-sz</p>
-<p>The iops and the bw graph is more interesting. Another thing that happened at bs=19 was that the page-cache was completely filled. (see the io column) This results in requests being served from RAM which explains the tremendous shootup in fio iops and fio bw</p>
-<div class="highlight"><pre>number of ios for reading the 3G file into memory = 3G/bs ------&gt; (3)
-time to read it from hard disk = 3G/rKBps
-time for which requests were served from page-cache = 60-3G/rKBps   ----&gt; (1)
-Time of a single page-cache io operation = 1.1 microseconds + bs / (4.8 GBps = ram  bandwidth) ----&gt; (2)
-expected iops = ((3)+(1)/(2)) / 60
-</pre></div>
-
-
-<p>With the above formula, the errors of expected vs actual are 
-10.11%, 1.39%, 2.22%, 3.41%, 9.97%</p>
-<p>The 10% variation is not unreasonable with the complicated L* cache hierarchies of modern processors</p>
-<p>The bw graph is simply iops * bs</p> 
+<div class="highlight"><pre><span></span><span class="err">io = bw*runt</span>
+<span class="err">io = iops*runt*bs</span>
+<span class="err">issued(r …</span></pre></div> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>
@@ -233,48 +90,11 @@ expected iops = ((3)+(1)/(2)) / 60
 <li>First, Install cscope. </li>
 <li>
 <p>Next, you need a <code>cscope.files</code> with all the files that need to be indexed. In the source folder, you can do that with  </p>
-<div class="highlight"><pre>find `pwd` -name &quot;*.c&quot; -o -name &quot;*.cc&quot; -o -name &quot;*.h&quot; &gt; cscope.files
+<div class="highlight"><pre><span></span><span class="n">find</span> <span class="ss">`pwd`</span> <span class="o">-</span><span class="n">name</span> <span class="s2">&quot;*.c&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="o">-</span><span class="n">name</span> <span class="s2">&quot;*.cc&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="o">-</span><span class="n">name</span> <span class="s2">&quot;*.h&quot;</span> <span class="o">&gt;</span> <span class="n">cscope</span><span class="p">.</span><span class="n">files</span>
 </pre></div>
 
 
-<p>the <code>pwd</code> is needed instead of <code>.</code> because you need <code>find</code> to print absolute pathnames.</p>
-</li>
-<li>
-<p>Now, build the cscope database.</p>
-<div class="highlight"><pre>cscope -q -R -b -i cscope.files
-</pre></div>
-
-
-<p>This command will build <code>cscope.out</code>. <code>-q</code> to build an efficient database, <code>-b</code> to build just the database. </p>
-</li>
-<li>
-<p>Start up vim and issue the command</p>
-<div class="highlight"><pre>:cs add ~/code/ceph/cscope.out
-</pre></div>
-
-
-<p>which will add the cscope database. Vim has built in support for cscope in the form of the <code>:cs</code> command. But it does <em>not</em> have useful keybindings setup. For that, you need <code>cscopes_map.vim</code> (which I've sourced in the <code>.vimrc</code>). You're all set now. Some basic comands:</p>
-<ul>
-<li><code>C-\ s</code> to find a symbol </li>
-<li><code>C-\ c</code> to find all callers</li>
-<li><code>C-\ f</code> to find global definitions</li>
-<li><code>:help cscope</code> for more</li>
-</ul>
-</li>
-</ul>
-<h1>Setup ctags</h1>
-<ul>
-<li>Install ctags.</li>
-<li>cd to the source folder and build the ctags index with <code>ctags -R .</code> (<code>-R</code> is for recursive).</li>
-<li>In vim, you need to do <code>:set tags=/path/to/tags</code>. Unfortunately, you need to do this everytime you start vim. (how to avoid it?)</li>
-<li>use <code>C-]</code> to show a list of tags under the cursor. <code>C-o</code> or <code>C-t</code> to go back.</li>
-</ul>
-<h1>Some Vim shortcuts I would like to remember:</h1>
-<ul>
-<li><code>[[</code> moves to the previous curly brace on column 0 (1?) </li>
-<li><code>Ctrl-O</code> and <code>Ctrl-I</code> last location before jump</li>
-<li><code>[{</code> jump to begining of current block! (Or you can search backward for <code>{</code>!</li>
-</ul> 
+<p>the <code>pwd</code> is needed instead of <code>.</code> because you need …</p></li></ul> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>
@@ -285,52 +105,7 @@ expected iops = ((3)+(1)/(2)) / 60
 		    <h3>On the client machine</h3>
 <ul>
 <li>Find out the client subnet of the form <code>10.34.44.0/22</code>. To do that, on the client machine, run <code>/sbin/ifconfig</code> to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR <a href="http://www.subnet-calculator.com/cidr.php">here</a></li>
-<li>export variables: 
-  <code>export http_proxy=http://client.ip.ad.ress:port/
-  export https_proxy=http://client.ip.ad.ress:port/</code></li>
-</ul>
-<h3>Caveat</h3>
-<p>if you run sudo, make sure the variables are exported in root</p>
-<h3>On the proxy machine</h3>
-<ul>
-<li>Install squid: <code>sudo apt-get install squid</code>. </li>
-<li>
-<p>change /etc/squid/squid.conf to add these lines
-   <code>acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
-   http_access allow wormhole # wormhole is just a name
-   icp_access allow wormhole</code></p>
-</li>
-<li>
-<p>restart squid <code>sudo /etc/squid/squid.conf restart</code></p>
-</li>
-</ul>
-<p>And thats it! <code>curl -L www.google.com</code> (<code>-L</code> to follow redirects) will work.</p>
-<p>I needed this for <code>pip</code>. With my setup, I can do <code>sudo export &lt;blah&gt;;export&lt;blah&gt;;pip install &lt;package&gt;</code>. </p>
-<p>FYI, my squid version is</p>
-<div class="highlight"><pre>[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
-Package: squid
-Status: install ok installed
-Priority: optional
-Section: web
-Installed-Size: 1864
-Maintainer: Luigi Gangitano &lt;luigi@debian.org&gt;
-Architecture: amd64
-Version: 2.7.STABLE9-4.1+deb7u1
-Replaces: squid-novm
-Depends: libc6 (&gt;= 2.7), libcomerr2 (&gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&gt;= 1.10+dfsg~), libkrb5-3 (&gt;= 1.6.dfsg.2), libldap-2.4-2 (&gt;= 2.4.7), libpam0g (&gt;= 0.99.7.1), netbase, adduser, logrotate (&gt;= 3.5.4-1), squid-common (&gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&gt;= 3.2-14), perl-modules
-Pre-Depends: debconf (&gt;= 1.2.9) | debconf-2.0
-Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&gt;= 0.40), smbclient, winbind
-Conflicts: sarg (&lt;&lt; 1.1.1-2), squid-novm
-Conffiles:
- /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe
- /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311
- /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e
-Description: Internet object cache (WWW proxy cache)
- This package provides the Squid Internet Object Cache developed by
- the National Laboratory for Applied Networking Research (NLANR) and
- Internet volunteers.
-Homepage: http://www.squid-cache.org/
-</pre></div> 
+<li>export variables …</li></ul> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>
@@ -343,19 +118,7 @@ Homepage: http://www.squid-cache.org/
 <h4>Common special characters:</h4>
 <p><code>\d</code>: only digit, </p>
 <h4>Search and replace</h4>
-<p>Search for occurences of a regex string and replace it with something that depends on the actual value of the string.</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">re</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">r&quot;(blue|red)&quot;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())),</span> <span class="s2">&quot;blue socks and red shoes&quot;</span><span class="p">)</span>
-</pre></div>
-
-
-<p>output: <code>4 socks and 3 shoes</code></p>
-<h4>Find all ip addresses in a text</h4>
-<div class="highlight"><pre>p = re.compile(r&quot;\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}[^0-9]&quot;)
-s = &quot;Runbook:blah blah  IP:10.34.249.124 blah blah IP:10.33.157.166&quot;
-print p.findall(s)
-</pre></div> 
+<p>Search for occurences of a regex string and replace it with something that …</p> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>
@@ -364,48 +127,7 @@ print p.findall(s)
             <h2 class="blog-post-title"><a href="/setting-up-a-ceph-cluster.html" rel="bookmark" title="Permalink to Setting up a ceph cluster">Setting up a ceph cluster</a></h2>
             <p class="blog-post-meta">Sun, 07 Feb 2016</p>
 		    <p>The instructions <a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/">here</a> mostly work. Except that the <code>ceph.conf</code> file  given there doesnt work. Because, when I issue <code>sudo /etc/init.d/ceph start mon.node1</code> in the end, It expects a section in <code>ceph.   conf</code> called <code>[mon.node1]</code></p>
-<p>Furthermore, to launch a radosgw instance, you <em>need</em> to have a section in your host file called <code>client.rgw.&lt;some_name&gt;</code> and your  keyring should have a corresponding key section called  <code>client.rgw.&lt;some_name&gt;</code> and you should have imported that key into ceph    via <code>sudo ceph auth import -i /etc/ceph/&lt;keyring_file&gt;</code>.</p>
-<p><strong>All the three names must match: the one in ceph.conf, in the keyring and in <code>ceph auth list</code></strong></p>
-<p>Oh, and yeah, do <strong>NOT</strong> put a line like this in your <code>ceph.conf</code>:</p>
-<div class="highlight"><pre>rgw <span class="nv">data</span> <span class="o">=</span> /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
-</pre></div>
-
-
-<p>If you do, you'l get weird messages like </p>
-<blockquote>
-<p>Couldn't init storage provider (RADOS)</p>
-</blockquote>
-<p>and you'll go crazy trying to debug it.</p>
-<p>So the working <code>ceph.conf</code> with comments is: </p>
-<div class="highlight"><pre><span class="o">[</span>global<span class="o">]</span>
-<span class="nv">fsid</span> <span class="o">=</span> a7f64266-0894-4f1e-a635-d0aeaca0e993 <span class="c1">#anything random, generated from uuidgen</span>
-auth cluster <span class="nv">required</span> <span class="o">=</span> cephx
-auth service <span class="nv">required</span> <span class="o">=</span> cephx
-auth client <span class="nv">required</span> <span class="o">=</span> cephx
-osd journal <span class="nv">size</span> <span class="o">=</span> 1024
-filestore xattr use <span class="nv">omap</span> <span class="o">=</span> <span class="nb">true</span>
-osd pool default <span class="nv">size</span> <span class="o">=</span> <span class="m">2</span> 
-osd pool default min <span class="nv">size</span> <span class="o">=</span> <span class="m">1</span> 
-osd pool default pg <span class="nv">num</span> <span class="o">=</span> <span class="m">333</span> 
-osd pool default pgp <span class="nv">num</span> <span class="o">=</span> <span class="m">333</span> 
-osd crush chooseleaf <span class="nb">type</span> <span class="o">=</span> <span class="m">1</span> 
-<span class="c1"># useful for debugging</span>
-<span class="o">[</span>mon<span class="o">]</span>
-  debug <span class="nv">mon</span> <span class="o">=</span> 20
-<span class="o">[</span>osd<span class="o">]</span>
-  debug <span class="nv">osd</span> <span class="o">=</span> 20
-<span class="o">[</span>rgw<span class="o">]</span>
-  debug <span class="nv">rgw</span><span class="o">=</span>20
-<span class="o">[</span>mon.node1<span class="o">]</span> <span class="c1"># as many sections as monitors</span>
-  <span class="nv">host</span> <span class="o">=</span> dev-d42sharath1-mon-a-0001-389313 <span class="c1">#This NEEDS to be the actual hostname donno for what reasons</span>
-  mon <span class="nv">addr</span> <span class="o">=</span> 10.33.29.199 <span class="c1"># needs to be the actual address.</span>
-<span class="o">[</span>client.rgw.foo<span class="o">]</span>
-    <span class="nv">host</span> <span class="o">=</span> dev-d42sharath1-rgw-a-0001-389309
-    <span class="nv">keyring</span> <span class="o">=</span> /etc/ceph/ceph.client.rgw.keyring
-    log <span class="nv">file</span> <span class="o">=</span> /var/log/radosgw/client.radosgw.gateway.log
-    rgw <span class="nv">frontends</span> <span class="o">=</span> civetweb <span class="nv">port</span><span class="o">=</span>80
-    rgw print <span class="k">continue</span> <span class="o">=</span> <span class="nb">false</span>
-</pre></div> 
+<p>Furthermore, to launch a radosgw instance, you <em>need</em> to have …</p> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>
@@ -414,9 +136,7 @@ osd crush chooseleaf <span class="nb">type</span> <span class="o">=</span> <span
             <h2 class="blog-post-title"><a href="/i-finally-setup-a-blog.html" rel="bookmark" title="Permalink to I finally setup a blog">I finally setup a blog</a></h2>
             <p class="blog-post-meta">Tue, 02 Feb 2016</p>
 		    <p><strong>I finally setup my own blog!</strong> and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on <a href="www.digitalocean.com">digital ocean</a>. </p>
-<p>Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can ssh into and have   root access. It cost me ~Re 300 per month for their most basic droplet. I set it up with a static ipv4.</p>
-<p>Since digitalocean has no DNS service, I bought a domain on <a href="www.namecheap.com">namecheap</a> for Re 500 per year and pointed it to the droplet. I   am hosting this as a static site powered by pelican. Using the built-in python server for now.  </p>
-<p><strong>UPDATE (11th may 2016):</strong> Paying monthly to digital ocean was getting to be a pain. So I have moved to github pages, which is just as simple.  </p> 
+<p>Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can …</p> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>

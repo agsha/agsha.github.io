@@ -14,7 +14,7 @@
 
 
     <!-- Custom styles for this template -->
-    <link href="/theme/blog.css" rel="stylesheet">
+    <link href="theme/blog.css" rel="stylesheet">
 
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -29,9 +29,9 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item active" href="/">Latest articles</a>
-          <a class="blog-nav-item" href="/archives.html">Archive</a>
-          <a class="blog-nav-item" href="/pages/about.html">About</a>
+          <a class="blog-nav-item active" href="#">Latest articles</a>
+          <a class="blog-nav-item" href="#">Archive</a>
+          <a class="blog-nav-item" href="#">About</a>
         </nav>
       </div>
     </div>
@@ -47,17 +47,17 @@
             <p class="blog-post-meta">Thu, 02 Jun 2016</p>
 		    <p>In the following analysis, I'm going to assume you already know what <code>fio</code> and <code>iostat</code> is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers</p>
 <h3>fio output</h3>
-<div class="highlight"><pre>io = bw*runt
-io = iops*runt*bs
-issued(r) = iops*runt
-io = ios*bs
+<div class="highlight"><pre><span></span><span class="err">io = bw*runt</span>
+<span class="err">io = iops*runt*bs</span>
+<span class="err">issued(r) = iops*runt</span>
+<span class="err">io = ios*bs</span>
 </pre></div>
 
 
 <h3>iostat output</h3>
-<div class="highlight"><pre>[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb 
-Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
-vdb               0.00     0.00  179.00    0.00   716.00     0.00     8.00     1.00    5.59    5.59    0.00   5.58  99.80
+<div class="highlight"><pre><span></span><span class="err">[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb </span>
+<span class="c">Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util</span>
+<span class="err">vdb               0.00     0.00  179.00    0.00   716.00     0.00     8.00     1.00    5.59    5.59    0.00   5.58  99.80</span>
 </pre></div>
 
 
@@ -85,8 +85,8 @@ Looking at the <code>r/s</code> graph, it is fairly simple. Until bs=7, values k
 <p>The story with <code>bw</code> is similar. Up until bs=7, the bw has exactly doubled, because fio was 100% CPU bottlenecked. Starting from bs=8, there is a component that cannot be increased (when bottleneck is hard-disk) and there is a component that can be doubled (when bottleneck is cpu and 1microsecond system call processing time). So the average increase is 1.64 times previous value</p>
 <h4>Quantitative explanation</h4>
 <p>Assume the following numbers:
-<em> Time to make one system call irrespective of block size = 1.1 microseconds
-</em> RAM-to-RAM copy bandwidth 4.6 GBps (i.e., to copy from kernel space to user space)</p>
+* Time to make one system call irrespective of block size = 1.1 microseconds
+* RAM-to-RAM copy bandwidth 4.6 GBps (i.e., to copy from kernel space to user space)</p>
 <p>For bs=2^9, at the rate of 138 MBps disk read speed, the disk was busy for 3G/138MBps = 22.6 seconds. Number of fio io operations for the first 22.6 seconds= 3G/2^9 = 6291456.
 For the next 60 - 22.6 = 37.4 seconds, requests were served purely from copying data from page cache to user space (RAM-to-RAM copy). Time for each io operation = 1.1 microseconds + 2^9 / 4.8GBps = 1.2 microseconds. So in 37.4 seconds, number of fio operations = 37.4 / 1.2 microseconds = 31.16 million fio operations. So net io operations = 31.16 million + 6291456 = 37458122. 
 iops calculated over 60 seconds = 37458122/60 = 624302. This differs from actual value of 617759 by 1%.
@@ -121,7 +121,7 @@ The error rates are exactly the same as r/s which stresses that <code>rKB/s</cod
 <p>The iops graph is explained simply as <code>bw/bs</code></p>
 <p>It is also easy to explain the graph from bs=20 onwards. Each fio block translates into bs/avrq-sq sequential disk read operations. For example, A fio block of size 2 MB results in 4 sequential reads (each of 1024 sectors = 0.5 MB). That explains the sudden increase in r/s after bs=19. 
 If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughput varying between 110-120MBps) with the formula </p>
-<div class="highlight"><pre>computed_read_s = (bs / (1024*512)) / (5.6*10**-3 + bs/(120*2**20) )
+<div class="highlight"><pre><span></span><span class="err">computed_read_s = (bs / (1024*512)) / (5.6*10**-3 + bs/(120*2**20) )</span>
 </pre></div>
 
 
@@ -129,11 +129,11 @@ If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughp
 0.38%, 0.92%, -1.21%, -4.98%, -1.99%</p>
 <p>As always, the <code>rKB/s</code> is r/s*avgrq-sz</p>
 <p>The iops and the bw graph is more interesting. Another thing that happened at bs=19 was that the page-cache was completely filled. (see the io column) This results in requests being served from RAM which explains the tremendous shootup in fio iops and fio bw</p>
-<div class="highlight"><pre>number of ios for reading the 3G file into memory = 3G/bs ------&gt; (3)
-time to read it from hard disk = 3G/rKBps
-time for which requests were served from page-cache = 60-3G/rKBps   ----&gt; (1)
-Time of a single page-cache io operation = 1.1 microseconds + bs / (4.8 GBps = ram  bandwidth) ----&gt; (2)
-expected iops = ((3)+(1)/(2)) / 60
+<div class="highlight"><pre><span></span><span class="err">number of ios for reading the 3G file into memory = 3G/bs ------&gt; (3)</span>
+<span class="err">time to read it from hard disk = 3G/rKBps</span>
+<span class="err">time for which requests were served from page-cache = 60-3G/rKBps   ----&gt; (1)</span>
+<span class="err">Time of a single page-cache io operation = 1.1 microseconds + bs / (4.8 GBps = ram  bandwidth) ----&gt; (2)</span>
+<span class="err">expected iops = ((3)+(1)/(2)) / 60</span>
 </pre></div>
 
 

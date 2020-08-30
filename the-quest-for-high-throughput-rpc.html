@@ -1,0 +1,272 @@
+<!-- same as index.html, except that only one article is shown -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Sharath's core dump</title>
+
+
+    <!-- Custom styles for this template -->
+    <link href="theme/blog.css" rel="stylesheet">
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item active" href="#">Latest articles</a>
+          <a class="blog-nav-item" href="#">Archive</a>
+          <a class="blog-nav-item" href="#">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-12 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/the-quest-for-high-throughput-rpc.html" rel="bookmark" title="Permalink to The quest for high throughput RPC">The quest for high throughput RPC</a></h2>
+            <p class="blog-post-meta">Sat, 07 Jul 2018</p>
+		    <p>In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around <code>1000 req/sec</code>, whereas a prototype implementation of this technique gives around <code>4 million req/sec</code> for a “hello world” rpc</p>
+<p>Lots of companies these days use a microservices architecture, where the application as a whole is split into multiple smaller microservices communicating over the network. What follows in the post is heavy on numbers, which admittedly is boring to parse and makes it a little dry. A nanosec, microsec and a millisec might all just seem like a really small amount of time for humans but the distance between them is vast. If we were to blow up the numbers to human scale and make a nanosec as a second, then it would take one nanosec to pick up a pen next to your laptop, one microsec is a 20 min bike ride, and 1 millisec is a bike ride from bangalore to indore!</p>
+<p>For the time being, I’m going to consider two communicating processes on localhost so we don’t have to worry about network transmission latency for now
+Our goal is to exchange 100 byte messages as fast as we can between two processes with a cap on (say 95% percentile) latency (say, <code>&lt;5 ms</code>)</p>
+<h2>Dropwizard and web services</h2>
+<p>If we hook up a simple dropwizard app with a “hello world” GET api and hit it with apache bench (ab) on localhost laptop with a single connection, I get around <code>1000 req/sec</code></p>
+<p>If I pump up the number of concurrent connections, I get around <code>7000 req/s</code> with around 100 connections (I hit ulimit after that on mac).</p>
+<p>How good or bad is that?</p>
+<p>For an absolute theoretical limit, we can compare it to the rate at which CPUs can read and write streaming data to/from memory. From my measurements, each core can stream data from RAM at around 1GB/sec.
+so 1GBps means 10 million req/s with 100 byte messages. When compared to the 800 req/s for a single connection, this is disappointing indeed.</p>
+<p>Of course, dropwizard does a lot more than simply stream data to/from memory. It has to parse http, send the packet down on the tcp stack and do the whole thing back on the rx side.</p>
+<p>So how much time does it take for a packet to traverse the tcp stack? I’ve measured that it takes around ~25 microseconds ballpark to go down or come up the tcp stack. This is also in agreement with some online benchmarks. If we take this into account, it should take around 1/(50 usec) or ~2000 req/sec per core (pair). Compared to this, 800 req/s seems to be a bit too slow, even with the added http parsing.</p>
+<p>With multiple cores and a large number of connections, I was able to crank up dropwizard to around 20K req/sec, but it requires many 100’s of connections to parallelize the processing. But keeping in mind the 10 million req/sec, this is still disappointing</p>
+<p>The problem with using jetty/dropwizard for RPC is that, fundamentally, the architectures these web servers are tuned for entirely different things. Web servers are meant to operate on the internet, where a server can hold many tens of thousands of browser connections, with each browser connection being mostly idle and bursty for a short while. This does not map well to a Data Center environment where a server is talking to only about a dozen other services, and the connections are long lived and required to be very high throughput.</p>
+<p>I believe this is causing a systemic performance problem in software companies. For example, we are all aware that disk and database access is orders of magnitude slower than cpu/network. Why then do we put ~20 dropwizard boxes in front of a mysql DB? Shouldn’t it be the other way round? 1 (or a few for redundancy) dropwizard box fronting multiple sharded mysql instances? This webserver problem leads to a vicious cycle: Each client needs to also employ multiple boxes just to generate the paralellism and connections to load a server.</p>
+<p>The summary so far:</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>throughput</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dropwizard single connection</td>
+<td>1000 req/s</td>
+</tr>
+<tr>
+<td>dropwizard 100 connections</td>
+<td>7000 req/s</td>
+</tr>
+<tr>
+<td>TCP packet round trip</td>
+<td>20k req/s (ballpark)</td>
+</tr>
+<tr>
+<td>CPU streaming from RAM</td>
+<td>10M req/s</td>
+</tr>
+</tbody>
+</table>
+<h2>Unix domain sockets</h2>
+<p>Anyway, to continue with our quest for high throughput, lets skip web servers altogether.</p>
+<p>With Unix domain sockets (which works only on localhost), we can bypass the entire tcp stack and take a much shorter route through the kernel. With UDS and a netty server (the default implementation in specter), we have measured around 10K req/s on a single core. Compare this to 800 req/s for dropwizard and 20K req/s if we were to traverse the TCP stack). With all cores (~10 cores), I measured around 40K req/s. This is much better than web servers. But still slow, considering
+* we’re skipping the entire tcp stack
+* the 1GBps CPU-memory bandwidth</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>throughput</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UDS single connection</td>
+<td>10K req/s</td>
+</tr>
+<tr>
+<td>UDS multiple connections</td>
+<td>40K req/s</td>
+</tr>
+</tbody>
+</table>
+<h2>Grpc and HTTP2</h2>
+<p>Another fundamental problem with all the previous frameworks are that they operate in inherently thread-request-response modes. i.e., the client thread sends a request and waits for a response. We would be able to achieve much better results if we operate in streaming mode, where the client is streaming multiple requests and the server is streaming back multiple responses. For this, we use HTTP2. It has two big advantages, the wire format is binary (not textual like HTTP) and it supports request streaming/pipelining</p>
+<p>gRPC is a RPC mechanism using HTTP2. I haven’t explicitly measured the performance but according to the available online bencharks, they are able to do around 300K req/sec across two different machines, (which I assume will fall to ~150K) with both client and server on localhost.</p>
+<p>Newer versions of jetty also support HTTP2. I tested out with a barebones embedded HTTP2 jetty server and I was able to get ~40K req/sec which is comparable to the UDS performance. Although less than gRPC, This is impressive considering that jetty has to parse HTTP as well as traverse the tcp stack, which UDS avoids. (Also remember that UDS is operating in request-response mode, not streaming mode)</p>
+<h2>Raw sockets</h2>
+<p>All this begs the question: what is the fundamental limit for streaming data across a TCP connection? I threw up a small experiment with raw sockets in java on localhost and to my surprise, I was able to get the full 1GBps even with the tcp stack. Then where are we going wrong? why aren’t we able to achieve this with existing frameworks and even with http2?
+When I was running the TCP streaming test, I realized that the key to high throughput is batching. The cost of traversing the tcp stack is roughly the same whether we send 1 byte or 1kB or 1MB. This is very apparent in the tests. With small messages, the throughput is approx 10K req/s. As we double the message size, the throughput keeps doubling, until it reaches 1GBps. So it makes sense to introduce a small “linger” time to combine multiple messages and send it across at once. How big is “big” for TCP networks? From the tests, I found that ~ 10Kb payload size is able to saturate the network (and memory) line rates</p>
+<p>None of the RPC frameworks that I know of employ this technique. Actually, Kafka producer employs batching but suffers from other architectural issues which prevents it from achieving full line rate (More on that in a future post). In fact, the trend is in the opposite direction, to reduce message latencies further and send across a message as soon as possible. For example, Aeron claims to reduce latency from 50 microsec to 30 microsec by using UDP. The latency improvement might be super important in finance but presents only a very marginal improvements in throughput.</p>
+<h2>The new and shiny</h2>
+<p>I wrote a client and a server which uses this batching technique over raw sockets. I batch small messages together until they reach a size of 20KB (or a timeout expires) and send big batches (~20kb) over tcp. The results were quite astounding. I was able to reach 3 million req/sec with 100 byte messages and only a single tcp connection and a single core (pair).</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>throughput</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gRPC</td>
+<td>150K req/s (haven't tested)</td>
+</tr>
+<tr>
+<td>Jetty HTTP2 server with async client and req pipelining</td>
+<td>40K req/s</td>
+</tr>
+<tr>
+<td>Aeron</td>
+<td>30K req/s</td>
+</tr>
+</tbody>
+</table>
+<p>The code has almost no micro-optimizations (like object cache, zero copy, connection pools, etc) but it demostrates the effectiveness of this architecture.I am a little blown away by how much the throughput increasing with a simple technique. The best news is that the throughput remains virtually unaffected even over a 10Gbps network
+If you’re interested in checking out the code and trying it out on localhost or in our DC, here is the link.
+https://github.com/agsha/sharpc</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>throughput</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span style="color:red">New Batching RPC single TCP connection</span></td>
+<td>3M req/s (haven't tested)</td>
+</tr>
+</tbody>
+</table>
+<h2>Summary</h2>
+<ul>
+<li>Dropwizard/jetty has a well understood and rock solid programming model, but leaves a lot to be desired with respect to max throughput achievable.</li>
+<li>Enabling HTTP2 is quite trivial for Jetty and can be expected to fetch ~30–50% increase in throughput</li>
+<li>Maybe its time to consider a “true” RPC subsystem in software companies: like grpc or thrift</li>
+<li>A batching algorithm can increase throughput by orders of magnitude compared to even high performance frameworks like grpc
+and here’s a cat of all the previous tables</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>throughput</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dropwizard single connection</td>
+<td>1000 req/s</td>
+</tr>
+<tr>
+<td>dropwizard 100 connections</td>
+<td>7000 req/s</td>
+</tr>
+<tr>
+<td>TCP packet round trip</td>
+<td>20k req/s (ballpark)</td>
+</tr>
+<tr>
+<td>CPU streaming from RAM</td>
+<td>10M req/s</td>
+</tr>
+<tr>
+<td>UDS single connection</td>
+<td>10K req/s</td>
+</tr>
+<tr>
+<td>UDS multiple connections</td>
+<td>40K req/s</td>
+</tr>
+<tr>
+<td>gRPC</td>
+<td>150K req/s (haven't tested)</td>
+</tr>
+<tr>
+<td>Jetty HTTP2 server with async client and req pipelining</td>
+<td>40K req/s</td>
+</tr>
+<tr>
+<td>Aeron</td>
+<td>30K req/s</td>
+</tr>
+<tr>
+<td><span style="color:red">New Batching RPC single TCP connection</span></td>
+<td>3M req/s (haven't tested)</td>
+</tr>
+</tbody>
+</table> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+        </div><!-- /.blog-main -->
+
+      </div><!-- /.row -->
+
+		  <div id="disqus_thread"></div>
+		  <script>
+			  /**
+			  * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+			  * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+			  */
+			  /*
+			  var disqus_config = function () {
+				  this.page.url = the-quest-for-high-throughput-rpc.html; // Replace PAGE_URL with your page's canonical URL variable
+				  this.page.identifier = the-quest-for-high-throughput-rpc; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+			  };
+			  */
+			  (function() { // DON'T EDIT BELOW THIS LINE
+				  var d = document, s = d.createElement('script');
+
+				  s.src = '//agsha.disqus.com/embed.js';
+
+				  s.setAttribute('data-timestamp', +new Date());
+				  (d.head || d.body).appendChild(s);
+			  })();
+		  </script>
+		  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  </body>
+</html>
