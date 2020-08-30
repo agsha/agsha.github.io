@@ -1,5 +1,456 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog - Sharath Gururaj</title><link href="/" rel="alternate"></link><link href="/feeds/sharath-gururaj.atom.xml" rel="self"></link><id>/</id><updated>2018-07-07T00:30:00+00:00</updated><entry><title>The quest for high throughput RPC</title><link href="/the-quest-for-high-throughput-rpc.html" rel="alternate"></link><published>2018-07-07T00:30:00+00:00</published><updated>2018-07-07T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2018-07-07:/the-quest-for-high-throughput-rpc.html</id><summary type="html">&lt;p&gt;In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around &lt;code&gt;1000 req/sec&lt;/code&gt;, whereas a prototype implementation of this technique gives around &lt;code&gt;4 million req/sec&lt;/code&gt; for a “hello world” rpc …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around &lt;code&gt;1000 req/sec&lt;/code&gt;, whereas a prototype implementation of this technique gives around &lt;code&gt;4 million req/sec&lt;/code&gt; for a “hello world” rpc&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog - Sharath Gururaj</title><link href="/" rel="alternate"></link><link href="/feeds/sharath-gururaj.atom.xml" rel="self"></link><id>/</id><updated>2020-08-31T12:22:00+00:00</updated><entry><title>Cookbook</title><link href="/cookbook.html" rel="alternate"></link><published>2020-08-31T12:22:00+00:00</published><updated>2020-08-31T12:22:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2020-08-31:/cookbook.html</id><summary type="html">&lt;p&gt;This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its own. Hopefully, you'll find the table of contexts helpful to navigate.
+(the links are not working yet :( )&lt;/p&gt;
+&lt;h1&gt;Table of contents&lt;/h1&gt;
+&lt;!-- toc --&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#julia-arrays"&gt;Julia arrays&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#anaconda-dont-start-at-shell"&gt;Anaconda dont start at shell&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#how-to-mount-samba-folder-in-ubuntu"&gt;How to mount samba folder in ubuntu&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#how-to-use-du-to-search-for-hidden-folders"&gt;How to use du to search for hidden folders&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#sublime-text-keyboard-shortcuts"&gt;Sublime text keyboard shortcuts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#making-nomachine-nx-work-on-amazon-aws-ec2"&gt;Making Nomachine nx work on amazon aws ec2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#remote-desktop-to-raspberry-pi"&gt;Remote desktop to raspberry pi&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#echo-server-with-netcat"&gt;Echo server with netcat&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#mounting-a-disk-on-gcp"&gt;Mounting a disk on GCP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#describe-type-of-command"&gt;Describe type of command&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#linux-networking"&gt;Linux Networking&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#postgres"&gt;Postgres&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#intellij-shortcuts"&gt;Intellij Shortcuts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#bash-shortcuts"&gt;Bash shortcuts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#how-to-setup-a-new-linux-machine"&gt;How to setup a new linux machine&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#python-regex-recipes"&gt;Python regex recipes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#vim-one-liners-and-shortcuts"&gt;Vim one liners and shortcuts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#cscope-for-linux"&gt;Cscope for linux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#cscope-for-ceph"&gt;Cscope for ceph&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#building-linux"&gt;Building linux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#using-ftrace-to-trace-linux-functions"&gt;Using Ftrace to trace linux functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#how-to-build-linux-on-one-machine-and-deploy-on-another"&gt;How to build linux on one machine and deploy on another&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#jemalloc"&gt;JeMalloc&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#objdump"&gt;Objdump&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#installing-latest-version-of-cmake"&gt;Installing latest version of cmake&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#getting-honest-profiler-to-work"&gt;Getting honest profiler to work&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#gcc-important-options"&gt;GCC important options&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#when-creating-a-shared-library"&gt;When creating a shared library:&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#eli-bendersky-static-linking-summary"&gt;Eli bendersky static linking summary&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#eli-bendersky-load-time-linking-summary"&gt;Eli bendersky load time linking summary&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#eli-bendersky-x32-pic-linking-summary"&gt;Eli bendersky x32 PIC linking summary&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#linux-interrupt-handling"&gt;Linux Interrupt Handling&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#hdfs-proxy-user-setting"&gt;HDFS proxy user setting&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- tocstop --&gt;
+
+&lt;h1&gt;&lt;a name="julia-arrays"&gt;Julia Arrays&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;tabs or spaces: concat to the right&lt;/li&gt;
+&lt;li&gt;semicolon or newline: concat to the bottom &lt;/li&gt;
+&lt;li&gt;one dimensional arrays are considered as column vectors for concatenation purposes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Anaconda dont start at shell&lt;/h1&gt;
+&lt;p&gt;If you'd prefer that conda's base environment not be activated on startup, &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;conda config --set auto_activate_base &lt;span class="nb"&gt;false&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;How to mount samba folder in ubuntu&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo mount -t cifs -o &lt;span class="nv"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;sharath //192.168.29.28/HOMEPI /mnt/pi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;How to use du to search for hidden folders&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;du -schx .&lt;span class="o"&gt;[&lt;/span&gt;!.&lt;span class="o"&gt;]&lt;/span&gt;* *
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To exclude other mount points use &lt;code&gt;--exclude&lt;/code&gt;&lt;/p&gt;
+&lt;h1&gt;Sublime text keyboard shortcuts&lt;/h1&gt;
+&lt;p&gt;Open any file &lt;code&gt;ctrl-p&lt;/code&gt;
+Open any command &lt;code&gt;ctrl-shift-p&lt;/code&gt;
+Close tab: mac &lt;code&gt;cmd+w&lt;/code&gt;
+Linux &lt;code&gt;ctrl-shift-w&lt;/code&gt;
+Jump back &lt;code&gt;alt -&lt;/code&gt; 
+forward &lt;code&gt;alt +&lt;/code&gt; &lt;/p&gt;
+&lt;h1&gt;Making Nomachine nx work on amazon aws ec2&lt;/h1&gt;
+&lt;p&gt;First, download the nx package from nomachine and &lt;code&gt;dpkg -i&lt;/code&gt; the package
+The software is installed in &lt;code&gt;/usr/NX&lt;/code&gt;
+We have to first disable password login and only use certificate login. To do this, edit the file &lt;code&gt;vim /usr/NX/etc/server.config&lt;/code&gt; and add this line. After this, restart the nx server &lt;code&gt;/usr/NX/bin/nxserver --restart&lt;/code&gt;
+Verify that password login does not work
+For resolution, the key idea is that there should be no x server running already on the machine. If there is no x server, then nx will create its own, and by default try to match the client resolution, which is what we want. Unfortunately, when we install gnome desktop, it automatically changes the systemd runlevel to graphical.target which means systemd will spawn gdm and an xserver /usr/lib/xorg/Xorg (hope you dont get into wayland and shit). So we have to change the default systemd target to shell mode, which can be done by sudo systemctl set-default multi-user.target
+To change the current target without restarting, you can do sudo systemctl set-default multi-user.target 
+And thats it, nx should automatically try to match client resolution if client is running in full screen mode!&lt;/p&gt;
+&lt;p&gt;Sometimes, you will see a black screen when you login, to solve this&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service gdm stop
+/usr/NX/bin/nxserver --restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Remote desktop to raspberry pi&lt;/h1&gt;
+&lt;p&gt;We will use real vnc. From terminal, ssh to raspberry pi. On the pi run
+&lt;code&gt;vncserver -geometry 1920x1080&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;From the client, run vncviewer from real vnc and login. You have to do this every time you want to login&lt;/p&gt;
+&lt;h1&gt;Echo server with netcat&lt;/h1&gt;
+&lt;p&gt;Server
+&lt;code&gt;ncat -e /bin/cat -k  -l 8888 &amp;lt;ip&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Client 
+&lt;code&gt;telnet ip 8888&lt;/code&gt;&lt;/p&gt;
+&lt;h1&gt;Mounting a disk on GCP&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo lsblk
+sudo mkdir -p /mnt/disks/sdb
+sudo cp /etc/fstab /etc/fstab.backup
+sudo blkid /dev/sdb
+In /etc/fstb
+&lt;span class="nv"&gt;UUID&lt;/span&gt;&lt;span class="o"&gt;=[&lt;/span&gt;UUID_VALUE&lt;span class="o"&gt;]&lt;/span&gt; /mnt/disks/&lt;span class="o"&gt;[&lt;/span&gt;MNT_DIR&lt;span class="o"&gt;]&lt;/span&gt; ext4 discard,defaults,nofail &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;
+Sudo mount -a 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Describe type of command&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;type ls&lt;/code&gt;&lt;/p&gt;
+&lt;h1&gt;Linux Networking&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Netfilter&lt;/strong&gt;: linux component which has various hooks for network packet manipulation
+The netfilter hooks are exposed through various  userspace programs: notably &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Iptables&lt;/strong&gt; : which is the userspace interface to linux firewall, (firewall here simply means configuring netfilter according to some rules), nat mangling etc &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Subnetting/CIDR&lt;/strong&gt; : CIDR splits 32 bit ipv4 addresses into two parts: left part is network part. Right part is host part. This act is called subnetting. &lt;code&gt;0.0.0.0/24&lt;/code&gt; Here 24 means, the network part (left part) is 24 bits. The host part (right part is 32-24 = 8) bits. Usually in large companies different networks are indeed different networks. I.e., we need routing between two subnets. With a single (sub)network, there is no need for routing (works like lan)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Network interfaces&lt;/strong&gt;: on the linux level, they are network devices, with a device driver. They get a packet trhough hard_start_xmit() and they can do whatever they want with it. See this for a good example&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Bridge&lt;/strong&gt;: when referring to a hardware device it is a connector at L2. i.e., it learns mac addresses and forwards packets from one network to another switch is also essentially the same thing&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Linux software bridge device&lt;/strong&gt;:  is a software network_interface which acts like a bridge between two other network interfaces&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Postgres&lt;/h1&gt;
+&lt;p&gt;To create a data directory, first &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir -p /path/to/data
+chown postgres  /path/to/data
+Sudo -u postgres /usr/lib/postgresql/11/bin/Initdb -D /path/to/data
+vim /etc/postgresql/11/main/postgresql.conf &lt;span class="c1"&gt;#and modify the data_dir&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To make postgres listen to remote connections in the same file:
+&lt;code&gt;listen_addresses = '*'&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;vim /etc/postgresql/11/main/pg_hba.conf&lt;/code&gt;
+Add this line (probably give stronger restrictions)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;host    all             all             0.0.0.0/0            md5
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Restart postgres. There are several ways. One of these should work:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="n"&gt;Sudo&lt;/span&gt; &lt;span class="n"&gt;service&lt;/span&gt; &lt;span class="n"&gt;postgresql&lt;/span&gt; &lt;span class="n"&gt;restart&lt;/span&gt;
+&lt;span class="n"&gt;Or&lt;/span&gt; 
+    &lt;span class="n"&gt;pg_ctlcluster&lt;/span&gt; &lt;span class="mi"&gt;12&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
+&lt;span class="n"&gt;Or&lt;/span&gt; 
+&lt;span class="n"&gt;pg_ctl&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgres&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
+&lt;span class="n"&gt;Or&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;pg_ctl&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt; &lt;span class="n"&gt;logfile&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
+&lt;span class="n"&gt;Or&lt;/span&gt;
+   &lt;span class="n"&gt;sudo&lt;/span&gt; &lt;span class="n"&gt;systemctl&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="mi"&gt;@10&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create users by first logging in &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo -u postgres psql
+create user sharath with encrypted password &lt;span class="s1"&gt;&amp;#39;foo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+ALTER USER sharath WITH SUPERUSER&lt;span class="p"&gt;;&lt;/span&gt;
+create database sharath&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;#To enable the logs in /etc/postgresql/11/main/postgresql.conf&lt;/span&gt;
+&lt;span class="nv"&gt;log_destination&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;csvlog&amp;#39;&lt;/span&gt;
+&lt;span class="nv"&gt;logging_collector&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; on
+&lt;span class="nv"&gt;log_rotation_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 0d
+&lt;span class="nv"&gt;log_statement&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;all&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To view the logs
+&lt;code&gt;sudo grep SQLEditor /var/lib/postgresql/12/main/log/* |grep -v pg_catalog | grep -v SHOW | grep -v current_schema&lt;/code&gt;&lt;/p&gt;
+&lt;h1&gt;Intellij Shortcuts&lt;/h1&gt;
+&lt;p&gt;Ctrl+shift+enter to complete statement after code completion. Its pretty magical. 
+Alt+j to select all instances
+Tab after ctrl-space overwrites rather than insert
+Ctrl+alt-l to reformat whole file or selections
+Ctrl+shift+i to see the definition (code) for the method
+F2 to go to next highlighted error
+F4 go to definition
+Ctrl-f12 to see the file structure
+Ctrl+shift+numpad- collapse all&lt;/p&gt;
+&lt;h1&gt;Bash shortcuts&lt;/h1&gt;
+&lt;p&gt;Alt-B back one word
+Alt-f forward one word
+Ctrl-w delete back one word
+alt-D delete till end of word
+Ctrl-U delete to start of line
+Ctrl-k delete to end of line&lt;/p&gt;
+&lt;h1&gt;How to setup a new linux machine&lt;/h1&gt;
+&lt;p&gt;First, login as root. Here nm&amp;gt; means new machine and local&amp;gt; means laptop&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nm&amp;gt; 
+adduser -u &lt;span class="m"&gt;1001&lt;/span&gt; sharath&lt;span class="p"&gt;;&lt;/span&gt;
+usermod -aG sudo sharath
+su - sharath
+ssh-keygen -t rsa -N &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt; -f ~/.ssh/id_rsa
+&amp;lt;create a new key&amp;gt;
+&amp;lt;copy your localhost id_rsa.pub into clipboard&amp;gt;
+vim /home/sharath/.ssh/authorized_keys 
+&amp;lt;paste your id_rsa.pub and &lt;span class="nb"&gt;exit&lt;/span&gt; vim&amp;gt;
+chmod &lt;span class="m"&gt;644&lt;/span&gt; /home/sharath/.ssh/authorized_keys
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sharath ALL=(ALL) NOPASSWD: ALL&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /etc/sudoers.d/sharath
+sudo chmod &lt;span class="m"&gt;0440&lt;/span&gt; /etc/sudoers.d/sharath
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;IMPROVED (scriptable)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;First, copy your public key to tmp on nm, like so
+scp ~/.ssh/id_rsa.pub root@&amp;lt;new_ip&amp;gt;:/tmp/ak 
+
+Login to the new box as root and &lt;span class="k"&gt;do&lt;/span&gt; the following
+adduser --disabled-password --gecos ‘’ sharath
+usermod -aG sudo sharath
+su - sharath
+ssh-keygen -t rsa -N &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt; -f ~/.ssh/id_rsa
+&lt;span class="nb"&gt;exit&lt;/span&gt;
+cp /tmp/ak /home/sharath/.ssh/authorized_keys
+chmod &lt;span class="m"&gt;644&lt;/span&gt; /home/sharath/.ssh/authorized_keys
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sharath ALL=(ALL) NOPASSWD: ALL&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /etc/sudoers.d/sharath
+sudo chmod &lt;span class="m"&gt;0440&lt;/span&gt; /etc/sudoers.d/sharath
+rm /tmp/ak
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Bob should be your uncle&lt;/p&gt;
+&lt;h1&gt;Python regex recipes&lt;/h1&gt;
+&lt;p&gt;\s whitespace
+\S non whitespace
+\d only digits
+\D non digits
+\w alphanumeric [a-zA-Z0-9_]
+\W non-alphanumeric
+\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3} ip regex&lt;/p&gt;
+&lt;p&gt;groups enclose in (), numbered from x.group(1)
+named groups like this (?P&amp;lt;name) access with x.group("name")&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;regexStr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;finditer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;(blue|red)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;())),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blue socks and red shoes&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;prints &lt;code&gt;4 socks and 3 shoes&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;validate a regex on https://regex101.com/&lt;/p&gt;
+&lt;h1&gt;Vim one liners and shortcuts&lt;/h1&gt;
+&lt;p&gt;gd will go to local definition
+gD will go to global definition 
+,c&lt;space&gt; toggle comment
+&lt;ctrl&gt;]  goes to a tag
+&lt;ctrl&gt;o (“old” comes back from a jump)
+&lt;ctrl&gt; i (opposite of &lt;ctrl&gt;o
+Split window ctrl-w v or o
+Scroll up/down, keeping your cursor in its row
+One line
+Ctrl+Y → Move viewport down
+Ctrl+E → Move viewport up (Extra lines)
+Column select &lt;ctrl&gt;v 
+Go to beginning of function (go to { in first column: needs coding convention) [[ 
+End of function ]]
+Beginning of code block: [{ this one should work better with messed up coding convention&lt;/p&gt;
+&lt;h1&gt;Cscope for linux&lt;/h1&gt;
+&lt;p&gt;To apply debian patches use &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;LNX&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/sharath/os/linux/linux-5.4.0
+quilt push -a 
+find  &lt;span class="nv"&gt;$LNX&lt;/span&gt;  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/arch/*&amp;quot;&lt;/span&gt; ! -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/arch/x86*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/include/asm-*&amp;quot;&lt;/span&gt; ! -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/include/asm-i386*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/tmp*&amp;quot;&lt;/span&gt; -prune  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/Documentation*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/scripts*&amp;quot;&lt;/span&gt; -prune -o    -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/drivers*&amp;quot;&lt;/span&gt; -prune -o   -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/.pc/*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/debian/*&amp;quot;&lt;/span&gt; -prune -o   -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/sound/*&amp;quot;&lt;/span&gt; -prune -o    -name &lt;span class="s2"&gt;&amp;quot;*.[chxsS]&amp;quot;&lt;/span&gt; -print &amp;gt; kernel.cscope
+
+cscope -q -R -b -i cscope.files
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In vim&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;:cs f g &amp;lt;foo&amp;gt; goto definition of foo
+:cs f s &amp;lt;foo&amp;gt; find this symbol
+:cs f t &amp;lt;foo&amp;gt; find this string
+&amp;lt;ctrl&amp;gt;\ s on a word, find this symbol and so on
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Cscope for ceph&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;find /mnt/disks/sdb/ceph-pristine -type f -and &lt;span class="se"&gt;\(&lt;/span&gt; -name &lt;span class="s2"&gt;&amp;quot;*.c&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.h&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.cc&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.cpp&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.hh&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\)&lt;/span&gt; &amp;gt; zoo.cscope
+cscope -q -R -b -i zoo.cscope 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Building linux&lt;/h1&gt;
+&lt;p&gt;You can get the linux source from 
+&lt;code&gt;apt-get source linux-image-unsigned-$(uname -r)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;You can get the config file from 
+&lt;code&gt;cp /boot/config-5.4.0-26-generic .config&lt;/code&gt;
+To install dependencies&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
+sudo apt-get build-dep linux linux-image-&lt;span class="k"&gt;$(&lt;/span&gt;uname -r&lt;span class="k"&gt;)&lt;/span&gt;
+
+make &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86 &lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS -j14 &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make -j14 &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86 &lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS install &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make -j14 &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86 &lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS modules_install&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;------------------------- DONE --------------------------------&amp;quot;&lt;/span&gt;
+rm /boot/initrd.img-3.16.43-SS
+update-initramfs -c -k &lt;span class="m"&gt;3&lt;/span&gt;.16.43-SS
+update-grub
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Using Ftrace to trace linux functions&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee  /sys/kernel/debug/tracing/tracing_on
+And &lt;span class="k"&gt;then&lt;/span&gt; use brendan greggs perf-tools
+sudo ./funcgraph -D  ext4_readpages &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /mnt/tmpfs/write
+sudo ./funcgraph -Dp &lt;span class="m"&gt;51985&lt;/span&gt;  ext4_readpages &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /mnt/tmpfs/write
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;How to build linux on one machine and deploy on another&lt;/h1&gt;
+&lt;p&gt;Use “building linux” to build linux on one machine A. Suppose you want to install it on machine B
+On machine B&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Mkdir -p ~/kernel/boot
+Mkdir -p ~/kernel/modules
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On machine A&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar -cvzf ~/modules /lib/modules/3.16.43-SS
+scp -r *SS* &amp;lt;B&amp;gt;:~/kernel/boot
+scp ~/modules &amp;lt;B&amp;gt;:~/kernel/modules/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On machine B:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Cd ~/kernel/modules
+tar -xvzf modules
+sudo mv ~/kernel/modules/3.16.43-SS /lib/modules/
+sudo cp ~/kernel/boot/* /boot/
+sudo rm /boot/initrd.img-3.16.43-SS
+sudo update-initramfs -c -k &lt;span class="m"&gt;3&lt;/span&gt;.16.43-SS
+sudo update-grub
+
+
+&lt;span class="c1"&gt;#And… reboot!&lt;/span&gt;
+Sudo reboot now
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;JeMalloc&lt;/h1&gt;
+&lt;p&gt;Do a git clone.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./autogen.sh 
+./configure --enable-prof --enable-stats --enable-debug
+Make
+
+
+&lt;span class="o"&gt;[&lt;/span&gt;sharath.g@osboxes /home/sharath.g/code/jemalloc&lt;span class="o"&gt;]&lt;/span&gt;$ tree lib 
+lib
+├── libjemalloc.a
+├── libjemalloc_pic.a
+├── libjemalloc.so -&amp;gt; libjemalloc.so.2
+└── libjemalloc.so.2
+
+&lt;span class="c1"&gt;#To generate the profile:&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;reverse-i-search&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;java&lt;span class="s1"&gt;&amp;#39;: rm jeprof*; rm /tmp/prof.gif; MALLOC_CONF=prof:true,lg_prof_sample:0,lg_prof_interval:25 LD_PRELOAD=${JEMALLOC_PATH}/lib/libjemalloc.so.2 java -Xmx1096m -cp  &amp;#39;&lt;/span&gt;/home/sharath.g/diskbench/:/home/sharath.g/diskbench/*&lt;span class="err"&gt;&amp;#39;&lt;/span&gt; sha.Memory&lt;span class="p"&gt;;&lt;/span&gt; ls jeprof*&lt;span class="p"&gt;;&lt;/span&gt; ~/code/jemalloc/bin/jeprof --show_bytes --gif &lt;span class="sb"&gt;`&lt;/span&gt;which java&lt;span class="sb"&gt;`&lt;/span&gt; jeprof*.heap &amp;gt; /tmp/prof.gif 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you’ve compiled jemalloc on some other machine and copied it to this machine, youget teh error Can't exec "objdump": No such file or directory at /home/sharath.g/jemalloc/bin/jeprof line 4459.
+Then objdump is 
+Jemalloc what is active, dirty (unused), resident, total memory, allocated, mapped?
+Allocated = sum of all malloc arguments that has not been freed 
+Active .. multiple of page size.. Total bytes in pages that have at least one byte of allocated memory
+Resident: active + metadata 
+Mapped: multiple of chunk size. Total chunks that have one byte of allocated 
+See that man pages for a clear explanation.&lt;/p&gt;
+&lt;h1&gt;Objdump&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;objdump -drSt hello.o
+-d dissasemble
+-r show relocation info inline
+-S show C &lt;span class="nb"&gt;source&lt;/span&gt; code
+-t show symbol table
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Installing latest version of cmake&lt;/h1&gt;
+&lt;p&gt;Either apt-get install cmake or get it from here
+https://cmake.org/download/
+https://cmake.org/files/v3.8/cmake-3.8.0-rc4-Linux-x86_64.sh and run it&lt;/p&gt;
+&lt;h1&gt;Getting honest profiler to work&lt;/h1&gt;
+&lt;p&gt;Installing it: 
+If you’re lucky, you can download it and it works http://insightfullogic.com/honest-profiler.zip&lt;/p&gt;
+&lt;p&gt;Otherwise you need to build it. To build it, if you get weird errors, you might need to get latest version of Cmake, and then build it. You need build/libagent.so&lt;/p&gt;
+&lt;p&gt;Start the java program with     &lt;br&gt;
+&lt;code&gt;-agentpath:$HONEST_PROFILER_HOME/liblagent.so=host=localhost,port=4242,logPath=/grid/1/log/hadoop-yarn/yarn/honest-profiler.hpl&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Start and stop profiling with &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; start &lt;span class="p"&gt;|&lt;/span&gt; nc localhost &lt;span class="m"&gt;4242&lt;/span&gt;
+ &lt;span class="nb"&gt;echo&lt;/span&gt; stop &lt;span class="p"&gt;|&lt;/span&gt; nc localhost &lt;span class="m"&gt;4242&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Collapse the stacks with &lt;code&gt;java -cp $HONEST_PROFILER_HOME/honest-profiler.jar com.insightfullogic.honest_profiler.ports.console.FlameGraphDumperApplication netty.hpl netty.cstk&lt;/code&gt;&lt;/p&gt;
+&lt;h1&gt;GCC important options&lt;/h1&gt;
+&lt;p&gt;The linker &lt;code&gt;ld&lt;/code&gt; takes as input .c files, .o files, .so files and can output an executable or a shared library.
+The linker does not output static library. You can simply use ar for it&lt;/p&gt;
+&lt;p&gt;Gcc important options
+-l mylib 
+Look for a library called libmylib.{a, so}
+But if both are present, will it choose .a or .so (it chooses .so) if you want to link an .a file, specify it directly on the command line. Or specify -static so it will choose .a even for libc &lt;/p&gt;
+&lt;p&gt;Which directories to look in ?
+-L dir is the answer&lt;/p&gt;
+&lt;p&gt;-i dir is for searching include files 
+-include file
+Is as if file was #included in source code in the first line. &lt;/p&gt;
+&lt;p&gt;So basically &lt;code&gt;-L dir -l mylib -I dir -include files&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;When creating an executable:
+You cannot link a shared library statically by giving it on the command line (to create an executable) even if you give on command line, it still links it as  a shared library (as if you had given -L. -lxxx)
+Or you cannot link a static library in a shared way by using -L and -l options (to create an executable)(you can but it will be taken as static, even if the static library is named libxx.so) &lt;/p&gt;
+&lt;p&gt;Static libraries can be linked (statically) by specifying them as input files to gcc. Remember: static libraries are just a bunch of .o files 
+You cannot skip specifying a shared library while linking to create an executable (although, technically they are not needed)  all variables must be resolved, which means that all shared libraries have to be specified (strictly not required, i guess its a sanity check) this has the effect of  listing in the executable as a dependency     &lt;/p&gt;
+&lt;p&gt;For &lt;code&gt;LD_PRELOAD&lt;/code&gt; to work, you have to specify -Wl,-soname,libml.so while having created that shared library this name is hardcoded into the so as its name, and this is the name that the linker looks at while loading the executable, not the file name of the .so&lt;/p&gt;
+&lt;h1&gt;When creating a shared library:&lt;/h1&gt;
+&lt;p&gt;All object files must be compiled with -fpic
+All ar files must have .o files which have been compiled with -fpic
+If you specify multiple .so on command line, they will be combined into 1 .so as expected, with references resolved internally 
+If a dependency is unmet (by not specifying some libraries at all) it is defined as undefined but linking succeeds
+If a dependency is met by -L. -lxxx then it is undefined in the .so but that lib is listed as a dependency&lt;/p&gt;
+&lt;h1&gt;Eli bendersky static linking summary&lt;/h1&gt;
+&lt;p&gt;Static linking algorithm perfectly explained in http://eli.thegreenplace.net/2013/07/09/library-order-in-static-linking
+Some important points
+* An object file both exports and imports symbols 
+* individual object files specified on cmd line are always linked
+* static libraries (ar) libraries serve only to provide a list of object files, and an object file in a library is linked only if it satisfies some current unmet dependency &lt;/p&gt;
+&lt;h1&gt;Eli bendersky load time linking summary&lt;/h1&gt;
+&lt;p&gt;Summary of load time linking as specified in http://eli.thegreenplace.net/2011/08/25/load-time-relocation-of-shared-libraries&lt;/p&gt;
+&lt;p&gt;Some gotchas: 
+* Call operands are rip relative, but mov operands are absolute. In x86_64, there is a new addressing called RIP relative where any operand can be RIP relative.
+* If a shared variable in a .so is referenced from the main executable, then that shared variable will go into the main executable, since the main executable is not relocatable. 
+* what about a shared function in a .so referenced from main executable? The article does not mention it, but i imagine the functionality is similar. I.e. put the address of the function in the main program during load time and then call it.&lt;/p&gt;
+&lt;p&gt;Basically the address where a shared library is loaded is unknown
+The static linker generates .so as if the shared library is loaded at 0x0 (logical)
+The linker tells the offset of each variable in the file. 
+The loader will add this offset to the load address to get the real address
+The linker also populates a list where the real address has to be patched into the code. 
+The loader will then patch the addresses in
+Thats it.&lt;/p&gt;
+&lt;h1&gt;Eli bendersky x32 PIC linking summary&lt;/h1&gt;
+&lt;p&gt;http://eli.thegreenplace.net/2011/11/03/position-independent-code-pic-in-shared-libraries&lt;/p&gt;
+&lt;p&gt;Instead of direct patching in the code, the real addresses of shared variables are stored in a GOT table in the data section. 
+For mov operands, x32 does not support rip relative addresses, so there is a hack to get current rip address, then add the offset of the got table, and thus get the address of the variable&lt;/p&gt;
+&lt;p&gt;For call instructions, they are still using the hack but call supports rip relative addressing. So not sure what is happening,&lt;/p&gt;
+&lt;h1&gt;Linux Interrupt Handling&lt;/h1&gt;
+&lt;p&gt;Peripheral devices pass interrupt to the interrupt controller (8259) which then passes it to processor on a given interrupt line.
+An Interrupt line can be shared by multiple devices. To detect which device raised the interrupt, the linux interrupt handler iterates through all registered handlers on that line which then checks if that device raised the interrupt.
+When an interrupt is raised, the processor disables all interrupts (on the local processor). 
+The linux handler reenables interrupts (unless a flag was set while registering the handler) but disables the interrupt line (so none of the devices sharing can raise another interrupt) and calls the handler. For this reason, an interrupt handler need not be re-entrant. 
+An interrupt handler cannot sleep/block because there is no “process” to sleep or block. (theoretically, the process can be considered to be the process that was interrupted but seems like a design decision to not let interrupt handlers sleep or not associate interrupt handlers with a process.&lt;/p&gt;
+&lt;h1&gt;HDFS proxy user setting&lt;/h1&gt;
+&lt;p&gt;In addition to the modifications in core-site.xml we need to create the user and (add it to a group (?)) on the namenode. Even this is not working. It looks like the user needs to be added on the datanodes too. Is this true?
+The logs from namenode are like this: 
+2017-06-05 11:48:27,271 INFO  ipc.Server (Server.java:doRead(850)) - Socket Reader #1 for port 8020: readAndProcess from client 10.32.10.3 threw exception [org.apache.hadoop.security.authorize.AuthorizationException: Unauthorized connection for super-user: hue from IP 10.32.10.3]
+The ip 10.32.10.3 is a datanode.&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>The quest for high throughput RPC</title><link href="/the-quest-for-high-throughput-rpc.html" rel="alternate"></link><published>2018-07-07T00:30:00+00:00</published><updated>2018-07-07T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2018-07-07:/the-quest-for-high-throughput-rpc.html</id><summary type="html">&lt;p&gt;In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around &lt;code&gt;1000 req/sec&lt;/code&gt;, whereas a prototype implementation of this technique gives around &lt;code&gt;4 million req/sec&lt;/code&gt; for a “hello world” rpc …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around &lt;code&gt;1000 req/sec&lt;/code&gt;, whereas a prototype implementation of this technique gives around &lt;code&gt;4 million req/sec&lt;/code&gt; for a “hello world” rpc&lt;/p&gt;
 &lt;p&gt;Lots of companies these days use a microservices architecture, where the application as a whole is split into multiple smaller microservices communicating over the network. What follows in the post is heavy on numbers, which admittedly is boring to parse and makes it a little dry. A nanosec, microsec and a millisec might all just seem like a really small amount of time for humans but the distance between them is vast. If we were to blow up the numbers to human scale and make a nanosec as a second, then it would take one nanosec to pick up a pen next to your laptop, one microsec is a 20 min bike ride, and 1 millisec is a bike ride from bangalore to indore!&lt;/p&gt;
 &lt;p&gt;For the time being, I’m going to consider two communicating processes on localhost so we don’t have to worry about network transmission latency for now
 Our goal is to exchange 100 byte messages as fast as we can between two processes with a cap on (say 95% percentile) latency (say, &lt;code&gt;&amp;lt;5 ms&lt;/code&gt;)&lt;/p&gt;
@@ -238,21 +689,21 @@ The costs below are &lt;em&gt;excluding&lt;/em&gt; hotel bookings and flights.&l
 &lt;/table&gt;
 &lt;p&gt;The excrutiangly detailed breakup of costs is &lt;a href="https://docs.google.com/spreadsheets/d/1uVaI5bQ702zNCqu6tZL-GoIzKm4CGlxRkincuRJys5k/edit?usp=sharing"&gt;here&lt;/a&gt;&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>The affair between iostat and fio</title><link href="/the-affair-between-iostat-and-fio.html" rel="alternate"></link><published>2016-06-02T16:20:00+00:00</published><updated>2016-06-02T16:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-06-02:/the-affair-between-iostat-and-fio.html</id><summary type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
 &lt;h3&gt;fio output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;io = bw*runt&lt;/span&gt;
-&lt;span class="err"&gt;io = iops*runt*bs&lt;/span&gt;
-&lt;span class="err"&gt;issued(r …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;io = bw*runt
+io = iops*runt*bs
+issued(r …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
 &lt;h3&gt;fio output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;io = bw*runt&lt;/span&gt;
-&lt;span class="err"&gt;io = iops*runt*bs&lt;/span&gt;
-&lt;span class="err"&gt;issued(r) = iops*runt&lt;/span&gt;
-&lt;span class="err"&gt;io = ios*bs&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;io = bw*runt
+io = iops*runt*bs
+issued(r) = iops*runt
+io = ios*bs
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h3&gt;iostat output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb &lt;/span&gt;
-&lt;span class="c"&gt;Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util&lt;/span&gt;
-&lt;span class="err"&gt;vdb               0.00     0.00  179.00    0.00   716.00     0.00     8.00     1.00    5.59    5.59    0.00   5.58  99.80&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb 
+Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
+vdb               0.00     0.00  179.00    0.00   716.00     0.00     8.00     1.00    5.59    5.59    0.00   5.58  99.80
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -316,7 +767,7 @@ The error rates are exactly the same as r/s which stresses that &lt;code&gt;rKB/
 &lt;p&gt;The iops graph is explained simply as &lt;code&gt;bw/bs&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;It is also easy to explain the graph from bs=20 onwards. Each fio block translates into bs/avrq-sq sequential disk read operations. For example, A fio block of size 2 MB results in 4 sequential reads (each of 1024 sectors = 0.5 MB). That explains the sudden increase in r/s after bs=19. 
 If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughput varying between 110-120MBps) with the formula &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;computed_read_s = (bs / (1024*512)) / (5.6*10**-3 + bs/(120*2**20) )&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;computed_read_s = (bs / (1024*512)) / (5.6*10**-3 + bs/(120*2**20) )
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -324,11 +775,11 @@ If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughp
 0.38%, 0.92%, -1.21%, -4.98%, -1.99%&lt;/p&gt;
 &lt;p&gt;As always, the &lt;code&gt;rKB/s&lt;/code&gt; is r/s*avgrq-sz&lt;/p&gt;
 &lt;p&gt;The iops and the bw graph is more interesting. Another thing that happened at bs=19 was that the page-cache was completely filled. (see the io column) This results in requests being served from RAM which explains the tremendous shootup in fio iops and fio bw&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;number of ios for reading the 3G file into memory = 3G/bs ------&amp;gt; (3)&lt;/span&gt;
-&lt;span class="err"&gt;time to read it from hard disk = 3G/rKBps&lt;/span&gt;
-&lt;span class="err"&gt;time for which requests were served from page-cache = 60-3G/rKBps   ----&amp;gt; (1)&lt;/span&gt;
-&lt;span class="err"&gt;Time of a single page-cache io operation = 1.1 microseconds + bs / (4.8 GBps = ram  bandwidth) ----&amp;gt; (2)&lt;/span&gt;
-&lt;span class="err"&gt;expected iops = ((3)+(1)/(2)) / 60&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;number of ios for reading the 3G file into memory = 3G/bs ------&amp;gt; (3)
+time to read it from hard disk = 3G/rKBps
+time for which requests were served from page-cache = 60-3G/rKBps   ----&amp;gt; (1)
+Time of a single page-cache io operation = 1.1 microseconds + bs / (4.8 GBps = ram  bandwidth) ----&amp;gt; (2)
+expected iops = ((3)+(1)/(2)) / 60
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -397,7 +848,8 @@ If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughp
 &lt;ul&gt;
 &lt;li&gt;Find out the client subnet of the form &lt;code&gt;10.34.44.0/22&lt;/code&gt;. To do that, on the client machine, run &lt;code&gt;/sbin/ifconfig&lt;/code&gt; to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR &lt;a href="http://www.subnet-calculator.com/cidr.php"&gt;here&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;export variables: 
-  &lt;code&gt;export http_proxy=http://client.ip.ad.ress:port/
+  &lt;code&gt;text
+  export http_proxy=http://client.ip.ad.ress:port/
   export https_proxy=http://client.ip.ad.ress:port/&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3&gt;Caveat&lt;/h3&gt;
@@ -407,7 +859,8 @@ If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughp
 &lt;li&gt;Install squid: &lt;code&gt;sudo apt-get install squid&lt;/code&gt;. &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;change /etc/squid/squid.conf to add these lines
-   &lt;code&gt;acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
+   &lt;code&gt;text
+   acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
    http_access allow wormhole # wormhole is just a name
    icp_access allow wormhole&lt;/code&gt;&lt;/p&gt;
 &lt;/li&gt;
@@ -418,29 +871,29 @@ If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughp
 &lt;p&gt;And thats it! &lt;code&gt;curl -L www.google.com&lt;/code&gt; (&lt;code&gt;-L&lt;/code&gt; to follow redirects) will work.&lt;/p&gt;
 &lt;p&gt;I needed this for &lt;code&gt;pip&lt;/code&gt;. With my setup, I can do &lt;code&gt;sudo export &amp;lt;blah&amp;gt;;export&amp;lt;blah&amp;gt;;pip install &amp;lt;package&amp;gt;&lt;/code&gt;. &lt;/p&gt;
 &lt;p&gt;FYI, my squid version is&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid&lt;/span&gt;
-&lt;span class="c"&gt;Package: squid&lt;/span&gt;
-&lt;span class="c"&gt;Status: install ok installed&lt;/span&gt;
-&lt;span class="c"&gt;Priority: optional&lt;/span&gt;
-&lt;span class="c"&gt;Section: web&lt;/span&gt;
-&lt;span class="c"&gt;Installed-Size: 1864&lt;/span&gt;
-&lt;span class="c"&gt;Maintainer: Luigi Gangitano &amp;lt;luigi@debian.org&amp;gt;&lt;/span&gt;
-&lt;span class="c"&gt;Architecture: amd64&lt;/span&gt;
-&lt;span class="c"&gt;Version: 2.7.STABLE9-4.1+deb7u1&lt;/span&gt;
-&lt;span class="c"&gt;Replaces: squid-novm&lt;/span&gt;
-&lt;span class="c"&gt;Depends: libc6 (&amp;gt;= 2.7), libcomerr2 (&amp;gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&amp;gt;= 1.10+dfsg~), libkrb5-3 (&amp;gt;= 1.6.dfsg.2), libldap-2.4-2 (&amp;gt;= 2.4.7), libpam0g (&amp;gt;= 0.99.7.1), netbase, adduser, logrotate (&amp;gt;= 3.5.4-1), squid-common (&amp;gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&amp;gt;= 3.2-14), perl-modules&lt;/span&gt;
-&lt;span class="c"&gt;Pre-Depends: debconf (&amp;gt;= 1.2.9) | debconf-2.0&lt;/span&gt;
-&lt;span class="c"&gt;Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&amp;gt;= 0.40), smbclient, winbind&lt;/span&gt;
-&lt;span class="c"&gt;Conflicts: sarg (&amp;lt;&amp;lt; 1.1.1-2), squid-novm&lt;/span&gt;
-&lt;span class="c"&gt;Conffiles:&lt;/span&gt;
-&lt;span class="c"&gt; /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe&lt;/span&gt;
-&lt;span class="c"&gt; /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311&lt;/span&gt;
-&lt;span class="c"&gt; /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e&lt;/span&gt;
-&lt;span class="c"&gt;Description: Internet object cache (WWW proxy cache)&lt;/span&gt;
-&lt;span class="c"&gt; This package provides the Squid Internet Object Cache developed by&lt;/span&gt;
-&lt;span class="c"&gt; the National Laboratory for Applied Networking Research (NLANR) and&lt;/span&gt;
-&lt;span class="c"&gt; Internet volunteers.&lt;/span&gt;
-&lt;span class="c"&gt;Homepage: http://www.squid-cache.org/&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
+Package: squid
+Status: install ok installed
+Priority: optional
+Section: web
+Installed-Size: 1864
+Maintainer: Luigi Gangitano &amp;lt;luigi@debian.org&amp;gt;
+Architecture: amd64
+Version: 2.7.STABLE9-4.1+deb7u1
+Replaces: squid-novm
+Depends: libc6 (&amp;gt;= 2.7), libcomerr2 (&amp;gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&amp;gt;= 1.10+dfsg~), libkrb5-3 (&amp;gt;= 1.6.dfsg.2), libldap-2.4-2 (&amp;gt;= 2.4.7), libpam0g (&amp;gt;= 0.99.7.1), netbase, adduser, logrotate (&amp;gt;= 3.5.4-1), squid-common (&amp;gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&amp;gt;= 3.2-14), perl-modules
+Pre-Depends: debconf (&amp;gt;= 1.2.9) | debconf-2.0
+Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&amp;gt;= 0.40), smbclient, winbind
+Conflicts: sarg (&amp;lt;&amp;lt; 1.1.1-2), squid-novm
+Conffiles:
+ /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe
+ /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311
+ /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e
+Description: Internet object cache (WWW proxy cache)
+ This package provides the Squid Internet Object Cache developed by
+ the National Laboratory for Applied Networking Research (NLANR) and
+ Internet volunteers.
+Homepage: http://www.squid-cache.org/
 &lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="regex"></category></entry><entry><title>Regex recipes</title><link href="/regex-recipes.html" rel="alternate"></link><published>2016-02-21T10:20:00+00:00</published><updated>2016-02-21T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-21:/regex-recipes.html</id><summary type="html">&lt;p&gt;I find myself always having to google around a lot for common regex recipes. Surprisingly, the most common cases cannot be easily found without extensive grokking.&lt;/p&gt;
 &lt;h3&gt;Python examples&lt;/h3&gt;
 &lt;h4&gt;Common special characters:&lt;/h4&gt;
@@ -454,15 +907,15 @@ If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughp
 &lt;p&gt;Search for occurences of a regex string and replace it with something that depends on the actual value of the string.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
 &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;(blue|red)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;())),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blue socks and red shoes&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;())),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blue socks and red shoes&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;output: &lt;code&gt;4 socks and 3 shoes&lt;/code&gt;&lt;/p&gt;
 &lt;h4&gt;Find all ip addresses in a text&lt;/h4&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;p = re.compile(r&amp;quot;\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}[^0-9]&amp;quot;)&lt;/span&gt;
-&lt;span class="err"&gt;s = &amp;quot;Runbook:blah blah  IP:10.34.249.124 blah blah IP:10.33.157.166&amp;quot;&lt;/span&gt;
-&lt;span class="err"&gt;print p.findall(s)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;p = re.compile(r&amp;quot;\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}[^0-9]&amp;quot;)
+s = &amp;quot;Runbook:blah blah  IP:10.34.249.124 blah blah IP:10.33.157.166&amp;quot;
+print p.findall(s)
 &lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="regex"></category></entry><entry><title>Setting up a ceph cluster</title><link href="/setting-up-a-ceph-cluster.html" rel="alternate"></link><published>2016-02-07T10:20:00+00:00</published><updated>2016-02-07T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-07:/setting-up-a-ceph-cluster.html</id><summary type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Furthermore, to launch a radosgw instance, you &lt;em&gt;need&lt;/em&gt; to have …&lt;/p&gt;</summary><content type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Furthermore, to launch a radosgw instance, you &lt;em&gt;need&lt;/em&gt; to have a section in your host file called &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and your  keyring should have a corresponding key section called  &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and you should have imported that key into ceph    via &lt;code&gt;sudo ceph auth import -i /etc/ceph/&amp;lt;keyring_file&amp;gt;&lt;/code&gt;.&lt;/p&gt;

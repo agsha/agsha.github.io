@@ -15,7 +15,7 @@
 
     <!-- Custom styles for this template -->
     <link href="theme/blog.css" rel="stylesheet">
-
+    <link href="theme/hilite.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -29,9 +29,9 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item active" href="#">Latest articles</a>
-          <a class="blog-nav-item" href="#">Archive</a>
-          <a class="blog-nav-item" href="#">About</a>
+          <a class="blog-nav-item" href="/">Latest articles</a>
+          <a class="blog-nav-item" href="/archives.html">Archive</a>
+          <a class="blog-nav-item" href="/pages/about.html">About</a>
         </nav>
       </div>
     </div>
@@ -49,7 +49,8 @@
 <ul>
 <li>Find out the client subnet of the form <code>10.34.44.0/22</code>. To do that, on the client machine, run <code>/sbin/ifconfig</code> to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR <a href="http://www.subnet-calculator.com/cidr.php">here</a></li>
 <li>export variables: 
-  <code>export http_proxy=http://client.ip.ad.ress:port/
+  <code>text
+  export http_proxy=http://client.ip.ad.ress:port/
   export https_proxy=http://client.ip.ad.ress:port/</code></li>
 </ul>
 <h3>Caveat</h3>
@@ -59,7 +60,8 @@
 <li>Install squid: <code>sudo apt-get install squid</code>. </li>
 <li>
 <p>change /etc/squid/squid.conf to add these lines
-   <code>acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
+   <code>text
+   acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
    http_access allow wormhole # wormhole is just a name
    icp_access allow wormhole</code></p>
 </li>
@@ -70,29 +72,29 @@
 <p>And thats it! <code>curl -L www.google.com</code> (<code>-L</code> to follow redirects) will work.</p>
 <p>I needed this for <code>pip</code>. With my setup, I can do <code>sudo export &lt;blah&gt;;export&lt;blah&gt;;pip install &lt;package&gt;</code>. </p>
 <p>FYI, my squid version is</p>
-<div class="highlight"><pre><span></span><span class="err">[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid</span>
-<span class="c">Package: squid</span>
-<span class="c">Status: install ok installed</span>
-<span class="c">Priority: optional</span>
-<span class="c">Section: web</span>
-<span class="c">Installed-Size: 1864</span>
-<span class="c">Maintainer: Luigi Gangitano &lt;luigi@debian.org&gt;</span>
-<span class="c">Architecture: amd64</span>
-<span class="c">Version: 2.7.STABLE9-4.1+deb7u1</span>
-<span class="c">Replaces: squid-novm</span>
-<span class="c">Depends: libc6 (&gt;= 2.7), libcomerr2 (&gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&gt;= 1.10+dfsg~), libkrb5-3 (&gt;= 1.6.dfsg.2), libldap-2.4-2 (&gt;= 2.4.7), libpam0g (&gt;= 0.99.7.1), netbase, adduser, logrotate (&gt;= 3.5.4-1), squid-common (&gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&gt;= 3.2-14), perl-modules</span>
-<span class="c">Pre-Depends: debconf (&gt;= 1.2.9) | debconf-2.0</span>
-<span class="c">Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&gt;= 0.40), smbclient, winbind</span>
-<span class="c">Conflicts: sarg (&lt;&lt; 1.1.1-2), squid-novm</span>
-<span class="c">Conffiles:</span>
-<span class="c"> /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe</span>
-<span class="c"> /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311</span>
-<span class="c"> /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e</span>
-<span class="c">Description: Internet object cache (WWW proxy cache)</span>
-<span class="c"> This package provides the Squid Internet Object Cache developed by</span>
-<span class="c"> the National Laboratory for Applied Networking Research (NLANR) and</span>
-<span class="c"> Internet volunteers.</span>
-<span class="c">Homepage: http://www.squid-cache.org/</span>
+<div class="highlight"><pre><span></span>[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
+Package: squid
+Status: install ok installed
+Priority: optional
+Section: web
+Installed-Size: 1864
+Maintainer: Luigi Gangitano &lt;luigi@debian.org&gt;
+Architecture: amd64
+Version: 2.7.STABLE9-4.1+deb7u1
+Replaces: squid-novm
+Depends: libc6 (&gt;= 2.7), libcomerr2 (&gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&gt;= 1.10+dfsg~), libkrb5-3 (&gt;= 1.6.dfsg.2), libldap-2.4-2 (&gt;= 2.4.7), libpam0g (&gt;= 0.99.7.1), netbase, adduser, logrotate (&gt;= 3.5.4-1), squid-common (&gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&gt;= 3.2-14), perl-modules
+Pre-Depends: debconf (&gt;= 1.2.9) | debconf-2.0
+Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&gt;= 0.40), smbclient, winbind
+Conflicts: sarg (&lt;&lt; 1.1.1-2), squid-novm
+Conffiles:
+ /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe
+ /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311
+ /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e
+Description: Internet object cache (WWW proxy cache)
+ This package provides the Squid Internet Object Cache developed by
+ the National Laboratory for Applied Networking Research (NLANR) and
+ Internet volunteers.
+Homepage: http://www.squid-cache.org/
 </pre></div> 
           </div><!-- /.blog-post -->
 		  <hr>
@@ -133,17 +135,12 @@
     </footer>
 
 
-    <!-- Bootstrap core JavaScript
+   <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   </body>
 </html>

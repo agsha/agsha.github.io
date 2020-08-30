@@ -15,7 +15,7 @@
 
     <!-- Custom styles for this template -->
     <link href="theme/blog.css" rel="stylesheet">
-
+    <link href="theme/hilite.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -29,9 +29,9 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item active" href="#">Latest articles</a>
-          <a class="blog-nav-item" href="#">Archive</a>
-          <a class="blog-nav-item" href="#">About</a>
+          <a class="blog-nav-item" href="/">Latest articles</a>
+          <a class="blog-nav-item" href="/archives.html">Archive</a>
+          <a class="blog-nav-item" href="/pages/about.html">About</a>
         </nav>
       </div>
     </div>
@@ -53,15 +53,15 @@
 <p>Search for occurences of a regex string and replace it with something that depends on the actual value of the string.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(blue|red)&quot;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">p</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())),</span> <span class="s2">&quot;blue socks and red shoes&quot;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">p</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())),</span> <span class="s2">&quot;blue socks and red shoes&quot;</span><span class="p">)</span>
 </pre></div>
 
 
 <p>output: <code>4 socks and 3 shoes</code></p>
 <h4>Find all ip addresses in a text</h4>
-<div class="highlight"><pre><span></span><span class="err">p = re.compile(r&quot;\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}[^0-9]&quot;)</span>
-<span class="err">s = &quot;Runbook:blah blah  IP:10.34.249.124 blah blah IP:10.33.157.166&quot;</span>
-<span class="err">print p.findall(s)</span>
+<div class="highlight"><pre><span></span>p = re.compile(r&quot;\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}[^0-9]&quot;)
+s = &quot;Runbook:blah blah  IP:10.34.249.124 blah blah IP:10.33.157.166&quot;
+print p.findall(s)
 </pre></div> 
           </div><!-- /.blog-post -->
 		  <hr>
@@ -102,17 +102,12 @@
     </footer>
 
 
-    <!-- Bootstrap core JavaScript
+   <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   </body>
 </html>

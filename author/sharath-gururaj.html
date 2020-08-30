@@ -2,6 +2,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-176711845-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-176711845-1');
+    </script>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +25,7 @@
 
     <!-- Custom styles for this template -->
     <link href="/theme/blog.css" rel="stylesheet">
+    <link href="theme/hilite.css" rel="stylesheet">
 
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -29,7 +40,7 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item active" href="#">Latest articles</a>
+          <a class="blog-nav-item active" href="/">Latest articles</a>
           <a class="blog-nav-item" href="/archives.html">Archive</a>
           <a class="blog-nav-item" href="/pages/about.html">About</a>
         </nav>
@@ -41,6 +52,14 @@
       <div class="row">
 
         <div class="col-sm-12 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/cookbook.html" rel="bookmark" title="Permalink to Cookbook">Cookbook</a></h2>
+            <p class="blog-post-meta">Mon, 31 Aug 2020</p>
+		    <p>This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its …</p> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
 
           <div class="blog-post">
             <h2 class="blog-post-title"><a href="/the-quest-for-high-throughput-rpc.html" rel="bookmark" title="Permalink to The quest for high throughput RPC">The quest for high throughput RPC</a></h2>
@@ -75,9 +94,9 @@
             <p class="blog-post-meta">Thu, 02 Jun 2016</p>
 		    <p>In the following analysis, I'm going to assume you already know what <code>fio</code> and <code>iostat</code> is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers</p>
 <h3>fio output</h3>
-<div class="highlight"><pre><span></span><span class="err">io = bw*runt</span>
-<span class="err">io = iops*runt*bs</span>
-<span class="err">issued(r …</span></pre></div> 
+<div class="highlight"><pre><span></span>io = bw*runt
+io = iops*runt*bs
+issued(r …</pre></div> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>
@@ -159,14 +178,10 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   </body>
 </html>

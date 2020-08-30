@@ -1,0 +1,547 @@
+<!-- same as index.html, except that only one article is shown -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Sharath's core dump</title>
+
+
+    <!-- Custom styles for this template -->
+    <link href="theme/blog.css" rel="stylesheet">
+    <link href="theme/hilite.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="/">Latest articles</a>
+          <a class="blog-nav-item" href="/archives.html">Archive</a>
+          <a class="blog-nav-item" href="/pages/about.html">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-12 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/cookbook.html" rel="bookmark" title="Permalink to Cookbook">Cookbook</a></h2>
+            <p class="blog-post-meta">Mon, 31 Aug 2020</p>
+		    <p>This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its own. Hopefully, you'll find the table of contexts helpful to navigate.
+(the links are not working yet :( )</p>
+<h1>Table of contents</h1>
+<!-- toc -->
+
+<ul>
+<li><a href="#julia-arrays">Julia arrays</a></li>
+<li><a href="#anaconda-dont-start-at-shell">Anaconda dont start at shell</a></li>
+<li><a href="#how-to-mount-samba-folder-in-ubuntu">How to mount samba folder in ubuntu</a></li>
+<li><a href="#how-to-use-du-to-search-for-hidden-folders">How to use du to search for hidden folders</a></li>
+<li><a href="#sublime-text-keyboard-shortcuts">Sublime text keyboard shortcuts</a></li>
+<li><a href="#making-nomachine-nx-work-on-amazon-aws-ec2">Making Nomachine nx work on amazon aws ec2</a></li>
+<li><a href="#remote-desktop-to-raspberry-pi">Remote desktop to raspberry pi</a></li>
+<li><a href="#echo-server-with-netcat">Echo server with netcat</a></li>
+<li><a href="#mounting-a-disk-on-gcp">Mounting a disk on GCP</a></li>
+<li><a href="#describe-type-of-command">Describe type of command</a></li>
+<li><a href="#linux-networking">Linux Networking</a></li>
+<li><a href="#postgres">Postgres</a></li>
+<li><a href="#intellij-shortcuts">Intellij Shortcuts</a></li>
+<li><a href="#bash-shortcuts">Bash shortcuts</a></li>
+<li><a href="#how-to-setup-a-new-linux-machine">How to setup a new linux machine</a></li>
+<li><a href="#python-regex-recipes">Python regex recipes</a></li>
+<li><a href="#vim-one-liners-and-shortcuts">Vim one liners and shortcuts</a></li>
+<li><a href="#cscope-for-linux">Cscope for linux</a></li>
+<li><a href="#cscope-for-ceph">Cscope for ceph</a></li>
+<li><a href="#building-linux">Building linux</a></li>
+<li><a href="#using-ftrace-to-trace-linux-functions">Using Ftrace to trace linux functions</a></li>
+<li><a href="#how-to-build-linux-on-one-machine-and-deploy-on-another">How to build linux on one machine and deploy on another</a></li>
+<li><a href="#jemalloc">JeMalloc</a></li>
+<li><a href="#objdump">Objdump</a></li>
+<li><a href="#installing-latest-version-of-cmake">Installing latest version of cmake</a></li>
+<li><a href="#getting-honest-profiler-to-work">Getting honest profiler to work</a></li>
+<li><a href="#gcc-important-options">GCC important options</a></li>
+<li><a href="#when-creating-a-shared-library">When creating a shared library:</a></li>
+<li><a href="#eli-bendersky-static-linking-summary">Eli bendersky static linking summary</a></li>
+<li><a href="#eli-bendersky-load-time-linking-summary">Eli bendersky load time linking summary</a></li>
+<li><a href="#eli-bendersky-x32-pic-linking-summary">Eli bendersky x32 PIC linking summary</a></li>
+<li><a href="#linux-interrupt-handling">Linux Interrupt Handling</a></li>
+<li><a href="#hdfs-proxy-user-setting">HDFS proxy user setting</a></li>
+</ul>
+<!-- tocstop -->
+
+<h1><a name="julia-arrays">Julia Arrays</a></h1>
+<ul>
+<li>tabs or spaces: concat to the right</li>
+<li>semicolon or newline: concat to the bottom </li>
+<li>one dimensional arrays are considered as column vectors for concatenation purposes</li>
+</ul>
+<h1>Anaconda dont start at shell</h1>
+<p>If you'd prefer that conda's base environment not be activated on startup, </p>
+<div class="highlight"><pre><span></span>conda config --set auto_activate_base <span class="nb">false</span>
+</pre></div>
+
+
+<h1>How to mount samba folder in ubuntu</h1>
+<div class="highlight"><pre><span></span>sudo mount -t cifs -o <span class="nv">user</span><span class="o">=</span>sharath //192.168.29.28/HOMEPI /mnt/pi
+</pre></div>
+
+
+<h1>How to use du to search for hidden folders</h1>
+<div class="highlight"><pre><span></span>du -schx .<span class="o">[</span>!.<span class="o">]</span>* *
+</pre></div>
+
+
+<p>To exclude other mount points use <code>--exclude</code></p>
+<h1>Sublime text keyboard shortcuts</h1>
+<p>Open any file <code>ctrl-p</code>
+Open any command <code>ctrl-shift-p</code>
+Close tab: mac <code>cmd+w</code>
+Linux <code>ctrl-shift-w</code>
+Jump back <code>alt -</code> 
+forward <code>alt +</code> </p>
+<h1>Making Nomachine nx work on amazon aws ec2</h1>
+<p>First, download the nx package from nomachine and <code>dpkg -i</code> the package
+The software is installed in <code>/usr/NX</code>
+We have to first disable password login and only use certificate login. To do this, edit the file <code>vim /usr/NX/etc/server.config</code> and add this line. After this, restart the nx server <code>/usr/NX/bin/nxserver --restart</code>
+Verify that password login does not work
+For resolution, the key idea is that there should be no x server running already on the machine. If there is no x server, then nx will create its own, and by default try to match the client resolution, which is what we want. Unfortunately, when we install gnome desktop, it automatically changes the systemd runlevel to graphical.target which means systemd will spawn gdm and an xserver /usr/lib/xorg/Xorg (hope you dont get into wayland and shit). So we have to change the default systemd target to shell mode, which can be done by sudo systemctl set-default multi-user.target
+To change the current target without restarting, you can do sudo systemctl set-default multi-user.target 
+And thats it, nx should automatically try to match client resolution if client is running in full screen mode!</p>
+<p>Sometimes, you will see a black screen when you login, to solve this</p>
+<div class="highlight"><pre><span></span>sudo service gdm stop
+/usr/NX/bin/nxserver --restart
+</pre></div>
+
+
+<h1>Remote desktop to raspberry pi</h1>
+<p>We will use real vnc. From terminal, ssh to raspberry pi. On the pi run
+<code>vncserver -geometry 1920x1080</code></p>
+<p>From the client, run vncviewer from real vnc and login. You have to do this every time you want to login</p>
+<h1>Echo server with netcat</h1>
+<p>Server
+<code>ncat -e /bin/cat -k  -l 8888 &lt;ip&gt;</code></p>
+<p>Client 
+<code>telnet ip 8888</code></p>
+<h1>Mounting a disk on GCP</h1>
+<div class="highlight"><pre><span></span>sudo lsblk
+sudo mkdir -p /mnt/disks/sdb
+sudo cp /etc/fstab /etc/fstab.backup
+sudo blkid /dev/sdb
+In /etc/fstb
+<span class="nv">UUID</span><span class="o">=[</span>UUID_VALUE<span class="o">]</span> /mnt/disks/<span class="o">[</span>MNT_DIR<span class="o">]</span> ext4 discard,defaults,nofail <span class="m">0</span> <span class="m">2</span>
+Sudo mount -a 
+</pre></div>
+
+
+<h1>Describe type of command</h1>
+<p><code>type ls</code></p>
+<h1>Linux Networking</h1>
+<ul>
+<li>
+<p><strong>Netfilter</strong>: linux component which has various hooks for network packet manipulation
+The netfilter hooks are exposed through various  userspace programs: notably </p>
+</li>
+<li>
+<p><strong>Iptables</strong> : which is the userspace interface to linux firewall, (firewall here simply means configuring netfilter according to some rules), nat mangling etc </p>
+</li>
+<li>
+<p><strong>Subnetting/CIDR</strong> : CIDR splits 32 bit ipv4 addresses into two parts: left part is network part. Right part is host part. This act is called subnetting. <code>0.0.0.0/24</code> Here 24 means, the network part (left part) is 24 bits. The host part (right part is 32-24 = 8) bits. Usually in large companies different networks are indeed different networks. I.e., we need routing between two subnets. With a single (sub)network, there is no need for routing (works like lan)</p>
+</li>
+<li><strong>Network interfaces</strong>: on the linux level, they are network devices, with a device driver. They get a packet trhough hard_start_xmit() and they can do whatever they want with it. See this for a good example</li>
+<li><strong>Bridge</strong>: when referring to a hardware device it is a connector at L2. i.e., it learns mac addresses and forwards packets from one network to another switch is also essentially the same thing</li>
+<li><strong>Linux software bridge device</strong>:  is a software network_interface which acts like a bridge between two other network interfaces</li>
+</ul>
+<h1>Postgres</h1>
+<p>To create a data directory, first </p>
+<div class="highlight"><pre><span></span>mkdir -p /path/to/data
+chown postgres  /path/to/data
+Sudo -u postgres /usr/lib/postgresql/11/bin/Initdb -D /path/to/data
+vim /etc/postgresql/11/main/postgresql.conf <span class="c1">#and modify the data_dir</span>
+</pre></div>
+
+
+<p>To make postgres listen to remote connections in the same file:
+<code>listen_addresses = '*'</code></p>
+<p><code>vim /etc/postgresql/11/main/pg_hba.conf</code>
+Add this line (probably give stronger restrictions)</p>
+<div class="highlight"><pre><span></span>host    all             all             0.0.0.0/0            md5
+</pre></div>
+
+
+<p>Restart postgres. There are several ways. One of these should work:</p>
+<div class="highlight"><pre><span></span>    <span class="n">Sudo</span> <span class="n">service</span> <span class="n">postgresql</span> <span class="n">restart</span>
+<span class="n">Or</span> 
+    <span class="n">pg_ctlcluster</span> <span class="mi">12</span> <span class="n">main</span> <span class="n">start</span>
+<span class="n">Or</span> 
+<span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span> <span class="n">start</span>
+<span class="n">Or</span>
+    <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">main</span> <span class="o">-</span><span class="n">l</span> <span class="n">logfile</span> <span class="n">start</span>
+<span class="n">Or</span>
+   <span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">postgresql</span><span class="mi">@10</span><span class="o">-</span><span class="n">main</span>
+</pre></div>
+
+
+<p>Create users by first logging in </p>
+<div class="highlight"><pre><span></span>sudo -u postgres psql
+create user sharath with encrypted password <span class="s1">&#39;foo&#39;</span><span class="p">;</span>
+ALTER USER sharath WITH SUPERUSER<span class="p">;</span>
+create database sharath<span class="p">;</span>
+
+<span class="c1">#To enable the logs in /etc/postgresql/11/main/postgresql.conf</span>
+<span class="nv">log_destination</span> <span class="o">=</span> <span class="s1">&#39;csvlog&#39;</span>
+<span class="nv">logging_collector</span> <span class="o">=</span> on
+<span class="nv">log_rotation_age</span> <span class="o">=</span> 0d
+<span class="nv">log_statement</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span>
+</pre></div>
+
+
+<p>To view the logs
+<code>sudo grep SQLEditor /var/lib/postgresql/12/main/log/* |grep -v pg_catalog | grep -v SHOW | grep -v current_schema</code></p>
+<h1>Intellij Shortcuts</h1>
+<p>Ctrl+shift+enter to complete statement after code completion. Its pretty magical. 
+Alt+j to select all instances
+Tab after ctrl-space overwrites rather than insert
+Ctrl+alt-l to reformat whole file or selections
+Ctrl+shift+i to see the definition (code) for the method
+F2 to go to next highlighted error
+F4 go to definition
+Ctrl-f12 to see the file structure
+Ctrl+shift+numpad- collapse all</p>
+<h1>Bash shortcuts</h1>
+<p>Alt-B back one word
+Alt-f forward one word
+Ctrl-w delete back one word
+alt-D delete till end of word
+Ctrl-U delete to start of line
+Ctrl-k delete to end of line</p>
+<h1>How to setup a new linux machine</h1>
+<p>First, login as root. Here nm&gt; means new machine and local&gt; means laptop</p>
+<div class="highlight"><pre><span></span>nm&gt; 
+adduser -u <span class="m">1001</span> sharath<span class="p">;</span>
+usermod -aG sudo sharath
+su - sharath
+ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
+&lt;create a new key&gt;
+&lt;copy your localhost id_rsa.pub into clipboard&gt;
+vim /home/sharath/.ssh/authorized_keys 
+&lt;paste your id_rsa.pub and <span class="nb">exit</span> vim&gt;
+chmod <span class="m">644</span> /home/sharath/.ssh/authorized_keys
+<span class="nb">echo</span> <span class="s1">&#39;sharath ALL=(ALL) NOPASSWD: ALL&#39;</span> <span class="p">|</span> sudo tee /etc/sudoers.d/sharath
+sudo chmod <span class="m">0440</span> /etc/sudoers.d/sharath
+</pre></div>
+
+
+<p>IMPROVED (scriptable)</p>
+<div class="highlight"><pre><span></span>First, copy your public key to tmp on nm, like so
+scp ~/.ssh/id_rsa.pub root@&lt;new_ip&gt;:/tmp/ak 
+
+Login to the new box as root and <span class="k">do</span> the following
+adduser --disabled-password --gecos ‘’ sharath
+usermod -aG sudo sharath
+su - sharath
+ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
+<span class="nb">exit</span>
+cp /tmp/ak /home/sharath/.ssh/authorized_keys
+chmod <span class="m">644</span> /home/sharath/.ssh/authorized_keys
+<span class="nb">echo</span> <span class="s1">&#39;sharath ALL=(ALL) NOPASSWD: ALL&#39;</span> <span class="p">|</span> sudo tee /etc/sudoers.d/sharath
+sudo chmod <span class="m">0440</span> /etc/sudoers.d/sharath
+rm /tmp/ak
+</pre></div>
+
+
+<p>Bob should be your uncle</p>
+<h1>Python regex recipes</h1>
+<p>\s whitespace
+\S non whitespace
+\d only digits
+\D non digits
+\w alphanumeric [a-zA-Z0-9_]
+\W non-alphanumeric
+\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3} ip regex</p>
+<p>groups enclose in (), numbered from x.group(1)
+named groups like this (?P&lt;name) access with x.group("name")</p>
+<div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">regexStr</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(blue|red)&quot;</span><span class="p">)</span>
+<span class="n">r</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())),</span> <span class="s2">&quot;blue socks and red shoes&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>prints <code>4 socks and 3 shoes</code></p>
+<p>validate a regex on https://regex101.com/</p>
+<h1>Vim one liners and shortcuts</h1>
+<p>gd will go to local definition
+gD will go to global definition 
+,c<space> toggle comment
+<ctrl>]  goes to a tag
+<ctrl>o (“old” comes back from a jump)
+<ctrl> i (opposite of <ctrl>o
+Split window ctrl-w v or o
+Scroll up/down, keeping your cursor in its row
+One line
+Ctrl+Y → Move viewport down
+Ctrl+E → Move viewport up (Extra lines)
+Column select <ctrl>v 
+Go to beginning of function (go to { in first column: needs coding convention) [[ 
+End of function ]]
+Beginning of code block: [{ this one should work better with messed up coding convention</p>
+<h1>Cscope for linux</h1>
+<p>To apply debian patches use </p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LNX</span><span class="o">=</span>/home/sharath/os/linux/linux-5.4.0
+quilt push -a 
+find  <span class="nv">$LNX</span>  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/arch/*&quot;</span> ! -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/arch/x86*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/include/asm-*&quot;</span> ! -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/include/asm-i386*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/tmp*&quot;</span> -prune  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/Documentation*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/scripts*&quot;</span> -prune -o    -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/drivers*&quot;</span> -prune -o   -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/.pc/*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/debian/*&quot;</span> -prune -o   -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/sound/*&quot;</span> -prune -o    -name <span class="s2">&quot;*.[chxsS]&quot;</span> -print &gt; kernel.cscope
+
+cscope -q -R -b -i cscope.files
+</pre></div>
+
+
+<p>In vim</p>
+<div class="highlight"><pre><span></span>:cs f g &lt;foo&gt; goto definition of foo
+:cs f s &lt;foo&gt; find this symbol
+:cs f t &lt;foo&gt; find this string
+&lt;ctrl&gt;\ s on a word, find this symbol and so on
+</pre></div>
+
+
+<h1>Cscope for ceph</h1>
+<div class="highlight"><pre><span></span>find /mnt/disks/sdb/ceph-pristine -type f -and <span class="se">\(</span> -name <span class="s2">&quot;*.c&quot;</span> -o -name <span class="s2">&quot;*.h&quot;</span> -o -name <span class="s2">&quot;*.cc&quot;</span> -o -name <span class="s2">&quot;*.cpp&quot;</span> -o -name <span class="s2">&quot;*.hh&quot;</span> <span class="se">\)</span> &gt; zoo.cscope
+cscope -q -R -b -i zoo.cscope 
+</pre></div>
+
+
+<h1>Building linux</h1>
+<p>You can get the linux source from 
+<code>apt-get source linux-image-unsigned-$(uname -r)</code></p>
+<p>You can get the config file from 
+<code>cp /boot/config-5.4.0-26-generic .config</code>
+To install dependencies</p>
+<div class="highlight"><pre><span></span>sudo apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
+sudo apt-get build-dep linux linux-image-<span class="k">$(</span>uname -r<span class="k">)</span>
+
+make <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS -j14 <span class="o">&amp;&amp;</span> make -j14 <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS install <span class="o">&amp;&amp;</span> make -j14 <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS modules_install<span class="p">;</span> <span class="nb">echo</span> <span class="s2">&quot;------------------------- DONE --------------------------------&quot;</span>
+rm /boot/initrd.img-3.16.43-SS
+update-initramfs -c -k <span class="m">3</span>.16.43-SS
+update-grub
+</pre></div>
+
+
+<h1>Using Ftrace to trace linux functions</h1>
+<div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="m">1</span> <span class="p">|</span> sudo tee  /sys/kernel/debug/tracing/tracing_on
+And <span class="k">then</span> use brendan greggs perf-tools
+sudo ./funcgraph -D  ext4_readpages <span class="p">|</span> sudo tee /mnt/tmpfs/write
+sudo ./funcgraph -Dp <span class="m">51985</span>  ext4_readpages <span class="p">|</span> sudo tee /mnt/tmpfs/write
+</pre></div>
+
+
+<h1>How to build linux on one machine and deploy on another</h1>
+<p>Use “building linux” to build linux on one machine A. Suppose you want to install it on machine B
+On machine B</p>
+<div class="highlight"><pre><span></span>Mkdir -p ~/kernel/boot
+Mkdir -p ~/kernel/modules
+</pre></div>
+
+
+<p>On machine A</p>
+<div class="highlight"><pre><span></span>tar -cvzf ~/modules /lib/modules/3.16.43-SS
+scp -r *SS* &lt;B&gt;:~/kernel/boot
+scp ~/modules &lt;B&gt;:~/kernel/modules/
+</pre></div>
+
+
+<p>On machine B:</p>
+<div class="highlight"><pre><span></span>Cd ~/kernel/modules
+tar -xvzf modules
+sudo mv ~/kernel/modules/3.16.43-SS /lib/modules/
+sudo cp ~/kernel/boot/* /boot/
+sudo rm /boot/initrd.img-3.16.43-SS
+sudo update-initramfs -c -k <span class="m">3</span>.16.43-SS
+sudo update-grub
+
+
+<span class="c1">#And… reboot!</span>
+Sudo reboot now
+</pre></div>
+
+
+<h1>JeMalloc</h1>
+<p>Do a git clone.</p>
+<div class="highlight"><pre><span></span>./autogen.sh 
+./configure --enable-prof --enable-stats --enable-debug
+Make
+
+
+<span class="o">[</span>sharath.g@osboxes /home/sharath.g/code/jemalloc<span class="o">]</span>$ tree lib 
+lib
+├── libjemalloc.a
+├── libjemalloc_pic.a
+├── libjemalloc.so -&gt; libjemalloc.so.2
+└── libjemalloc.so.2
+
+<span class="c1">#To generate the profile:</span>
+<span class="o">(</span>reverse-i-search<span class="o">)</span><span class="sb">`</span>java<span class="s1">&#39;: rm jeprof*; rm /tmp/prof.gif; MALLOC_CONF=prof:true,lg_prof_sample:0,lg_prof_interval:25 LD_PRELOAD=${JEMALLOC_PATH}/lib/libjemalloc.so.2 java -Xmx1096m -cp  &#39;</span>/home/sharath.g/diskbench/:/home/sharath.g/diskbench/*<span class="err">&#39;</span> sha.Memory<span class="p">;</span> ls jeprof*<span class="p">;</span> ~/code/jemalloc/bin/jeprof --show_bytes --gif <span class="sb">`</span>which java<span class="sb">`</span> jeprof*.heap &gt; /tmp/prof.gif 
+</pre></div>
+
+
+<p>If you’ve compiled jemalloc on some other machine and copied it to this machine, youget teh error Can't exec "objdump": No such file or directory at /home/sharath.g/jemalloc/bin/jeprof line 4459.
+Then objdump is 
+Jemalloc what is active, dirty (unused), resident, total memory, allocated, mapped?
+Allocated = sum of all malloc arguments that has not been freed 
+Active .. multiple of page size.. Total bytes in pages that have at least one byte of allocated memory
+Resident: active + metadata 
+Mapped: multiple of chunk size. Total chunks that have one byte of allocated 
+See that man pages for a clear explanation.</p>
+<h1>Objdump</h1>
+<div class="highlight"><pre><span></span>objdump -drSt hello.o
+-d dissasemble
+-r show relocation info inline
+-S show C <span class="nb">source</span> code
+-t show symbol table
+</pre></div>
+
+
+<h1>Installing latest version of cmake</h1>
+<p>Either apt-get install cmake or get it from here
+https://cmake.org/download/
+https://cmake.org/files/v3.8/cmake-3.8.0-rc4-Linux-x86_64.sh and run it</p>
+<h1>Getting honest profiler to work</h1>
+<p>Installing it: 
+If you’re lucky, you can download it and it works http://insightfullogic.com/honest-profiler.zip</p>
+<p>Otherwise you need to build it. To build it, if you get weird errors, you might need to get latest version of Cmake, and then build it. You need build/libagent.so</p>
+<p>Start the java program with     <br>
+<code>-agentpath:$HONEST_PROFILER_HOME/liblagent.so=host=localhost,port=4242,logPath=/grid/1/log/hadoop-yarn/yarn/honest-profiler.hpl</code></p>
+<p>Start and stop profiling with </p>
+<div class="highlight"><pre><span></span> <span class="nb">echo</span> start <span class="p">|</span> nc localhost <span class="m">4242</span>
+ <span class="nb">echo</span> stop <span class="p">|</span> nc localhost <span class="m">4242</span>
+</pre></div>
+
+
+<p>Collapse the stacks with <code>java -cp $HONEST_PROFILER_HOME/honest-profiler.jar com.insightfullogic.honest_profiler.ports.console.FlameGraphDumperApplication netty.hpl netty.cstk</code></p>
+<h1>GCC important options</h1>
+<p>The linker <code>ld</code> takes as input .c files, .o files, .so files and can output an executable or a shared library.
+The linker does not output static library. You can simply use ar for it</p>
+<p>Gcc important options
+-l mylib 
+Look for a library called libmylib.{a, so}
+But if both are present, will it choose .a or .so (it chooses .so) if you want to link an .a file, specify it directly on the command line. Or specify -static so it will choose .a even for libc </p>
+<p>Which directories to look in ?
+-L dir is the answer</p>
+<p>-i dir is for searching include files 
+-include file
+Is as if file was #included in source code in the first line. </p>
+<p>So basically <code>-L dir -l mylib -I dir -include files</code></p>
+<p>When creating an executable:
+You cannot link a shared library statically by giving it on the command line (to create an executable) even if you give on command line, it still links it as  a shared library (as if you had given -L. -lxxx)
+Or you cannot link a static library in a shared way by using -L and -l options (to create an executable)(you can but it will be taken as static, even if the static library is named libxx.so) </p>
+<p>Static libraries can be linked (statically) by specifying them as input files to gcc. Remember: static libraries are just a bunch of .o files 
+You cannot skip specifying a shared library while linking to create an executable (although, technically they are not needed)  all variables must be resolved, which means that all shared libraries have to be specified (strictly not required, i guess its a sanity check) this has the effect of  listing in the executable as a dependency     </p>
+<p>For <code>LD_PRELOAD</code> to work, you have to specify -Wl,-soname,libml.so while having created that shared library this name is hardcoded into the so as its name, and this is the name that the linker looks at while loading the executable, not the file name of the .so</p>
+<h1>When creating a shared library:</h1>
+<p>All object files must be compiled with -fpic
+All ar files must have .o files which have been compiled with -fpic
+If you specify multiple .so on command line, they will be combined into 1 .so as expected, with references resolved internally 
+If a dependency is unmet (by not specifying some libraries at all) it is defined as undefined but linking succeeds
+If a dependency is met by -L. -lxxx then it is undefined in the .so but that lib is listed as a dependency</p>
+<h1>Eli bendersky static linking summary</h1>
+<p>Static linking algorithm perfectly explained in http://eli.thegreenplace.net/2013/07/09/library-order-in-static-linking
+Some important points
+* An object file both exports and imports symbols 
+* individual object files specified on cmd line are always linked
+* static libraries (ar) libraries serve only to provide a list of object files, and an object file in a library is linked only if it satisfies some current unmet dependency </p>
+<h1>Eli bendersky load time linking summary</h1>
+<p>Summary of load time linking as specified in http://eli.thegreenplace.net/2011/08/25/load-time-relocation-of-shared-libraries</p>
+<p>Some gotchas: 
+* Call operands are rip relative, but mov operands are absolute. In x86_64, there is a new addressing called RIP relative where any operand can be RIP relative.
+* If a shared variable in a .so is referenced from the main executable, then that shared variable will go into the main executable, since the main executable is not relocatable. 
+* what about a shared function in a .so referenced from main executable? The article does not mention it, but i imagine the functionality is similar. I.e. put the address of the function in the main program during load time and then call it.</p>
+<p>Basically the address where a shared library is loaded is unknown
+The static linker generates .so as if the shared library is loaded at 0x0 (logical)
+The linker tells the offset of each variable in the file. 
+The loader will add this offset to the load address to get the real address
+The linker also populates a list where the real address has to be patched into the code. 
+The loader will then patch the addresses in
+Thats it.</p>
+<h1>Eli bendersky x32 PIC linking summary</h1>
+<p>http://eli.thegreenplace.net/2011/11/03/position-independent-code-pic-in-shared-libraries</p>
+<p>Instead of direct patching in the code, the real addresses of shared variables are stored in a GOT table in the data section. 
+For mov operands, x32 does not support rip relative addresses, so there is a hack to get current rip address, then add the offset of the got table, and thus get the address of the variable</p>
+<p>For call instructions, they are still using the hack but call supports rip relative addressing. So not sure what is happening,</p>
+<h1>Linux Interrupt Handling</h1>
+<p>Peripheral devices pass interrupt to the interrupt controller (8259) which then passes it to processor on a given interrupt line.
+An Interrupt line can be shared by multiple devices. To detect which device raised the interrupt, the linux interrupt handler iterates through all registered handlers on that line which then checks if that device raised the interrupt.
+When an interrupt is raised, the processor disables all interrupts (on the local processor). 
+The linux handler reenables interrupts (unless a flag was set while registering the handler) but disables the interrupt line (so none of the devices sharing can raise another interrupt) and calls the handler. For this reason, an interrupt handler need not be re-entrant. 
+An interrupt handler cannot sleep/block because there is no “process” to sleep or block. (theoretically, the process can be considered to be the process that was interrupted but seems like a design decision to not let interrupt handlers sleep or not associate interrupt handlers with a process.</p>
+<h1>HDFS proxy user setting</h1>
+<p>In addition to the modifications in core-site.xml we need to create the user and (add it to a group (?)) on the namenode. Even this is not working. It looks like the user needs to be added on the datanodes too. Is this true?
+The logs from namenode are like this: 
+2017-06-05 11:48:27,271 INFO  ipc.Server (Server.java:doRead(850)) - Socket Reader #1 for port 8020: readAndProcess from client 10.32.10.3 threw exception [org.apache.hadoop.security.authorize.AuthorizationException: Unauthorized connection for super-user: hue from IP 10.32.10.3]
+The ip 10.32.10.3 is a datanode.</p> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+        </div><!-- /.blog-main -->
+
+      </div><!-- /.row -->
+
+		  <div id="disqus_thread"></div>
+		  <script>
+			  /**
+			  * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+			  * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+			  */
+			  /*
+			  var disqus_config = function () {
+				  this.page.url = cookbook.html; // Replace PAGE_URL with your page's canonical URL variable
+				  this.page.identifier = cookbook; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+			  };
+			  */
+			  (function() { // DON'T EDIT BELOW THIS LINE
+				  var d = document, s = d.createElement('script');
+
+				  s.src = '//agsha.disqus.com/embed.js';
+
+				  s.setAttribute('data-timestamp', +new Date());
+				  (d.head || d.body).appendChild(s);
+			  })();
+		  </script>
+		  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+
+   <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  </body>
+</html>
