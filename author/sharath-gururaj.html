@@ -70,16 +70,6 @@
 		  </hr>
 
           <div class="blog-post">
-            <h2 class="blog-post-title"><a href="/notes-about-kafka-metrics.html" rel="bookmark" title="Permalink to Notes about kafka metrics">Notes about kafka metrics</a></h2>
-            <p class="blog-post-meta">Tue, 23 Aug 2016</p>
-		    <h1>Notes about kafka metrics</h1>
-<p><strong>Bytes in</strong> is number of bytes from external producers only. It does not include, for example, the bytes read by followers during replication. So <code>bytes_in = message_produce_rate * average_message_size</code></p>
-<p><strong>Bytes out</strong> includes data sent to follower also.</p> 
-          </div><!-- /.blog-post -->
-		  <hr>
-		  </hr>
-
-          <div class="blog-post">
             <h2 class="blog-post-title"><a href="/a-bangalore-software-engineers-first-trip-to-bali.html" rel="bookmark" title="Permalink to A bangalore software engineer's first trip to Bali">A bangalore software engineer's first trip to Bali</a></h2>
             <p class="blog-post-meta">Thu, 23 Jun 2016</p>
 		    <p>I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.</p>
@@ -97,47 +87,6 @@
 <div class="highlight"><pre><span></span>io = bw*runt
 io = iops*runt*bs
 issued(r …</pre></div> 
-          </div><!-- /.blog-post -->
-		  <hr>
-		  </hr>
-
-          <div class="blog-post">
-            <h2 class="blog-post-title"><a href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="bookmark" title="Permalink to C IDE with vim, cscope and grep (ag)">C IDE with vim, cscope and grep (ag)</a></h2>
-            <p class="blog-post-meta">Mon, 02 May 2016</p>
-		    <h1>Setup Cscope</h1>
-<ul>
-<li>First, Install cscope. </li>
-<li>
-<p>Next, you need a <code>cscope.files</code> with all the files that need to be indexed. In the source folder, you can do that with  </p>
-<div class="highlight"><pre><span></span><span class="n">find</span> <span class="ss">`pwd`</span> <span class="o">-</span><span class="n">name</span> <span class="s2">&quot;*.c&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="o">-</span><span class="n">name</span> <span class="s2">&quot;*.cc&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="o">-</span><span class="n">name</span> <span class="s2">&quot;*.h&quot;</span> <span class="o">&gt;</span> <span class="n">cscope</span><span class="p">.</span><span class="n">files</span>
-</pre></div>
-
-
-<p>the <code>pwd</code> is needed instead of <code>.</code> because you need …</p></li></ul> 
-          </div><!-- /.blog-post -->
-		  <hr>
-		  </hr>
-
-          <div class="blog-post">
-            <h2 class="blog-post-title"><a href="/http-and-https-proxy-with-squid.html" rel="bookmark" title="Permalink to http and https proxy with squid">http and https proxy with squid</a></h2>
-            <p class="blog-post-meta">Wed, 02 Mar 2016</p>
-		    <h3>On the client machine</h3>
-<ul>
-<li>Find out the client subnet of the form <code>10.34.44.0/22</code>. To do that, on the client machine, run <code>/sbin/ifconfig</code> to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR <a href="http://www.subnet-calculator.com/cidr.php">here</a></li>
-<li>export variables …</li></ul> 
-          </div><!-- /.blog-post -->
-		  <hr>
-		  </hr>
-
-          <div class="blog-post">
-            <h2 class="blog-post-title"><a href="/regex-recipes.html" rel="bookmark" title="Permalink to Regex recipes">Regex recipes</a></h2>
-            <p class="blog-post-meta">Sun, 21 Feb 2016</p>
-		    <p>I find myself always having to google around a lot for common regex recipes. Surprisingly, the most common cases cannot be easily found without extensive grokking.</p>
-<h3>Python examples</h3>
-<h4>Common special characters:</h4>
-<p><code>\d</code>: only digit, </p>
-<h4>Search and replace</h4>
-<p>Search for occurences of a regex string and replace it with something that …</p> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>

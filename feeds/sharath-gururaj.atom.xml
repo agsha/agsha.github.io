@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog - Sharath Gururaj</title><link href="/" rel="alternate"></link><link href="/feeds/sharath-gururaj.atom.xml" rel="self"></link><id>/</id><updated>2020-08-31T12:22:00+00:00</updated><entry><title>Cookbook</title><link href="/cookbook.html" rel="alternate"></link><published>2020-08-31T12:22:00+00:00</published><updated>2020-08-31T12:22:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2020-08-31:/cookbook.html</id><summary type="html">&lt;p&gt;This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its own. Hopefully, you'll find the table of contexts helpful to navigate.
 (the links are not working yet :( )&lt;/p&gt;
-&lt;h1&gt;Table of contents&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="table-of-contents" href="#table-of-contents"&gt;Table of contents&lt;/a&gt;&lt;/h1&gt;
 &lt;!-- toc --&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="#julia-arrays"&gt;Julia arrays&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#table-of-contents"&gt;Table of contents&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#julia-arrays"&gt;Julia Arrays&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#anaconda-dont-start-at-shell"&gt;Anaconda dont start at shell&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#how-to-mount-samba-folder-in-ubuntu"&gt;How to mount samba folder in ubuntu&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#how-to-use-du-to-search-for-hidden-folders"&gt;How to use du to search for hidden folders&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#sublime-text-keyboard-shortcuts"&gt;Sublime text keyboard shortcuts&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#making-nomachine-nx-work-on-amazon-aws-ec2"&gt;Making Nomachine nx work on amazon aws ec2&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#remote-desktop-to-raspberry-pi"&gt;Remote desktop to raspberry pi&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#echo-server-with-netcat"&gt;Echo server with netcat&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#echo-server-with-netcat"&gt;Echo server with netcat &lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#mounting-a-disk-on-gcp"&gt;Mounting a disk on GCP&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#describe-type-of-command"&gt;Describe type of command&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#linux-networking"&gt;Linux Networking&lt;/a&gt;&lt;/li&gt;
@@ -20,64 +21,63 @@
 &lt;li&gt;&lt;a href="#intellij-shortcuts"&gt;Intellij Shortcuts&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#bash-shortcuts"&gt;Bash shortcuts&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#how-to-setup-a-new-linux-machine"&gt;How to setup a new linux machine&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#python-regex-recipes"&gt;Python regex recipes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#python-regex-recipes"&gt;Python regex recipes &lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#vim-one-liners-and-shortcuts"&gt;Vim one liners and shortcuts&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#cscope-for-linux"&gt;Cscope for linux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#cscope-for-linux"&gt;Cscope for linux &lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#cscope-for-ceph"&gt;Cscope for ceph&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#building-linux"&gt;Building linux&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#using-ftrace-to-trace-linux-functions"&gt;Using Ftrace to trace linux functions&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#how-to-build-linux-on-one-machine-and-deploy-on-another"&gt;How to build linux on one machine and deploy on another&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#jemalloc"&gt;JeMalloc&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#jemalloc"&gt;JeMalloc &lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#objdump"&gt;Objdump&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#installing-latest-version-of-cmake"&gt;Installing latest version of cmake&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#getting-honest-profiler-to-work"&gt;Getting honest profiler to work&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#gcc-important-options"&gt;GCC important options&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#when-creating-a-shared-library"&gt;When creating a shared library:&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#eli-bendersky-static-linking-summary"&gt;Eli bendersky static linking summary&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#eli-bendersky-load-time-linking-summary"&gt;Eli bendersky load time linking summary&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#eli-bendersky-x32-pic-linking-summary"&gt;Eli bendersky x32 PIC linking summary&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#linux-interrupt-handling"&gt;Linux Interrupt Handling&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#hdfs-proxy-user-setting"&gt;HDFS proxy user setting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#http-proxy-with-squid"&gt;Http proxy with squid&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#kafka-metrics"&gt;kafka metrics&lt;/a&gt;
+&lt;!-- tocstop --&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;!-- tocstop --&gt;
-
-&lt;h1&gt;&lt;a name="julia-arrays"&gt;Julia Arrays&lt;/a&gt;&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="julia-arrays" href="#julia-arrays"&gt;Julia Arrays&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;tabs or spaces: concat to the right&lt;/li&gt;
 &lt;li&gt;semicolon or newline: concat to the bottom &lt;/li&gt;
 &lt;li&gt;one dimensional arrays are considered as column vectors for concatenation purposes&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1&gt;Anaconda dont start at shell&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="anaconda-dont-start-at-shell" href="#anaconda-dont-start-at-shell"&gt;Anaconda dont start at shell&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;If you'd prefer that conda's base environment not be activated on startup, &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;conda config --set auto_activate_base &lt;span class="nb"&gt;false&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;How to mount samba folder in ubuntu&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="how-to-mount-samba-folder-in-ubuntu" href="#how-to-mount-samba-folder-in-ubuntu"&gt;How to mount samba folder in ubuntu&lt;/a&gt;&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo mount -t cifs -o &lt;span class="nv"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;sharath //192.168.29.28/HOMEPI /mnt/pi
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;How to use du to search for hidden folders&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="how-to-use-du-to-search-for-hidden-folders" href="#how-to-use-du-to-search-for-hidden-folders"&gt;How to use du to search for hidden folders&lt;/a&gt;&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;du -schx .&lt;span class="o"&gt;[&lt;/span&gt;!.&lt;span class="o"&gt;]&lt;/span&gt;* *
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;To exclude other mount points use &lt;code&gt;--exclude&lt;/code&gt;&lt;/p&gt;
-&lt;h1&gt;Sublime text keyboard shortcuts&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="sublime-text-keyboard-shortcuts" href="#sublime-text-keyboard-shortcuts"&gt;Sublime text keyboard shortcuts&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Open any file &lt;code&gt;ctrl-p&lt;/code&gt;
 Open any command &lt;code&gt;ctrl-shift-p&lt;/code&gt;
 Close tab: mac &lt;code&gt;cmd+w&lt;/code&gt;
 Linux &lt;code&gt;ctrl-shift-w&lt;/code&gt;
 Jump back &lt;code&gt;alt -&lt;/code&gt; 
 forward &lt;code&gt;alt +&lt;/code&gt; &lt;/p&gt;
-&lt;h1&gt;Making Nomachine nx work on amazon aws ec2&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="making-nomachine-nx-work-on-amazon-aws-ec2" href="#making-nomachine-nx-work-on-amazon-aws-ec2"&gt;Making Nomachine nx work on amazon aws ec2&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;First, download the nx package from nomachine and &lt;code&gt;dpkg -i&lt;/code&gt; the package
 The software is installed in &lt;code&gt;/usr/NX&lt;/code&gt;
 We have to first disable password login and only use certificate login. To do this, edit the file &lt;code&gt;vim /usr/NX/etc/server.config&lt;/code&gt; and add this line. After this, restart the nx server &lt;code&gt;/usr/NX/bin/nxserver --restart&lt;/code&gt;
 Verify that password login does not work
-For resolution, the key idea is that there should be no x server running already on the machine. If there is no x server, then nx will create its own, and by default try to match the client resolution, which is what we want. Unfortunately, when we install gnome desktop, it automatically changes the systemd runlevel to graphical.target which means systemd will spawn gdm and an xserver /usr/lib/xorg/Xorg (hope you dont get into wayland and shit). So we have to change the default systemd target to shell mode, which can be done by sudo systemctl set-default multi-user.target
-To change the current target without restarting, you can do sudo systemctl set-default multi-user.target 
+For resolution, the key idea is that there should be no x server running already on the machine. If there is no x server, then nx will create its own, and by default try to match the client resolution, which is what we want. Unfortunately, when we install gnome desktop, it automatically changes the systemd runlevel to graphical.target which means systemd will spawn gdm and an xserver /usr/lib/xorg/Xorg (hope you dont get into wayland and shit). So we have to change the default systemd target to shell mode, which can be done by &lt;code&gt;sudo systemctl set-default multi-user.target&lt;/code&gt;* 
 And thats it, nx should automatically try to match client resolution if client is running in full screen mode!&lt;/p&gt;
 &lt;p&gt;Sometimes, you will see a black screen when you login, to solve this&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service gdm stop
@@ -85,16 +85,16 @@ And thats it, nx should automatically try to match client resolution if client i
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;Remote desktop to raspberry pi&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="remote-desktop-to-raspberry-pi" href="#remote-desktop-to-raspberry-pi"&gt;Remote desktop to raspberry pi&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;We will use real vnc. From terminal, ssh to raspberry pi. On the pi run
 &lt;code&gt;vncserver -geometry 1920x1080&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;From the client, run vncviewer from real vnc and login. You have to do this every time you want to login&lt;/p&gt;
-&lt;h1&gt;Echo server with netcat&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="echo-server-with-netcat" href="#echo-server-with-netcat"&gt;Echo server with netcat &lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Server
 &lt;code&gt;ncat -e /bin/cat -k  -l 8888 &amp;lt;ip&amp;gt;&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Client 
 &lt;code&gt;telnet ip 8888&lt;/code&gt;&lt;/p&gt;
-&lt;h1&gt;Mounting a disk on GCP&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="mounting-a-disk-on-gcp" href="#mounting-a-disk-on-gcp"&gt;Mounting a disk on GCP&lt;/a&gt;&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo lsblk
 sudo mkdir -p /mnt/disks/sdb
 sudo cp /etc/fstab /etc/fstab.backup
@@ -105,9 +105,9 @@ Sudo mount -a
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;Describe type of command&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="describe-type-of-command" href="#describe-type-of-command"&gt;Describe type of command&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;type ls&lt;/code&gt;&lt;/p&gt;
-&lt;h1&gt;Linux Networking&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="linux-networking" href="#linux-networking"&gt;Linux Networking&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;Netfilter&lt;/strong&gt;: linux component which has various hooks for network packet manipulation
@@ -123,7 +123,7 @@ The netfilter hooks are exposed through various  userspace programs: notably &lt
 &lt;li&gt;&lt;strong&gt;Bridge&lt;/strong&gt;: when referring to a hardware device it is a connector at L2. i.e., it learns mac addresses and forwards packets from one network to another switch is also essentially the same thing&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Linux software bridge device&lt;/strong&gt;:  is a software network_interface which acts like a bridge between two other network interfaces&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1&gt;Postgres&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="postgres" href="#postgres"&gt;Postgres&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;To create a data directory, first &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir -p /path/to/data
 chown postgres  /path/to/data
@@ -169,24 +169,28 @@ create database sharath&lt;span class="p"&gt;;&lt;/span&gt;
 
 &lt;p&gt;To view the logs
 &lt;code&gt;sudo grep SQLEditor /var/lib/postgresql/12/main/log/* |grep -v pg_catalog | grep -v SHOW | grep -v current_schema&lt;/code&gt;&lt;/p&gt;
-&lt;h1&gt;Intellij Shortcuts&lt;/h1&gt;
-&lt;p&gt;Ctrl+shift+enter to complete statement after code completion. Its pretty magical. 
-Alt+j to select all instances
-Tab after ctrl-space overwrites rather than insert
-Ctrl+alt-l to reformat whole file or selections
-Ctrl+shift+i to see the definition (code) for the method
-F2 to go to next highlighted error
-F4 go to definition
-Ctrl-f12 to see the file structure
-Ctrl+shift+numpad- collapse all&lt;/p&gt;
-&lt;h1&gt;Bash shortcuts&lt;/h1&gt;
-&lt;p&gt;Alt-B back one word
-Alt-f forward one word
-Ctrl-w delete back one word
-alt-D delete till end of word
-Ctrl-U delete to start of line
-Ctrl-k delete to end of line&lt;/p&gt;
-&lt;h1&gt;How to setup a new linux machine&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="intellij-shortcuts" href="#intellij-shortcuts"&gt;Intellij Shortcuts&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Ctrl+shift+enter to complete statement after code completion. Its pretty magical. &lt;/li&gt;
+&lt;li&gt;Alt+j to select all instances&lt;/li&gt;
+&lt;li&gt;Tab after ctrl-space overwrites rather than insert&lt;/li&gt;
+&lt;li&gt;Ctrl+alt-l to reformat whole file or selections&lt;/li&gt;
+&lt;li&gt;Ctrl+shift+i to see the definition (code) for the method&lt;/li&gt;
+&lt;li&gt;F2 to go to next highlighted error&lt;/li&gt;
+&lt;li&gt;F4 go to definition&lt;/li&gt;
+&lt;li&gt;Ctrl-f12 to see the file structure&lt;/li&gt;
+&lt;li&gt;Ctrl+shift+numpad- collapse all&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;&lt;a name="bash-shortcuts" href="#bash-shortcuts"&gt;Bash shortcuts&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Alt-B back one word&lt;/li&gt;
+&lt;li&gt;Alt-f forward one word&lt;/li&gt;
+&lt;li&gt;Ctrl-w delete back one word&lt;/li&gt;
+&lt;li&gt;alt-D delete till end of word&lt;/li&gt;
+&lt;li&gt;Ctrl-U delete to start of line&lt;/li&gt;
+&lt;li&gt;Ctrl-k delete to end of line&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;&lt;a name="how-to-setup-a-new-linux-machine" href="#how-to-setup-a-new-linux-machine"&gt;How to setup a new linux machine&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;First, login as root. Here nm&amp;gt; means new machine and local&amp;gt; means laptop&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nm&amp;gt; 
 adduser -u &lt;span class="m"&gt;1001&lt;/span&gt; sharath&lt;span class="p"&gt;;&lt;/span&gt;
@@ -222,16 +226,18 @@ rm /tmp/ak
 
 
 &lt;p&gt;Bob should be your uncle&lt;/p&gt;
-&lt;h1&gt;Python regex recipes&lt;/h1&gt;
-&lt;p&gt;\s whitespace
-\S non whitespace
-\d only digits
-\D non digits
-\w alphanumeric [a-zA-Z0-9_]
-\W non-alphanumeric
-\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3} ip regex&lt;/p&gt;
+&lt;h1&gt;&lt;a name="python-regex-recipes" href="#python-regex-recipes"&gt;Python regex recipes &lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;\s whitespace&lt;/li&gt;
+&lt;li&gt;\S non whitespace&lt;/li&gt;
+&lt;li&gt;\d only digits&lt;/li&gt;
+&lt;li&gt;\D non digits&lt;/li&gt;
+&lt;li&gt;\w alphanumeric [a-zA-Z0-9_]&lt;/li&gt;
+&lt;li&gt;\W non-alphanumeric&lt;/li&gt;
+&lt;li&gt;\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3} ip regex&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;groups enclose in (), numbered from x.group(1)
-named groups like this (?P&amp;lt;name) access with x.group("name")&lt;/p&gt;
+named groups like this &lt;code&gt;(?P&amp;lt;name) access with x.group("name")&lt;/code&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;regexStr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;finditer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -244,23 +250,25 @@ named groups like this (?P&amp;lt;name) access with x.group("name")&lt;/p&gt;
 
 &lt;p&gt;prints &lt;code&gt;4 socks and 3 shoes&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;validate a regex on https://regex101.com/&lt;/p&gt;
-&lt;h1&gt;Vim one liners and shortcuts&lt;/h1&gt;
-&lt;p&gt;gd will go to local definition
-gD will go to global definition 
-,c&lt;space&gt; toggle comment
-&lt;ctrl&gt;]  goes to a tag
-&lt;ctrl&gt;o (“old” comes back from a jump)
-&lt;ctrl&gt; i (opposite of &lt;ctrl&gt;o
-Split window ctrl-w v or o
-Scroll up/down, keeping your cursor in its row
-One line
-Ctrl+Y → Move viewport down
-Ctrl+E → Move viewport up (Extra lines)
-Column select &lt;ctrl&gt;v 
-Go to beginning of function (go to { in first column: needs coding convention) [[ 
-End of function ]]
-Beginning of code block: [{ this one should work better with messed up coding convention&lt;/p&gt;
-&lt;h1&gt;Cscope for linux&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="vim-one-liners-and-shortcuts" href="#vim-one-liners-and-shortcuts"&gt;Vim one liners and shortcuts&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;gd will go to local definition&lt;/li&gt;
+&lt;li&gt;gD will go to global definition &lt;/li&gt;
+&lt;li&gt;,c&lt;space&gt; toggle comment&lt;/li&gt;
+&lt;li&gt;&lt;ctrl&gt;]  goes to a tag&lt;/li&gt;
+&lt;li&gt;&lt;ctrl&gt;o (“old” comes back from a jump)&lt;/li&gt;
+&lt;li&gt;&lt;ctrl&gt; i (opposite of &lt;ctrl&gt;o&lt;/li&gt;
+&lt;li&gt;Split window ctrl-w v or o&lt;/li&gt;
+&lt;li&gt;Scroll up/down, keeping your cursor in its row&lt;/li&gt;
+&lt;li&gt;One line&lt;/li&gt;
+&lt;li&gt;Ctrl+Y → Move viewport down&lt;/li&gt;
+&lt;li&gt;Ctrl+E → Move viewport up (Extra lines)&lt;/li&gt;
+&lt;li&gt;Column select &lt;ctrl&gt;v &lt;/li&gt;
+&lt;li&gt;Go to beginning of function (go to { in first column: needs coding convention) [[ &lt;/li&gt;
+&lt;li&gt;End of function ]]&lt;/li&gt;
+&lt;li&gt;Beginning of code block: [{ this one should work better with messed up coding convention&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;&lt;a name="cscope-for-linux" href="#cscope-for-linux"&gt;Cscope for linux &lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;To apply debian patches use &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;LNX&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/sharath/os/linux/linux-5.4.0
 quilt push -a 
@@ -278,13 +286,13 @@ cscope -q -R -b -i cscope.files
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;Cscope for ceph&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="cscope-for-ceph" href="#cscope-for-ceph"&gt;Cscope for ceph&lt;/a&gt;&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;find /mnt/disks/sdb/ceph-pristine -type f -and &lt;span class="se"&gt;\(&lt;/span&gt; -name &lt;span class="s2"&gt;&amp;quot;*.c&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.h&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.cc&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.cpp&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.hh&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\)&lt;/span&gt; &amp;gt; zoo.cscope
 cscope -q -R -b -i zoo.cscope 
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;Building linux&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="building-linux" href="#building-linux"&gt;Building linux&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;You can get the linux source from 
 &lt;code&gt;apt-get source linux-image-unsigned-$(uname -r)&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;You can get the config file from 
@@ -300,7 +308,7 @@ update-grub
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;Using Ftrace to trace linux functions&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="using-ftrace-to-trace-linux-functions" href="#using-ftrace-to-trace-linux-functions"&gt;Using Ftrace to trace linux functions&lt;/a&gt;&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee  /sys/kernel/debug/tracing/tracing_on
 And &lt;span class="k"&gt;then&lt;/span&gt; use brendan greggs perf-tools
 sudo ./funcgraph -D  ext4_readpages &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /mnt/tmpfs/write
@@ -308,7 +316,7 @@ sudo ./funcgraph -Dp &lt;span class="m"&gt;51985&lt;/span&gt;  ext4_readpages &l
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;How to build linux on one machine and deploy on another&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="how-to-build-linux-on-one-machine-and-deploy-on-another" href="#how-to-build-linux-on-one-machine-and-deploy-on-another"&gt;How to build linux on one machine and deploy on another&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Use “building linux” to build linux on one machine A. Suppose you want to install it on machine B
 On machine B&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Mkdir -p ~/kernel/boot
@@ -338,7 +346,7 @@ Sudo reboot now
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;JeMalloc&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="jemalloc" href="#jemalloc"&gt;JeMalloc &lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Do a git clone.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./autogen.sh 
 ./configure --enable-prof --enable-stats --enable-debug
@@ -365,7 +373,7 @@ Active .. multiple of page size.. Total bytes in pages that have at least one by
 Resident: active + metadata 
 Mapped: multiple of chunk size. Total chunks that have one byte of allocated 
 See that man pages for a clear explanation.&lt;/p&gt;
-&lt;h1&gt;Objdump&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="objdump" href="#objdump"&gt;Objdump&lt;/a&gt;&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;objdump -drSt hello.o
 -d dissasemble
 -r show relocation info inline
@@ -374,11 +382,11 @@ See that man pages for a clear explanation.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;Installing latest version of cmake&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="installing-latest-version-of-cmake" href="#installing-latest-version-of-cmake"&gt;Installing latest version of cmake&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Either apt-get install cmake or get it from here
 https://cmake.org/download/
 https://cmake.org/files/v3.8/cmake-3.8.0-rc4-Linux-x86_64.sh and run it&lt;/p&gt;
-&lt;h1&gt;Getting honest profiler to work&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="getting-honest-profiler-to-work" href="#getting-honest-profiler-to-work"&gt;Getting honest profiler to work&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Installing it: 
 If you’re lucky, you can download it and it works http://insightfullogic.com/honest-profiler.zip&lt;/p&gt;
 &lt;p&gt;Otherwise you need to build it. To build it, if you get weird errors, you might need to get latest version of Cmake, and then build it. You need build/libagent.so&lt;/p&gt;
@@ -391,7 +399,7 @@ If you’re lucky, you can download it and it works http://insightfullogic.com/h
 
 
 &lt;p&gt;Collapse the stacks with &lt;code&gt;java -cp $HONEST_PROFILER_HOME/honest-profiler.jar com.insightfullogic.honest_profiler.ports.console.FlameGraphDumperApplication netty.hpl netty.cstk&lt;/code&gt;&lt;/p&gt;
-&lt;h1&gt;GCC important options&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="gcc-important-options" href="#gcc-important-options"&gt;GCC important options&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;The linker &lt;code&gt;ld&lt;/code&gt; takes as input .c files, .o files, .so files and can output an executable or a shared library.
 The linker does not output static library. You can simply use ar for it&lt;/p&gt;
 &lt;p&gt;Gcc important options
@@ -410,19 +418,19 @@ Or you cannot link a static library in a shared way by using -L and -l options (
 &lt;p&gt;Static libraries can be linked (statically) by specifying them as input files to gcc. Remember: static libraries are just a bunch of .o files 
 You cannot skip specifying a shared library while linking to create an executable (although, technically they are not needed)  all variables must be resolved, which means that all shared libraries have to be specified (strictly not required, i guess its a sanity check) this has the effect of  listing in the executable as a dependency     &lt;/p&gt;
 &lt;p&gt;For &lt;code&gt;LD_PRELOAD&lt;/code&gt; to work, you have to specify -Wl,-soname,libml.so while having created that shared library this name is hardcoded into the so as its name, and this is the name that the linker looks at while loading the executable, not the file name of the .so&lt;/p&gt;
-&lt;h1&gt;When creating a shared library:&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="when-creating-a-shared-library:" href="#when-creating-a-shared-library:"&gt;When creating a shared library:&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;All object files must be compiled with -fpic
 All ar files must have .o files which have been compiled with -fpic
 If you specify multiple .so on command line, they will be combined into 1 .so as expected, with references resolved internally 
 If a dependency is unmet (by not specifying some libraries at all) it is defined as undefined but linking succeeds
 If a dependency is met by -L. -lxxx then it is undefined in the .so but that lib is listed as a dependency&lt;/p&gt;
-&lt;h1&gt;Eli bendersky static linking summary&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="eli-bendersky-static-linking-summary" href="#eli-bendersky-static-linking-summary"&gt;Eli bendersky static linking summary&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Static linking algorithm perfectly explained in http://eli.thegreenplace.net/2013/07/09/library-order-in-static-linking
 Some important points
 * An object file both exports and imports symbols 
 * individual object files specified on cmd line are always linked
 * static libraries (ar) libraries serve only to provide a list of object files, and an object file in a library is linked only if it satisfies some current unmet dependency &lt;/p&gt;
-&lt;h1&gt;Eli bendersky load time linking summary&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="eli-bendersky-load-time-linking-summary" href="#eli-bendersky-load-time-linking-summary"&gt;Eli bendersky load time linking summary&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Summary of load time linking as specified in http://eli.thegreenplace.net/2011/08/25/load-time-relocation-of-shared-libraries&lt;/p&gt;
 &lt;p&gt;Some gotchas: 
 * Call operands are rip relative, but mov operands are absolute. In x86_64, there is a new addressing called RIP relative where any operand can be RIP relative.
@@ -435,22 +443,82 @@ The loader will add this offset to the load address to get the real address
 The linker also populates a list where the real address has to be patched into the code. 
 The loader will then patch the addresses in
 Thats it.&lt;/p&gt;
-&lt;h1&gt;Eli bendersky x32 PIC linking summary&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="eli-bendersky-x32-pic-linking-summary" href="#eli-bendersky-x32-pic-linking-summary"&gt;Eli bendersky x32 PIC linking summary&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;http://eli.thegreenplace.net/2011/11/03/position-independent-code-pic-in-shared-libraries&lt;/p&gt;
 &lt;p&gt;Instead of direct patching in the code, the real addresses of shared variables are stored in a GOT table in the data section. 
 For mov operands, x32 does not support rip relative addresses, so there is a hack to get current rip address, then add the offset of the got table, and thus get the address of the variable&lt;/p&gt;
 &lt;p&gt;For call instructions, they are still using the hack but call supports rip relative addressing. So not sure what is happening,&lt;/p&gt;
-&lt;h1&gt;Linux Interrupt Handling&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="linux-interrupt-handling" href="#linux-interrupt-handling"&gt;Linux Interrupt Handling&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Peripheral devices pass interrupt to the interrupt controller (8259) which then passes it to processor on a given interrupt line.
 An Interrupt line can be shared by multiple devices. To detect which device raised the interrupt, the linux interrupt handler iterates through all registered handlers on that line which then checks if that device raised the interrupt.
 When an interrupt is raised, the processor disables all interrupts (on the local processor). 
 The linux handler reenables interrupts (unless a flag was set while registering the handler) but disables the interrupt line (so none of the devices sharing can raise another interrupt) and calls the handler. For this reason, an interrupt handler need not be re-entrant. 
 An interrupt handler cannot sleep/block because there is no “process” to sleep or block. (theoretically, the process can be considered to be the process that was interrupted but seems like a design decision to not let interrupt handlers sleep or not associate interrupt handlers with a process.&lt;/p&gt;
-&lt;h1&gt;HDFS proxy user setting&lt;/h1&gt;
+&lt;h1&gt;&lt;a name="hdfs-proxy-user-setting" href="#hdfs-proxy-user-setting"&gt;HDFS proxy user setting&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;In addition to the modifications in core-site.xml we need to create the user and (add it to a group (?)) on the namenode. Even this is not working. It looks like the user needs to be added on the datanodes too. Is this true?
-The logs from namenode are like this: 
-2017-06-05 11:48:27,271 INFO  ipc.Server (Server.java:doRead(850)) - Socket Reader #1 for port 8020: readAndProcess from client 10.32.10.3 threw exception [org.apache.hadoop.security.authorize.AuthorizationException: Unauthorized connection for super-user: hue from IP 10.32.10.3]
-The ip 10.32.10.3 is a datanode.&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>The quest for high throughput RPC</title><link href="/the-quest-for-high-throughput-rpc.html" rel="alternate"></link><published>2018-07-07T00:30:00+00:00</published><updated>2018-07-07T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2018-07-07:/the-quest-for-high-throughput-rpc.html</id><summary type="html">&lt;p&gt;In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around &lt;code&gt;1000 req/sec&lt;/code&gt;, whereas a prototype implementation of this technique gives around &lt;code&gt;4 million req/sec&lt;/code&gt; for a “hello world” rpc …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around &lt;code&gt;1000 req/sec&lt;/code&gt;, whereas a prototype implementation of this technique gives around &lt;code&gt;4 million req/sec&lt;/code&gt; for a “hello world” rpc&lt;/p&gt;
+The logs from namenode are like this: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;2017-06-05 11:48:27,271 INFO  ipc.Server (Server.java:doRead(850)) - Socket Reader #1 for port 8020: readAndProcess from client 10.32.10.3 threw exception [org.apache.hadoop.security.authorize.AuthorizationException: Unauthorized connection for super-user: hue from IP 10.32.10.3]
+The ip 10.32.10.3 is a datanode.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;&lt;a name="http-proxy-with-squid" href="#http-proxy-with-squid"&gt;Http proxy with squid&lt;/a&gt;&lt;/h1&gt;
+&lt;h3&gt;On the client machine&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Find out the client subnet of the form &lt;code&gt;10.34.44.0/22&lt;/code&gt;. To do that, on the client machine, run &lt;code&gt;/sbin/ifconfig&lt;/code&gt; to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR &lt;a href="http://www.subnet-calculator.com/cidr.php"&gt;here&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;export variables: 
+  &lt;code&gt;text
+  export http_proxy=http://client.ip.ad.ress:port/
+  export https_proxy=http://client.ip.ad.ress:port/&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Caveat&lt;/h3&gt;
+&lt;p&gt;if you run sudo, make sure the variables are exported in root&lt;/p&gt;
+&lt;h3&gt;On the proxy machine&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Install squid: &lt;code&gt;sudo apt-get install squid&lt;/code&gt;. &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;change /etc/squid/squid.conf to add these lines
+   &lt;code&gt;text
+   acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
+   http_access allow wormhole # wormhole is just a name
+   icp_access allow wormhole&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;restart squid &lt;code&gt;sudo /etc/squid/squid.conf restart&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And thats it! &lt;code&gt;curl -L www.google.com&lt;/code&gt; (&lt;code&gt;-L&lt;/code&gt; to follow redirects) will work.&lt;/p&gt;
+&lt;p&gt;I needed this for &lt;code&gt;pip&lt;/code&gt;. With my setup, I can do &lt;code&gt;sudo export &amp;lt;blah&amp;gt;;export&amp;lt;blah&amp;gt;;pip install &amp;lt;package&amp;gt;&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;FYI, my squid version is&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
+Package: squid
+Status: install ok installed
+Priority: optional
+Section: web
+Installed-Size: 1864
+Maintainer: Luigi Gangitano &amp;lt;luigi@debian.org&amp;gt;
+Architecture: amd64
+Version: 2.7.STABLE9-4.1+deb7u1
+Replaces: squid-novm
+Depends: libc6 (&amp;gt;= 2.7), libcomerr2 (&amp;gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&amp;gt;= 1.10+dfsg~), libkrb5-3 (&amp;gt;= 1.6.dfsg.2), libldap-2.4-2 (&amp;gt;= 2.4.7), libpam0g (&amp;gt;= 0.99.7.1), netbase, adduser, logrotate (&amp;gt;= 3.5.4-1), squid-common (&amp;gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&amp;gt;= 3.2-14), perl-modules
+Pre-Depends: debconf (&amp;gt;= 1.2.9) | debconf-2.0
+Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&amp;gt;= 0.40), smbclient, winbind
+Conflicts: sarg (&amp;lt;&amp;lt; 1.1.1-2), squid-novm
+Conffiles:
+ /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe
+ /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311
+ /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e
+Description: Internet object cache (WWW proxy cache)
+ This package provides the Squid Internet Object Cache developed by
+ the National Laboratory for Applied Networking Research (NLANR) and
+ Internet volunteers.
+Homepage: http://www.squid-cache.org/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;&lt;a name="kafka-metrics" href="#kafka-metrics"&gt;kafka metrics&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Bytes in&lt;/strong&gt; is number of bytes from external producers only. It does not include, for example, the bytes read by followers during replication. So &lt;code&gt;bytes_in = message_produce_rate * average_message_size&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bytes out&lt;/strong&gt; includes data sent to follower also.&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>The quest for high throughput RPC</title><link href="/the-quest-for-high-throughput-rpc.html" rel="alternate"></link><published>2018-07-07T00:30:00+00:00</published><updated>2018-07-07T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2018-07-07:/the-quest-for-high-throughput-rpc.html</id><summary type="html">&lt;p&gt;In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around &lt;code&gt;1000 req/sec&lt;/code&gt;, whereas a prototype implementation of this technique gives around &lt;code&gt;4 million req/sec&lt;/code&gt; for a “hello world” rpc …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around &lt;code&gt;1000 req/sec&lt;/code&gt;, whereas a prototype implementation of this technique gives around &lt;code&gt;4 million req/sec&lt;/code&gt; for a “hello world” rpc&lt;/p&gt;
 &lt;p&gt;Lots of companies these days use a microservices architecture, where the application as a whole is split into multiple smaller microservices communicating over the network. What follows in the post is heavy on numbers, which admittedly is boring to parse and makes it a little dry. A nanosec, microsec and a millisec might all just seem like a really small amount of time for humans but the distance between them is vast. If we were to blow up the numbers to human scale and make a nanosec as a second, then it would take one nanosec to pick up a pen next to your laptop, one microsec is a 20 min bike ride, and 1 millisec is a bike ride from bangalore to indore!&lt;/p&gt;
 &lt;p&gt;For the time being, I’m going to consider two communicating processes on localhost so we don’t have to worry about network transmission latency for now
 Our goal is to exchange 100 byte messages as fast as we can between two processes with a cap on (say 95% percentile) latency (say, &lt;code&gt;&amp;lt;5 ms&lt;/code&gt;)&lt;/p&gt;
@@ -621,9 +689,7 @@ and here’s a cat of all the previous tables&lt;/li&gt;
 &lt;td&gt;3M req/s (haven't tested)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>Notes about kafka metrics</title><link href="/notes-about-kafka-metrics.html" rel="alternate"></link><published>2016-08-23T00:30:00+00:00</published><updated>2016-08-23T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-08-23:/notes-about-kafka-metrics.html</id><content type="html">&lt;h1&gt;Notes about kafka metrics&lt;/h1&gt;
-&lt;p&gt;&lt;strong&gt;Bytes in&lt;/strong&gt; is number of bytes from external producers only. It does not include, for example, the bytes read by followers during replication. So &lt;code&gt;bytes_in = message_produce_rate * average_message_size&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Bytes out&lt;/strong&gt; includes data sent to follower also.&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>A bangalore software engineer's first trip to Bali</title><link href="/a-bangalore-software-engineers-first-trip-to-bali.html" rel="alternate"></link><published>2016-06-23T00:30:00+00:00</published><updated>2016-06-23T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-06-23:/a-bangalore-software-engineers-first-trip-to-bali.html</id><summary type="html">&lt;p&gt;I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.&lt;/p&gt;
+&lt;/table&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>A bangalore software engineer's first trip to Bali</title><link href="/a-bangalore-software-engineers-first-trip-to-bali.html" rel="alternate"></link><published>2016-06-23T00:30:00+00:00</published><updated>2016-06-23T00:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-06-23:/a-bangalore-software-engineers-first-trip-to-bali.html</id><summary type="html">&lt;p&gt;I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.&lt;/p&gt;
 &lt;h3&gt;Flight&lt;/h3&gt;
 &lt;p&gt;If you're …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.&lt;/p&gt;
 &lt;h3&gt;Flight&lt;/h3&gt;
@@ -786,137 +852,7 @@ expected iops = ((3)+(1)/(2)) / 60
 &lt;p&gt;With the above formula, the errors of expected vs actual are 
 10.11%, 1.39%, 2.22%, 3.41%, 9.97%&lt;/p&gt;
 &lt;p&gt;The 10% variation is not unreasonable with the complicated L* cache hierarchies of modern processors&lt;/p&gt;
-&lt;p&gt;The bw graph is simply iops * bs&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>C IDE with vim, cscope and grep (ag)</title><link href="/c-ide-with-vim-cscope-and-grep-ag.html" rel="alternate"></link><published>2016-05-02T22:20:00+00:00</published><updated>2016-05-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-05-02:/c-ide-with-vim-cscope-and-grep-ag.html</id><summary type="html">&lt;h1&gt;Setup Cscope&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;First, Install cscope. &lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Next, you need a &lt;code&gt;cscope.files&lt;/code&gt; with all the files that need to be indexed. In the source folder, you can do that with  &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt; &lt;span class="ss"&gt;`pwd`&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.c&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.cc&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.h&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cscope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;files&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;the &lt;code&gt;pwd&lt;/code&gt; is needed instead of &lt;code&gt;.&lt;/code&gt; because you need …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h1&gt;Setup Cscope&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;First, Install cscope. &lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Next, you need a &lt;code&gt;cscope.files&lt;/code&gt; with all the files that need to be indexed. In the source folder, you can do that with  &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt; &lt;span class="ss"&gt;`pwd`&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.c&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.cc&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*.h&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cscope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;files&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;the &lt;code&gt;pwd&lt;/code&gt; is needed instead of &lt;code&gt;.&lt;/code&gt; because you need &lt;code&gt;find&lt;/code&gt; to print absolute pathnames.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Now, build the cscope database.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;cscope -q -R -b -i cscope.files&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;This command will build &lt;code&gt;cscope.out&lt;/code&gt;. &lt;code&gt;-q&lt;/code&gt; to build an efficient database, &lt;code&gt;-b&lt;/code&gt; to build just the database. &lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Start up vim and issue the command&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;:cs add ~/code/ceph/cscope.out&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;which will add the cscope database. Vim has built in support for cscope in the form of the &lt;code&gt;:cs&lt;/code&gt; command. But it does &lt;em&gt;not&lt;/em&gt; have useful keybindings setup. For that, you need &lt;code&gt;cscopes_map.vim&lt;/code&gt; (which I've sourced in the &lt;code&gt;.vimrc&lt;/code&gt;). You're all set now. Some basic comands:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;C-\ s&lt;/code&gt; to find a symbol &lt;/li&gt;
-&lt;li&gt;&lt;code&gt;C-\ c&lt;/code&gt; to find all callers&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;C-\ f&lt;/code&gt; to find global definitions&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;:help cscope&lt;/code&gt; for more&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1&gt;Setup ctags&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;Install ctags.&lt;/li&gt;
-&lt;li&gt;cd to the source folder and build the ctags index with &lt;code&gt;ctags -R .&lt;/code&gt; (&lt;code&gt;-R&lt;/code&gt; is for recursive).&lt;/li&gt;
-&lt;li&gt;In vim, you need to do &lt;code&gt;:set tags=/path/to/tags&lt;/code&gt;. Unfortunately, you need to do this everytime you start vim. (how to avoid it?)&lt;/li&gt;
-&lt;li&gt;use &lt;code&gt;C-]&lt;/code&gt; to show a list of tags under the cursor. &lt;code&gt;C-o&lt;/code&gt; or &lt;code&gt;C-t&lt;/code&gt; to go back.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1&gt;Some Vim shortcuts I would like to remember:&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;[[&lt;/code&gt; moves to the previous curly brace on column 0 (1?) &lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Ctrl-O&lt;/code&gt; and &lt;code&gt;Ctrl-I&lt;/code&gt; last location before jump&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;[{&lt;/code&gt; jump to begining of current block! (Or you can search backward for &lt;code&gt;{&lt;/code&gt;!&lt;/li&gt;
-&lt;/ul&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>http and https proxy with squid</title><link href="/http-and-https-proxy-with-squid.html" rel="alternate"></link><published>2016-03-02T10:20:00+00:00</published><updated>2016-03-02T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-03-02:/http-and-https-proxy-with-squid.html</id><summary type="html">&lt;h3&gt;On the client machine&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;Find out the client subnet of the form &lt;code&gt;10.34.44.0/22&lt;/code&gt;. To do that, on the client machine, run &lt;code&gt;/sbin/ifconfig&lt;/code&gt; to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR &lt;a href="http://www.subnet-calculator.com/cidr.php"&gt;here&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;export variables …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h3&gt;On the client machine&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;Find out the client subnet of the form &lt;code&gt;10.34.44.0/22&lt;/code&gt;. To do that, on the client machine, run &lt;code&gt;/sbin/ifconfig&lt;/code&gt; to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR &lt;a href="http://www.subnet-calculator.com/cidr.php"&gt;here&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;export variables: 
-  &lt;code&gt;text
-  export http_proxy=http://client.ip.ad.ress:port/
-  export https_proxy=http://client.ip.ad.ress:port/&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3&gt;Caveat&lt;/h3&gt;
-&lt;p&gt;if you run sudo, make sure the variables are exported in root&lt;/p&gt;
-&lt;h3&gt;On the proxy machine&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;Install squid: &lt;code&gt;sudo apt-get install squid&lt;/code&gt;. &lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;change /etc/squid/squid.conf to add these lines
-   &lt;code&gt;text
-   acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
-   http_access allow wormhole # wormhole is just a name
-   icp_access allow wormhole&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;restart squid &lt;code&gt;sudo /etc/squid/squid.conf restart&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;And thats it! &lt;code&gt;curl -L www.google.com&lt;/code&gt; (&lt;code&gt;-L&lt;/code&gt; to follow redirects) will work.&lt;/p&gt;
-&lt;p&gt;I needed this for &lt;code&gt;pip&lt;/code&gt;. With my setup, I can do &lt;code&gt;sudo export &amp;lt;blah&amp;gt;;export&amp;lt;blah&amp;gt;;pip install &amp;lt;package&amp;gt;&lt;/code&gt;. &lt;/p&gt;
-&lt;p&gt;FYI, my squid version is&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
-Package: squid
-Status: install ok installed
-Priority: optional
-Section: web
-Installed-Size: 1864
-Maintainer: Luigi Gangitano &amp;lt;luigi@debian.org&amp;gt;
-Architecture: amd64
-Version: 2.7.STABLE9-4.1+deb7u1
-Replaces: squid-novm
-Depends: libc6 (&amp;gt;= 2.7), libcomerr2 (&amp;gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&amp;gt;= 1.10+dfsg~), libkrb5-3 (&amp;gt;= 1.6.dfsg.2), libldap-2.4-2 (&amp;gt;= 2.4.7), libpam0g (&amp;gt;= 0.99.7.1), netbase, adduser, logrotate (&amp;gt;= 3.5.4-1), squid-common (&amp;gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&amp;gt;= 3.2-14), perl-modules
-Pre-Depends: debconf (&amp;gt;= 1.2.9) | debconf-2.0
-Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&amp;gt;= 0.40), smbclient, winbind
-Conflicts: sarg (&amp;lt;&amp;lt; 1.1.1-2), squid-novm
-Conffiles:
- /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe
- /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311
- /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e
-Description: Internet object cache (WWW proxy cache)
- This package provides the Squid Internet Object Cache developed by
- the National Laboratory for Applied Networking Research (NLANR) and
- Internet volunteers.
-Homepage: http://www.squid-cache.org/
-&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="regex"></category></entry><entry><title>Regex recipes</title><link href="/regex-recipes.html" rel="alternate"></link><published>2016-02-21T10:20:00+00:00</published><updated>2016-02-21T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-21:/regex-recipes.html</id><summary type="html">&lt;p&gt;I find myself always having to google around a lot for common regex recipes. Surprisingly, the most common cases cannot be easily found without extensive grokking.&lt;/p&gt;
-&lt;h3&gt;Python examples&lt;/h3&gt;
-&lt;h4&gt;Common special characters:&lt;/h4&gt;
-&lt;p&gt;&lt;code&gt;\d&lt;/code&gt;: only digit, &lt;/p&gt;
-&lt;h4&gt;Search and replace&lt;/h4&gt;
-&lt;p&gt;Search for occurences of a regex string and replace it with something that …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I find myself always having to google around a lot for common regex recipes. Surprisingly, the most common cases cannot be easily found without extensive grokking.&lt;/p&gt;
-&lt;h3&gt;Python examples&lt;/h3&gt;
-&lt;h4&gt;Common special characters:&lt;/h4&gt;
-&lt;p&gt;&lt;code&gt;\d&lt;/code&gt;: only digit, &lt;/p&gt;
-&lt;h4&gt;Search and replace&lt;/h4&gt;
-&lt;p&gt;Search for occurences of a regex string and replace it with something that depends on the actual value of the string.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
-&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;(blue|red)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;())),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blue socks and red shoes&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;output: &lt;code&gt;4 socks and 3 shoes&lt;/code&gt;&lt;/p&gt;
-&lt;h4&gt;Find all ip addresses in a text&lt;/h4&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;p = re.compile(r&amp;quot;\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}[^0-9]&amp;quot;)
-s = &amp;quot;Runbook:blah blah  IP:10.34.249.124 blah blah IP:10.33.157.166&amp;quot;
-print p.findall(s)
-&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="regex"></category></entry><entry><title>Setting up a ceph cluster</title><link href="/setting-up-a-ceph-cluster.html" rel="alternate"></link><published>2016-02-07T10:20:00+00:00</published><updated>2016-02-07T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-07:/setting-up-a-ceph-cluster.html</id><summary type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;The bw graph is simply iops * bs&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>Setting up a ceph cluster</title><link href="/setting-up-a-ceph-cluster.html" rel="alternate"></link><published>2016-02-07T10:20:00+00:00</published><updated>2016-02-07T10:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-07:/setting-up-a-ceph-cluster.html</id><summary type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Furthermore, to launch a radosgw instance, you &lt;em&gt;need&lt;/em&gt; to have …&lt;/p&gt;</summary><content type="html">&lt;p&gt;The instructions &lt;a href="http://docs.ceph.com/docs/hammer/install/manual-deployment/"&gt;here&lt;/a&gt; mostly work. Except that the &lt;code&gt;ceph.conf&lt;/code&gt; file  given there doesnt work. Because, when I issue &lt;code&gt;sudo /etc/init.d/ceph start mon.node1&lt;/code&gt; in the end, It expects a section in &lt;code&gt;ceph.   conf&lt;/code&gt; called &lt;code&gt;[mon.node1]&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Furthermore, to launch a radosgw instance, you &lt;em&gt;need&lt;/em&gt; to have a section in your host file called &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and your  keyring should have a corresponding key section called  &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and you should have imported that key into ceph    via &lt;code&gt;sudo ceph auth import -i /etc/ceph/&amp;lt;keyring_file&amp;gt;&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;All the three names must match: the one in ceph.conf, in the keyring and in &lt;code&gt;ceph auth list&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;

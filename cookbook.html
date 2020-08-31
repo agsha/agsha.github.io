@@ -47,18 +47,19 @@
             <p class="blog-post-meta">Mon, 31 Aug 2020</p>
 		    <p>This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its own. Hopefully, you'll find the table of contexts helpful to navigate.
 (the links are not working yet :( )</p>
-<h1>Table of contents</h1>
+<h1><a name="table-of-contents" href="#table-of-contents">Table of contents</a></h1>
 <!-- toc -->
 
 <ul>
-<li><a href="#julia-arrays">Julia arrays</a></li>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#julia-arrays">Julia Arrays</a></li>
 <li><a href="#anaconda-dont-start-at-shell">Anaconda dont start at shell</a></li>
 <li><a href="#how-to-mount-samba-folder-in-ubuntu">How to mount samba folder in ubuntu</a></li>
 <li><a href="#how-to-use-du-to-search-for-hidden-folders">How to use du to search for hidden folders</a></li>
 <li><a href="#sublime-text-keyboard-shortcuts">Sublime text keyboard shortcuts</a></li>
 <li><a href="#making-nomachine-nx-work-on-amazon-aws-ec2">Making Nomachine nx work on amazon aws ec2</a></li>
 <li><a href="#remote-desktop-to-raspberry-pi">Remote desktop to raspberry pi</a></li>
-<li><a href="#echo-server-with-netcat">Echo server with netcat</a></li>
+<li><a href="#echo-server-with-netcat">Echo server with netcat </a></li>
 <li><a href="#mounting-a-disk-on-gcp">Mounting a disk on GCP</a></li>
 <li><a href="#describe-type-of-command">Describe type of command</a></li>
 <li><a href="#linux-networking">Linux Networking</a></li>
@@ -66,64 +67,63 @@
 <li><a href="#intellij-shortcuts">Intellij Shortcuts</a></li>
 <li><a href="#bash-shortcuts">Bash shortcuts</a></li>
 <li><a href="#how-to-setup-a-new-linux-machine">How to setup a new linux machine</a></li>
-<li><a href="#python-regex-recipes">Python regex recipes</a></li>
+<li><a href="#python-regex-recipes">Python regex recipes </a></li>
 <li><a href="#vim-one-liners-and-shortcuts">Vim one liners and shortcuts</a></li>
-<li><a href="#cscope-for-linux">Cscope for linux</a></li>
+<li><a href="#cscope-for-linux">Cscope for linux </a></li>
 <li><a href="#cscope-for-ceph">Cscope for ceph</a></li>
 <li><a href="#building-linux">Building linux</a></li>
 <li><a href="#using-ftrace-to-trace-linux-functions">Using Ftrace to trace linux functions</a></li>
 <li><a href="#how-to-build-linux-on-one-machine-and-deploy-on-another">How to build linux on one machine and deploy on another</a></li>
-<li><a href="#jemalloc">JeMalloc</a></li>
+<li><a href="#jemalloc">JeMalloc </a></li>
 <li><a href="#objdump">Objdump</a></li>
 <li><a href="#installing-latest-version-of-cmake">Installing latest version of cmake</a></li>
 <li><a href="#getting-honest-profiler-to-work">Getting honest profiler to work</a></li>
 <li><a href="#gcc-important-options">GCC important options</a></li>
-<li><a href="#when-creating-a-shared-library">When creating a shared library:</a></li>
 <li><a href="#eli-bendersky-static-linking-summary">Eli bendersky static linking summary</a></li>
 <li><a href="#eli-bendersky-load-time-linking-summary">Eli bendersky load time linking summary</a></li>
 <li><a href="#eli-bendersky-x32-pic-linking-summary">Eli bendersky x32 PIC linking summary</a></li>
 <li><a href="#linux-interrupt-handling">Linux Interrupt Handling</a></li>
 <li><a href="#hdfs-proxy-user-setting">HDFS proxy user setting</a></li>
+<li><a href="#http-proxy-with-squid">Http proxy with squid</a></li>
+<li><a href="#kafka-metrics">kafka metrics</a>
+<!-- tocstop --></li>
 </ul>
-<!-- tocstop -->
-
-<h1><a name="julia-arrays">Julia Arrays</a></h1>
+<h1><a name="julia-arrays" href="#julia-arrays">Julia Arrays</a></h1>
 <ul>
 <li>tabs or spaces: concat to the right</li>
 <li>semicolon or newline: concat to the bottom </li>
 <li>one dimensional arrays are considered as column vectors for concatenation purposes</li>
 </ul>
-<h1>Anaconda dont start at shell</h1>
+<h1><a name="anaconda-dont-start-at-shell" href="#anaconda-dont-start-at-shell">Anaconda dont start at shell</a></h1>
 <p>If you'd prefer that conda's base environment not be activated on startup, </p>
 <div class="highlight"><pre><span></span>conda config --set auto_activate_base <span class="nb">false</span>
 </pre></div>
 
 
-<h1>How to mount samba folder in ubuntu</h1>
+<h1><a name="how-to-mount-samba-folder-in-ubuntu" href="#how-to-mount-samba-folder-in-ubuntu">How to mount samba folder in ubuntu</a></h1>
 <div class="highlight"><pre><span></span>sudo mount -t cifs -o <span class="nv">user</span><span class="o">=</span>sharath //192.168.29.28/HOMEPI /mnt/pi
 </pre></div>
 
 
-<h1>How to use du to search for hidden folders</h1>
+<h1><a name="how-to-use-du-to-search-for-hidden-folders" href="#how-to-use-du-to-search-for-hidden-folders">How to use du to search for hidden folders</a></h1>
 <div class="highlight"><pre><span></span>du -schx .<span class="o">[</span>!.<span class="o">]</span>* *
 </pre></div>
 
 
 <p>To exclude other mount points use <code>--exclude</code></p>
-<h1>Sublime text keyboard shortcuts</h1>
+<h1><a name="sublime-text-keyboard-shortcuts" href="#sublime-text-keyboard-shortcuts">Sublime text keyboard shortcuts</a></h1>
 <p>Open any file <code>ctrl-p</code>
 Open any command <code>ctrl-shift-p</code>
 Close tab: mac <code>cmd+w</code>
 Linux <code>ctrl-shift-w</code>
 Jump back <code>alt -</code> 
 forward <code>alt +</code> </p>
-<h1>Making Nomachine nx work on amazon aws ec2</h1>
+<h1><a name="making-nomachine-nx-work-on-amazon-aws-ec2" href="#making-nomachine-nx-work-on-amazon-aws-ec2">Making Nomachine nx work on amazon aws ec2</a></h1>
 <p>First, download the nx package from nomachine and <code>dpkg -i</code> the package
 The software is installed in <code>/usr/NX</code>
 We have to first disable password login and only use certificate login. To do this, edit the file <code>vim /usr/NX/etc/server.config</code> and add this line. After this, restart the nx server <code>/usr/NX/bin/nxserver --restart</code>
 Verify that password login does not work
-For resolution, the key idea is that there should be no x server running already on the machine. If there is no x server, then nx will create its own, and by default try to match the client resolution, which is what we want. Unfortunately, when we install gnome desktop, it automatically changes the systemd runlevel to graphical.target which means systemd will spawn gdm and an xserver /usr/lib/xorg/Xorg (hope you dont get into wayland and shit). So we have to change the default systemd target to shell mode, which can be done by sudo systemctl set-default multi-user.target
-To change the current target without restarting, you can do sudo systemctl set-default multi-user.target 
+For resolution, the key idea is that there should be no x server running already on the machine. If there is no x server, then nx will create its own, and by default try to match the client resolution, which is what we want. Unfortunately, when we install gnome desktop, it automatically changes the systemd runlevel to graphical.target which means systemd will spawn gdm and an xserver /usr/lib/xorg/Xorg (hope you dont get into wayland and shit). So we have to change the default systemd target to shell mode, which can be done by <code>sudo systemctl set-default multi-user.target</code>* 
 And thats it, nx should automatically try to match client resolution if client is running in full screen mode!</p>
 <p>Sometimes, you will see a black screen when you login, to solve this</p>
 <div class="highlight"><pre><span></span>sudo service gdm stop
@@ -131,16 +131,16 @@ And thats it, nx should automatically try to match client resolution if client i
 </pre></div>
 
 
-<h1>Remote desktop to raspberry pi</h1>
+<h1><a name="remote-desktop-to-raspberry-pi" href="#remote-desktop-to-raspberry-pi">Remote desktop to raspberry pi</a></h1>
 <p>We will use real vnc. From terminal, ssh to raspberry pi. On the pi run
 <code>vncserver -geometry 1920x1080</code></p>
 <p>From the client, run vncviewer from real vnc and login. You have to do this every time you want to login</p>
-<h1>Echo server with netcat</h1>
+<h1><a name="echo-server-with-netcat" href="#echo-server-with-netcat">Echo server with netcat </a></h1>
 <p>Server
 <code>ncat -e /bin/cat -k  -l 8888 &lt;ip&gt;</code></p>
 <p>Client 
 <code>telnet ip 8888</code></p>
-<h1>Mounting a disk on GCP</h1>
+<h1><a name="mounting-a-disk-on-gcp" href="#mounting-a-disk-on-gcp">Mounting a disk on GCP</a></h1>
 <div class="highlight"><pre><span></span>sudo lsblk
 sudo mkdir -p /mnt/disks/sdb
 sudo cp /etc/fstab /etc/fstab.backup
@@ -151,9 +151,9 @@ Sudo mount -a
 </pre></div>
 
 
-<h1>Describe type of command</h1>
+<h1><a name="describe-type-of-command" href="#describe-type-of-command">Describe type of command</a></h1>
 <p><code>type ls</code></p>
-<h1>Linux Networking</h1>
+<h1><a name="linux-networking" href="#linux-networking">Linux Networking</a></h1>
 <ul>
 <li>
 <p><strong>Netfilter</strong>: linux component which has various hooks for network packet manipulation
@@ -169,7 +169,7 @@ The netfilter hooks are exposed through various  userspace programs: notably </p
 <li><strong>Bridge</strong>: when referring to a hardware device it is a connector at L2. i.e., it learns mac addresses and forwards packets from one network to another switch is also essentially the same thing</li>
 <li><strong>Linux software bridge device</strong>:  is a software network_interface which acts like a bridge between two other network interfaces</li>
 </ul>
-<h1>Postgres</h1>
+<h1><a name="postgres" href="#postgres">Postgres</a></h1>
 <p>To create a data directory, first </p>
 <div class="highlight"><pre><span></span>mkdir -p /path/to/data
 chown postgres  /path/to/data
@@ -215,24 +215,28 @@ create database sharath<span class="p">;</span>
 
 <p>To view the logs
 <code>sudo grep SQLEditor /var/lib/postgresql/12/main/log/* |grep -v pg_catalog | grep -v SHOW | grep -v current_schema</code></p>
-<h1>Intellij Shortcuts</h1>
-<p>Ctrl+shift+enter to complete statement after code completion. Its pretty magical. 
-Alt+j to select all instances
-Tab after ctrl-space overwrites rather than insert
-Ctrl+alt-l to reformat whole file or selections
-Ctrl+shift+i to see the definition (code) for the method
-F2 to go to next highlighted error
-F4 go to definition
-Ctrl-f12 to see the file structure
-Ctrl+shift+numpad- collapse all</p>
-<h1>Bash shortcuts</h1>
-<p>Alt-B back one word
-Alt-f forward one word
-Ctrl-w delete back one word
-alt-D delete till end of word
-Ctrl-U delete to start of line
-Ctrl-k delete to end of line</p>
-<h1>How to setup a new linux machine</h1>
+<h1><a name="intellij-shortcuts" href="#intellij-shortcuts">Intellij Shortcuts</a></h1>
+<ul>
+<li>Ctrl+shift+enter to complete statement after code completion. Its pretty magical. </li>
+<li>Alt+j to select all instances</li>
+<li>Tab after ctrl-space overwrites rather than insert</li>
+<li>Ctrl+alt-l to reformat whole file or selections</li>
+<li>Ctrl+shift+i to see the definition (code) for the method</li>
+<li>F2 to go to next highlighted error</li>
+<li>F4 go to definition</li>
+<li>Ctrl-f12 to see the file structure</li>
+<li>Ctrl+shift+numpad- collapse all</li>
+</ul>
+<h1><a name="bash-shortcuts" href="#bash-shortcuts">Bash shortcuts</a></h1>
+<ul>
+<li>Alt-B back one word</li>
+<li>Alt-f forward one word</li>
+<li>Ctrl-w delete back one word</li>
+<li>alt-D delete till end of word</li>
+<li>Ctrl-U delete to start of line</li>
+<li>Ctrl-k delete to end of line</li>
+</ul>
+<h1><a name="how-to-setup-a-new-linux-machine" href="#how-to-setup-a-new-linux-machine">How to setup a new linux machine</a></h1>
 <p>First, login as root. Here nm&gt; means new machine and local&gt; means laptop</p>
 <div class="highlight"><pre><span></span>nm&gt; 
 adduser -u <span class="m">1001</span> sharath<span class="p">;</span>
@@ -268,16 +272,18 @@ rm /tmp/ak
 
 
 <p>Bob should be your uncle</p>
-<h1>Python regex recipes</h1>
-<p>\s whitespace
-\S non whitespace
-\d only digits
-\D non digits
-\w alphanumeric [a-zA-Z0-9_]
-\W non-alphanumeric
-\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3} ip regex</p>
+<h1><a name="python-regex-recipes" href="#python-regex-recipes">Python regex recipes </a></h1>
+<ul>
+<li>\s whitespace</li>
+<li>\S non whitespace</li>
+<li>\d only digits</li>
+<li>\D non digits</li>
+<li>\w alphanumeric [a-zA-Z0-9_]</li>
+<li>\W non-alphanumeric</li>
+<li>\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3} ip regex</li>
+</ul>
 <p>groups enclose in (), numbered from x.group(1)
-named groups like this (?P&lt;name) access with x.group("name")</p>
+named groups like this <code>(?P&lt;name) access with x.group("name")</code></p>
 <div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">regexStr</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
     <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -290,23 +296,25 @@ named groups like this (?P&lt;name) access with x.group("name")</p>
 
 <p>prints <code>4 socks and 3 shoes</code></p>
 <p>validate a regex on https://regex101.com/</p>
-<h1>Vim one liners and shortcuts</h1>
-<p>gd will go to local definition
-gD will go to global definition 
-,c<space> toggle comment
-<ctrl>]  goes to a tag
-<ctrl>o (“old” comes back from a jump)
-<ctrl> i (opposite of <ctrl>o
-Split window ctrl-w v or o
-Scroll up/down, keeping your cursor in its row
-One line
-Ctrl+Y → Move viewport down
-Ctrl+E → Move viewport up (Extra lines)
-Column select <ctrl>v 
-Go to beginning of function (go to { in first column: needs coding convention) [[ 
-End of function ]]
-Beginning of code block: [{ this one should work better with messed up coding convention</p>
-<h1>Cscope for linux</h1>
+<h1><a name="vim-one-liners-and-shortcuts" href="#vim-one-liners-and-shortcuts">Vim one liners and shortcuts</a></h1>
+<ul>
+<li>gd will go to local definition</li>
+<li>gD will go to global definition </li>
+<li>,c<space> toggle comment</li>
+<li><ctrl>]  goes to a tag</li>
+<li><ctrl>o (“old” comes back from a jump)</li>
+<li><ctrl> i (opposite of <ctrl>o</li>
+<li>Split window ctrl-w v or o</li>
+<li>Scroll up/down, keeping your cursor in its row</li>
+<li>One line</li>
+<li>Ctrl+Y → Move viewport down</li>
+<li>Ctrl+E → Move viewport up (Extra lines)</li>
+<li>Column select <ctrl>v </li>
+<li>Go to beginning of function (go to { in first column: needs coding convention) [[ </li>
+<li>End of function ]]</li>
+<li>Beginning of code block: [{ this one should work better with messed up coding convention</li>
+</ul>
+<h1><a name="cscope-for-linux" href="#cscope-for-linux">Cscope for linux </a></h1>
 <p>To apply debian patches use </p>
 <div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LNX</span><span class="o">=</span>/home/sharath/os/linux/linux-5.4.0
 quilt push -a 
@@ -324,13 +332,13 @@ cscope -q -R -b -i cscope.files
 </pre></div>
 
 
-<h1>Cscope for ceph</h1>
+<h1><a name="cscope-for-ceph" href="#cscope-for-ceph">Cscope for ceph</a></h1>
 <div class="highlight"><pre><span></span>find /mnt/disks/sdb/ceph-pristine -type f -and <span class="se">\(</span> -name <span class="s2">&quot;*.c&quot;</span> -o -name <span class="s2">&quot;*.h&quot;</span> -o -name <span class="s2">&quot;*.cc&quot;</span> -o -name <span class="s2">&quot;*.cpp&quot;</span> -o -name <span class="s2">&quot;*.hh&quot;</span> <span class="se">\)</span> &gt; zoo.cscope
 cscope -q -R -b -i zoo.cscope 
 </pre></div>
 
 
-<h1>Building linux</h1>
+<h1><a name="building-linux" href="#building-linux">Building linux</a></h1>
 <p>You can get the linux source from 
 <code>apt-get source linux-image-unsigned-$(uname -r)</code></p>
 <p>You can get the config file from 
@@ -346,7 +354,7 @@ update-grub
 </pre></div>
 
 
-<h1>Using Ftrace to trace linux functions</h1>
+<h1><a name="using-ftrace-to-trace-linux-functions" href="#using-ftrace-to-trace-linux-functions">Using Ftrace to trace linux functions</a></h1>
 <div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="m">1</span> <span class="p">|</span> sudo tee  /sys/kernel/debug/tracing/tracing_on
 And <span class="k">then</span> use brendan greggs perf-tools
 sudo ./funcgraph -D  ext4_readpages <span class="p">|</span> sudo tee /mnt/tmpfs/write
@@ -354,7 +362,7 @@ sudo ./funcgraph -Dp <span class="m">51985</span>  ext4_readpages <span class="p
 </pre></div>
 
 
-<h1>How to build linux on one machine and deploy on another</h1>
+<h1><a name="how-to-build-linux-on-one-machine-and-deploy-on-another" href="#how-to-build-linux-on-one-machine-and-deploy-on-another">How to build linux on one machine and deploy on another</a></h1>
 <p>Use “building linux” to build linux on one machine A. Suppose you want to install it on machine B
 On machine B</p>
 <div class="highlight"><pre><span></span>Mkdir -p ~/kernel/boot
@@ -384,7 +392,7 @@ Sudo reboot now
 </pre></div>
 
 
-<h1>JeMalloc</h1>
+<h1><a name="jemalloc" href="#jemalloc">JeMalloc </a></h1>
 <p>Do a git clone.</p>
 <div class="highlight"><pre><span></span>./autogen.sh 
 ./configure --enable-prof --enable-stats --enable-debug
@@ -411,7 +419,7 @@ Active .. multiple of page size.. Total bytes in pages that have at least one by
 Resident: active + metadata 
 Mapped: multiple of chunk size. Total chunks that have one byte of allocated 
 See that man pages for a clear explanation.</p>
-<h1>Objdump</h1>
+<h1><a name="objdump" href="#objdump">Objdump</a></h1>
 <div class="highlight"><pre><span></span>objdump -drSt hello.o
 -d dissasemble
 -r show relocation info inline
@@ -420,11 +428,11 @@ See that man pages for a clear explanation.</p>
 </pre></div>
 
 
-<h1>Installing latest version of cmake</h1>
+<h1><a name="installing-latest-version-of-cmake" href="#installing-latest-version-of-cmake">Installing latest version of cmake</a></h1>
 <p>Either apt-get install cmake or get it from here
 https://cmake.org/download/
 https://cmake.org/files/v3.8/cmake-3.8.0-rc4-Linux-x86_64.sh and run it</p>
-<h1>Getting honest profiler to work</h1>
+<h1><a name="getting-honest-profiler-to-work" href="#getting-honest-profiler-to-work">Getting honest profiler to work</a></h1>
 <p>Installing it: 
 If you’re lucky, you can download it and it works http://insightfullogic.com/honest-profiler.zip</p>
 <p>Otherwise you need to build it. To build it, if you get weird errors, you might need to get latest version of Cmake, and then build it. You need build/libagent.so</p>
@@ -437,7 +445,7 @@ If you’re lucky, you can download it and it works http://insightfullogic.com/h
 
 
 <p>Collapse the stacks with <code>java -cp $HONEST_PROFILER_HOME/honest-profiler.jar com.insightfullogic.honest_profiler.ports.console.FlameGraphDumperApplication netty.hpl netty.cstk</code></p>
-<h1>GCC important options</h1>
+<h1><a name="gcc-important-options" href="#gcc-important-options">GCC important options</a></h1>
 <p>The linker <code>ld</code> takes as input .c files, .o files, .so files and can output an executable or a shared library.
 The linker does not output static library. You can simply use ar for it</p>
 <p>Gcc important options
@@ -456,19 +464,19 @@ Or you cannot link a static library in a shared way by using -L and -l options (
 <p>Static libraries can be linked (statically) by specifying them as input files to gcc. Remember: static libraries are just a bunch of .o files 
 You cannot skip specifying a shared library while linking to create an executable (although, technically they are not needed)  all variables must be resolved, which means that all shared libraries have to be specified (strictly not required, i guess its a sanity check) this has the effect of  listing in the executable as a dependency     </p>
 <p>For <code>LD_PRELOAD</code> to work, you have to specify -Wl,-soname,libml.so while having created that shared library this name is hardcoded into the so as its name, and this is the name that the linker looks at while loading the executable, not the file name of the .so</p>
-<h1>When creating a shared library:</h1>
+<h1><a name="when-creating-a-shared-library:" href="#when-creating-a-shared-library:">When creating a shared library:</a></h1>
 <p>All object files must be compiled with -fpic
 All ar files must have .o files which have been compiled with -fpic
 If you specify multiple .so on command line, they will be combined into 1 .so as expected, with references resolved internally 
 If a dependency is unmet (by not specifying some libraries at all) it is defined as undefined but linking succeeds
 If a dependency is met by -L. -lxxx then it is undefined in the .so but that lib is listed as a dependency</p>
-<h1>Eli bendersky static linking summary</h1>
+<h1><a name="eli-bendersky-static-linking-summary" href="#eli-bendersky-static-linking-summary">Eli bendersky static linking summary</a></h1>
 <p>Static linking algorithm perfectly explained in http://eli.thegreenplace.net/2013/07/09/library-order-in-static-linking
 Some important points
 * An object file both exports and imports symbols 
 * individual object files specified on cmd line are always linked
 * static libraries (ar) libraries serve only to provide a list of object files, and an object file in a library is linked only if it satisfies some current unmet dependency </p>
-<h1>Eli bendersky load time linking summary</h1>
+<h1><a name="eli-bendersky-load-time-linking-summary" href="#eli-bendersky-load-time-linking-summary">Eli bendersky load time linking summary</a></h1>
 <p>Summary of load time linking as specified in http://eli.thegreenplace.net/2011/08/25/load-time-relocation-of-shared-libraries</p>
 <p>Some gotchas: 
 * Call operands are rip relative, but mov operands are absolute. In x86_64, there is a new addressing called RIP relative where any operand can be RIP relative.
@@ -481,22 +489,82 @@ The loader will add this offset to the load address to get the real address
 The linker also populates a list where the real address has to be patched into the code. 
 The loader will then patch the addresses in
 Thats it.</p>
-<h1>Eli bendersky x32 PIC linking summary</h1>
+<h1><a name="eli-bendersky-x32-pic-linking-summary" href="#eli-bendersky-x32-pic-linking-summary">Eli bendersky x32 PIC linking summary</a></h1>
 <p>http://eli.thegreenplace.net/2011/11/03/position-independent-code-pic-in-shared-libraries</p>
 <p>Instead of direct patching in the code, the real addresses of shared variables are stored in a GOT table in the data section. 
 For mov operands, x32 does not support rip relative addresses, so there is a hack to get current rip address, then add the offset of the got table, and thus get the address of the variable</p>
 <p>For call instructions, they are still using the hack but call supports rip relative addressing. So not sure what is happening,</p>
-<h1>Linux Interrupt Handling</h1>
+<h1><a name="linux-interrupt-handling" href="#linux-interrupt-handling">Linux Interrupt Handling</a></h1>
 <p>Peripheral devices pass interrupt to the interrupt controller (8259) which then passes it to processor on a given interrupt line.
 An Interrupt line can be shared by multiple devices. To detect which device raised the interrupt, the linux interrupt handler iterates through all registered handlers on that line which then checks if that device raised the interrupt.
 When an interrupt is raised, the processor disables all interrupts (on the local processor). 
 The linux handler reenables interrupts (unless a flag was set while registering the handler) but disables the interrupt line (so none of the devices sharing can raise another interrupt) and calls the handler. For this reason, an interrupt handler need not be re-entrant. 
 An interrupt handler cannot sleep/block because there is no “process” to sleep or block. (theoretically, the process can be considered to be the process that was interrupted but seems like a design decision to not let interrupt handlers sleep or not associate interrupt handlers with a process.</p>
-<h1>HDFS proxy user setting</h1>
+<h1><a name="hdfs-proxy-user-setting" href="#hdfs-proxy-user-setting">HDFS proxy user setting</a></h1>
 <p>In addition to the modifications in core-site.xml we need to create the user and (add it to a group (?)) on the namenode. Even this is not working. It looks like the user needs to be added on the datanodes too. Is this true?
-The logs from namenode are like this: 
-2017-06-05 11:48:27,271 INFO  ipc.Server (Server.java:doRead(850)) - Socket Reader #1 for port 8020: readAndProcess from client 10.32.10.3 threw exception [org.apache.hadoop.security.authorize.AuthorizationException: Unauthorized connection for super-user: hue from IP 10.32.10.3]
-The ip 10.32.10.3 is a datanode.</p> 
+The logs from namenode are like this: </p>
+<div class="highlight"><pre><span></span>2017-06-05 11:48:27,271 INFO  ipc.Server (Server.java:doRead(850)) - Socket Reader #1 for port 8020: readAndProcess from client 10.32.10.3 threw exception [org.apache.hadoop.security.authorize.AuthorizationException: Unauthorized connection for super-user: hue from IP 10.32.10.3]
+The ip 10.32.10.3 is a datanode.
+</pre></div>
+
+
+<h1><a name="http-proxy-with-squid" href="#http-proxy-with-squid">Http proxy with squid</a></h1>
+<h3>On the client machine</h3>
+<ul>
+<li>Find out the client subnet of the form <code>10.34.44.0/22</code>. To do that, on the client machine, run <code>/sbin/ifconfig</code> to find out the       ip address and subnet mask. with these two pieces of info, you can calculate the CIDR <a href="http://www.subnet-calculator.com/cidr.php">here</a></li>
+<li>export variables: 
+  <code>text
+  export http_proxy=http://client.ip.ad.ress:port/
+  export https_proxy=http://client.ip.ad.ress:port/</code></li>
+</ul>
+<h3>Caveat</h3>
+<p>if you run sudo, make sure the variables are exported in root</p>
+<h3>On the proxy machine</h3>
+<ul>
+<li>Install squid: <code>sudo apt-get install squid</code>. </li>
+<li>
+<p>change /etc/squid/squid.conf to add these lines
+   <code>text
+   acl wormhole src 10.34.44.0/22 # the client subnet who need the proxy
+   http_access allow wormhole # wormhole is just a name
+   icp_access allow wormhole</code></p>
+</li>
+<li>
+<p>restart squid <code>sudo /etc/squid/squid.conf restart</code></p>
+</li>
+</ul>
+<p>And thats it! <code>curl -L www.google.com</code> (<code>-L</code> to follow redirects) will work.</p>
+<p>I needed this for <code>pip</code>. With my setup, I can do <code>sudo export &lt;blah&gt;;export&lt;blah&gt;;pip install &lt;package&gt;</code>. </p>
+<p>FYI, my squid version is</p>
+<div class="highlight"><pre><span></span>[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
+Package: squid
+Status: install ok installed
+Priority: optional
+Section: web
+Installed-Size: 1864
+Maintainer: Luigi Gangitano &lt;luigi@debian.org&gt;
+Architecture: amd64
+Version: 2.7.STABLE9-4.1+deb7u1
+Replaces: squid-novm
+Depends: libc6 (&gt;= 2.7), libcomerr2 (&gt;= 1.01), libdb5.1, libgssapi-krb5-2 (&gt;= 1.10+dfsg~), libkrb5-3 (&gt;= 1.6.dfsg.2), libldap-2.4-2 (&gt;= 2.4.7), libpam0g (&gt;= 0.99.7.1), netbase, adduser, logrotate (&gt;= 3.5.4-1), squid-common (&gt;= 2.7.STABLE9-4.1+deb7u1), lsb-base (&gt;= 3.2-14), perl-modules
+Pre-Depends: debconf (&gt;= 1.2.9) | debconf-2.0
+Suggests: squidclient, squid-cgi, logcheck-database, resolvconf (&gt;= 0.40), smbclient, winbind
+Conflicts: sarg (&lt;&lt; 1.1.1-2), squid-novm
+Conffiles:
+ /etc/init.d/squid 04af7c1f2d27c35db0200679fbc9bdbe
+ /etc/logrotate.d/squid 0dd1fea0f842a58f538408754e747311
+ /etc/resolvconf/update-libc.d/squid f8d0ffa84ddd982f32da05cb61bc479e
+Description: Internet object cache (WWW proxy cache)
+ This package provides the Squid Internet Object Cache developed by
+ the National Laboratory for Applied Networking Research (NLANR) and
+ Internet volunteers.
+Homepage: http://www.squid-cache.org/
+</pre></div>
+
+
+<h1><a name="kafka-metrics" href="#kafka-metrics">kafka metrics</a></h1>
+<p><strong>Bytes in</strong> is number of bytes from external producers only. It does not include, for example, the bytes read by followers during replication. So <code>bytes_in = message_produce_rate * average_message_size</code></p>
+<p><strong>Bytes out</strong> includes data sent to follower also.</p> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>
