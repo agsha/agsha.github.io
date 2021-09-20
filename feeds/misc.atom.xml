@@ -1,9 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog - misc</title><link href="/" rel="alternate"></link><link href="/feeds/misc.atom.xml" rel="self"></link><id>/</id><updated>2020-08-31T12:22:00+00:00</updated><entry><title>Cookbook</title><link href="/cookbook.html" rel="alternate"></link><published>2020-08-31T12:22:00+00:00</published><updated>2020-08-31T12:22:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2020-08-31:/cookbook.html</id><summary type="html">&lt;p&gt;This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its own. Hopefully, you'll find the table of contexts helpful to navigate.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog - misc</title><link href="/" rel="alternate"></link><link href="/feeds/misc.atom.xml" rel="self"></link><id>/</id><updated>2021-09-20T22:30:00+00:00</updated><subtitle></subtitle><entry><title>Notes on Postgres WAL and logical replication</title><link href="/notes-on-postgres-wal-and-logical-replication.html" rel="alternate"></link><published>2021-09-20T22:30:00+00:00</published><updated>2021-09-20T22:30:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2021-09-20:/notes-on-postgres-wal-and-logical-replication.html</id><summary type="html">&lt;p&gt;I am trying to implement change data capture (CDC) from several postgres databases and expose it as a stream of inserts/updates/deletes to any consumer. &lt;/p&gt;
+&lt;p&gt;One property of all our tables, which makes our life much easier is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;all tables have an immutable primary key (usually a UUID), although …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;I am trying to implement change data capture (CDC) from several postgres databases and expose it as a stream of inserts/updates/deletes to any consumer. &lt;/p&gt;
+&lt;p&gt;One property of all our tables, which makes our life much easier is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;all tables have an immutable primary key (usually a UUID), although sometimes, the primary key may be a composite key. &lt;/li&gt;
+&lt;li&gt;All tables also have audit columns (created_at, updated_at)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here are some practical requirements from any such CDC system.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In case, the destination crashes, I want to replay the changes from the last X days (assuming WAL logs are maintained)&lt;/li&gt;
+&lt;li&gt;In case of master failover to replica, I want to "continue from where the master fell off", or at least, rewind back a couple of hours and replay the messages.&lt;/li&gt;
+&lt;li&gt;We want to selectively choose what tables to replicate, and this set of tables might change. (typically, new tables will be added to the captured list)`&lt;/li&gt;
+&lt;li&gt;The ability to perform paralell initial snapshot and streaming, and the ability to resume initial snapshot in case of error &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It seems like the &lt;em&gt;de facto&lt;/em&gt; choice for CDC these days is debezium, which uses logical replication to expose a stream of changes. When practically trying to build such a system, I had a hard time figuring out how all the components fit together. The postgres and debezium docs are very good, but they have big gaps if you want to understand the systems well enough to architect a solution. So in this blog, I will cover the missing pieces that I figured out reading the source code. &lt;/p&gt;
+&lt;p&gt;This article is meant to be read along with the available documentation of postgres logical replication and debezium documentation. As such, I will not cover introductory things like what is logical replication, etc. I will go straight to the points which I consider is not clear in the documentation. A really fantastic place to get background information is &lt;a href="https://www.interdb.jp/pg/"&gt;https://www.interdb.jp/pg/&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Some implementation details of the postgres WAL mechanism&lt;/h2&gt;
+&lt;p&gt;As soon as queries execute &lt;code&gt;insert/delete/updates&lt;/code&gt;, The generated &lt;code&gt;XLogRecords&lt;/code&gt; are put in a shared memory called the &lt;strong&gt;WAL Buffers&lt;/strong&gt;. There is a &lt;strong&gt;WAL Writer&lt;/strong&gt; process that wakes up regularly and flushes the WAL Buffer to disk. Note that this writing happens even for potentially uncommited transactions. The fact that a transaction is rolled back is handled by simply marking the transaction in the &lt;code&gt;pg_xact&lt;/code&gt; as &lt;code&gt;rolled_back&lt;/code&gt;. There are two invariants that are maintained.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;All &lt;code&gt;XLogRecords&lt;/code&gt; are flushed to disk at some point &lt;strong&gt;before&lt;/strong&gt; the transaction is marked as committed&lt;/li&gt;
+&lt;li&gt;When the WAL Writer kicks in, all &lt;code&gt;XLogRecords&lt;/code&gt; &lt;strong&gt;upto a specific LSN&lt;/strong&gt; are written. This means that &lt;strong&gt;&lt;code&gt;XLogRecords&lt;/code&gt; from different transactions can be intermixed freeley&lt;/strong&gt;. For example, the following is a valid sequence of records in the WAL File&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;begin_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;begin_tx2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx1_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx2_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx2&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;Some implementation details of logical replication&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;On the server side, the replication slot primarily holds information about how much LSN the client has read so far.&lt;/li&gt;
+&lt;li&gt;On the server side the flow of reading the logs is like this&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;WalSender&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;ReorderBuffer&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;OutputPlugin&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;example&lt;/span&gt; &lt;span class="n"&gt;pgoutput&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Each replication slot has its own WALSender process. &lt;/li&gt;
+&lt;li&gt;The output plugin free to do whatever it wants with the decoded &lt;code&gt;XLogRecords&lt;/code&gt;. It may or may not send the changes over on the network to a remote peer. For example, there is a &lt;a href="https://www.postgresql.org/docs/10/logicaldecoding-example.html"&gt;SQL interface&lt;/a&gt; which is a plugin which exposes the functionalities through a few SQL functions. &lt;/li&gt;
+&lt;li&gt;Any logical replication plugin must be associated with a replication slot to start doing the magic.&lt;/li&gt;
+&lt;li&gt;pgoutput is one such plugin, that streams the changes over the network, with a well defined &lt;a href="https://www.postgresql.org/docs/current/protocol-logical-replication.html"&gt;protocol&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;On the client side, the WALReciever process understands the protocol of pgoutput, and converts the messages to SQL and replays it on the client.&lt;/li&gt;
+&lt;li&gt;As with all output plugins, pgoutput also requires a replication slot. However, unlike other plugins, pgoutput requires another object called a &lt;em&gt;publication&lt;/em&gt;. The publication is effectively nothing more than a list of tables that need to be captured. It is read only during the startup of streaming, or when we manually refresh a publication&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now I would like to point out a tricky implementation detail.
+- On the server side, we saw that WAL files contain &lt;code&gt;XLogRecords&lt;/code&gt; intermixed records from different transactions. However, when the changes appear on the client side, they are no longer intermixed. For example, suppose the WAL file on server looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;begin_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;begin_tx2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx1_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx2_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx2&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;but the client sees the changes look like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;begin_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx1_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;begin_tx2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx2_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx2&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This magic is performed by the &lt;code&gt;ReorderBuffer&lt;/code&gt; module pointed out above. Note that this component comes before the output plugins, so all output plugins behave this way. &lt;/p&gt;
+&lt;p&gt;By now, you must be wondering that the only way to accomplish is to buffer the &lt;code&gt;XLogRecords&lt;/code&gt; in memory until we encounter the commit record, and then emit all changes without intermix.&lt;/p&gt;
+&lt;p&gt;Well you are right. ReorderBuffer does exactly that. The astute observer will note that the amount of transaction record can grow big. Much bigger than available memory. Well, the ReorderBuffer infact has the capability to splill its data structures to disk to accomplish this de-intermix!&lt;/p&gt;
+&lt;p&gt;The pseudocode of ReorderBuffer is something like this&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="mf"&gt;1.&lt;/span&gt; &lt;span class="n"&gt;Maintain&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;datastructure&lt;/span&gt; &lt;span class="n"&gt;recordMap&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;txid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;XLogRecords&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="mf"&gt;2.&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="n"&gt;reading&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;WAL&lt;/span&gt;
+&lt;span class="mf"&gt;3.&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;each&lt;/span&gt; &lt;span class="n"&gt;XLogRecord&lt;/span&gt; &lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+       &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;recordMap&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;txid&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+       &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;bigger&lt;/span&gt; &lt;span class="n"&gt;than&lt;/span&gt; &lt;span class="n"&gt;threshold&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;spill&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;disk&lt;/span&gt;
+       &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="n"&gt;COMMIT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;then&lt;/span&gt; &lt;span class="n"&gt;emit&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;changes&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;recordMap&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;txid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;An important consequence of this "de-mixing" is that the LSN of records as seen by the client need not be in increasing order.
+However, the following two invariants are still maintained
+- LSNs of each transaction is ordered
+- LSNs of commit messages are ordered&lt;/p&gt;
+&lt;h2&gt;Keeping track of progress of logical replication&lt;/h2&gt;
+&lt;p&gt;Periodically, the client sends back heartbeat messages to server, which contain the following three lsns. 
+- confirm_flush_lsn
+- recieve_lsn
+- apply_lsn&lt;/p&gt;
+&lt;p&gt;To understand these LSN, consider the client as a database. When it recieves a message, it performs the following steps
+- recieve the lsn
+- apply it to tables
+- fsync and flush the changes&lt;/p&gt;
+&lt;p&gt;So each lsn corresponds to these steps. Usually, &lt;code&gt;recieve_lsn&amp;gt;apply_lsn&amp;gt;flush_lsn&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Of course, a client may not actually use three different steps. The most important of these is &lt;code&gt;flush_lsn&lt;/code&gt;. It tells the server that lsns before this will no longer be required by the client and free to reclaim the space in WAL&lt;/p&gt;
+&lt;h2&gt;On server restart, from where does the server restart the WAL decoding?&lt;/h2&gt;
+&lt;p&gt;The server keeps track of all three progress lsns. In particular the &lt;code&gt;flush_lsn&lt;/code&gt;. So logically, one might think that on restart, this is the point from where the server will play back the WAL. However, the server persists the &lt;code&gt;flush_lsn&lt;/code&gt; only at checkpoint, so it is entirely possible that the client may recieve duplicate entries on restart. It is upto the client to skip duplicates. Furthermore, one can actually specify the restart LSN during startup.&lt;/p&gt;
+&lt;p&gt;There is in fact another LSN called &lt;code&gt;restart_lsn&lt;/code&gt; that is tracked by the server. I am not able to figure out the difference between &lt;code&gt;restart_lsn&lt;/code&gt; and &lt;code&gt;flush_lsn&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;Some notes for architects&lt;/h2&gt;
+&lt;p&gt;Q: How far can I go back and restart the streaming?
+A: By cleverly controlling flush_lsn, you can control the amount of WAL retained on the server.&lt;/p&gt;
+&lt;p&gt;Q: How do I make sure server does not crash due to WAL locking up disk space due to inactive replication client
+A: You can play with some postgres parameters, notably &lt;code&gt;wal_keep_size&lt;/code&gt; and &lt;code&gt;max_slot_wal_keep_size&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Q: How do I get resumable and parallell initial snapshots? 
+A: refers to these links. &lt;a href="https://github.com/debezium/debezium-design-documents/blob/main/DDD-3.md"&gt;DDD-3&lt;/a&gt; and &lt;a href="https://arxiv.org/pdf/2010.12597v1.pdf"&gt;DbLog&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Q: If the master fails-over to a replica, the LSNs will go out of sync. Do I need to resetup the entire snapshot?
+A: Here's the idea:
+- create a replication slot on the new primary (previously standby)
+- issue a query like so &lt;code&gt;select * from mytable where updated_at &amp;gt; now()-2hrs&lt;/code&gt;
+- start the streaming replication.
+Assuming your primary keys are idempotent, you should be back in business&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Logical decoding is a very powerful tool in the data engineering toolkit. It opens up a host of possibilities. I hope this article fills in the gap left in official documentation and enables architects to design effective CDC systems.&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>Cookbook</title><link href="/cookbook.html" rel="alternate"></link><published>2020-08-31T12:22:00+00:00</published><updated>2020-08-31T12:22:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2020-08-31:/cookbook.html</id><summary type="html">&lt;p&gt;This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its own. Hopefully, you'll find the table of contexts helpful to navigate.
 (the links are not working yet :( )&lt;/p&gt;
 &lt;h1&gt;&lt;a name="table-of-contents" href="#table-of-contents"&gt;Table of contents&lt;/a&gt;&lt;/h1&gt;
 &lt;!-- toc --&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#table-of-contents"&gt;Table of contents&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#julia-arrays"&gt;Julia Arrays&lt;/a&gt;&lt;/li&gt;
@@ -39,9 +134,10 @@
 &lt;li&gt;&lt;a href="#linux-interrupt-handling"&gt;Linux Interrupt Handling&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#hdfs-proxy-user-setting"&gt;HDFS proxy user setting&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#http-proxy-with-squid"&gt;Http proxy with squid&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#kafka-metrics"&gt;kafka metrics&lt;/a&gt;
-&lt;!-- tocstop --&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#kafka-metrics"&gt;kafka metrics&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
+&lt;!-- tocstop --&gt;
+
 &lt;h1&gt;&lt;a name="julia-arrays" href="#julia-arrays"&gt;Julia Arrays&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;tabs or spaces: concat to the right&lt;/li&gt;
@@ -50,19 +146,16 @@
 &lt;/ul&gt;
 &lt;h1&gt;&lt;a name="anaconda-dont-start-at-shell" href="#anaconda-dont-start-at-shell"&gt;Anaconda dont start at shell&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;If you'd prefer that conda's base environment not be activated on startup, &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;conda config --set auto_activate_base &lt;span class="nb"&gt;false&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;conda config --set auto_activate_base &lt;span class="nb"&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="how-to-mount-samba-folder-in-ubuntu" href="#how-to-mount-samba-folder-in-ubuntu"&gt;How to mount samba folder in ubuntu&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo mount -t cifs -o &lt;span class="nv"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;sharath //192.168.29.28/HOMEPI /mnt/pi
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo mount -t cifs -o &lt;span class="nv"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;sharath //192.168.29.28/HOMEPI /mnt/pi
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="how-to-use-du-to-search-for-hidden-folders" href="#how-to-use-du-to-search-for-hidden-folders"&gt;How to use du to search for hidden folders&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;du -schx .&lt;span class="o"&gt;[&lt;/span&gt;!.&lt;span class="o"&gt;]&lt;/span&gt;* *
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;du -schx .&lt;span class="o"&gt;[&lt;/span&gt;!.&lt;span class="o"&gt;]&lt;/span&gt;* *
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To exclude other mount points use &lt;code&gt;--exclude&lt;/code&gt;&lt;/p&gt;
 &lt;h1&gt;&lt;a name="sublime-text-keyboard-shortcuts" href="#sublime-text-keyboard-shortcuts"&gt;Sublime text keyboard shortcuts&lt;/a&gt;&lt;/h1&gt;
@@ -80,10 +173,9 @@ Verify that password login does not work
 For resolution, the key idea is that there should be no x server running already on the machine. If there is no x server, then nx will create its own, and by default try to match the client resolution, which is what we want. Unfortunately, when we install gnome desktop, it automatically changes the systemd runlevel to graphical.target which means systemd will spawn gdm and an xserver /usr/lib/xorg/Xorg (hope you dont get into wayland and shit). So we have to change the default systemd target to shell mode, which can be done by &lt;code&gt;sudo systemctl set-default multi-user.target&lt;/code&gt;* 
 And thats it, nx should automatically try to match client resolution if client is running in full screen mode!&lt;/p&gt;
 &lt;p&gt;Sometimes, you will see a black screen when you login, to solve this&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service gdm stop
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo service gdm stop
 /usr/NX/bin/nxserver --restart
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="remote-desktop-to-raspberry-pi" href="#remote-desktop-to-raspberry-pi"&gt;Remote desktop to raspberry pi&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;We will use real vnc. From terminal, ssh to raspberry pi. On the pi run
@@ -95,15 +187,14 @@ And thats it, nx should automatically try to match client resolution if client i
 &lt;p&gt;Client 
 &lt;code&gt;telnet ip 8888&lt;/code&gt;&lt;/p&gt;
 &lt;h1&gt;&lt;a name="mounting-a-disk-on-gcp" href="#mounting-a-disk-on-gcp"&gt;Mounting a disk on GCP&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo lsblk
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo lsblk
 sudo mkdir -p /mnt/disks/sdb
 sudo cp /etc/fstab /etc/fstab.backup
 sudo blkid /dev/sdb
 In /etc/fstb
 &lt;span class="nv"&gt;UUID&lt;/span&gt;&lt;span class="o"&gt;=[&lt;/span&gt;UUID_VALUE&lt;span class="o"&gt;]&lt;/span&gt; /mnt/disks/&lt;span class="o"&gt;[&lt;/span&gt;MNT_DIR&lt;span class="o"&gt;]&lt;/span&gt; ext4 discard,defaults,nofail &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;
 Sudo mount -a 
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="describe-type-of-command" href="#describe-type-of-command"&gt;Describe type of command&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;type ls&lt;/code&gt;&lt;/p&gt;
@@ -125,36 +216,33 @@ The netfilter hooks are exposed through various  userspace programs: notably &lt
 &lt;/ul&gt;
 &lt;h1&gt;&lt;a name="postgres" href="#postgres"&gt;Postgres&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;To create a data directory, first &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir -p /path/to/data
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir -p /path/to/data
 chown postgres  /path/to/data
 Sudo -u postgres /usr/lib/postgresql/11/bin/Initdb -D /path/to/data
 vim /etc/postgresql/11/main/postgresql.conf &lt;span class="c1"&gt;#and modify the data_dir&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To make postgres listen to remote connections in the same file:
 &lt;code&gt;listen_addresses = '*'&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;vim /etc/postgresql/11/main/pg_hba.conf&lt;/code&gt;
 Add this line (probably give stronger restrictions)&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;host    all             all             0.0.0.0/0            md5
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;host    all             all             0.0.0.0/0            md5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Restart postgres. There are several ways. One of these should work:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="n"&gt;Sudo&lt;/span&gt; &lt;span class="n"&gt;service&lt;/span&gt; &lt;span class="n"&gt;postgresql&lt;/span&gt; &lt;span class="n"&gt;restart&lt;/span&gt;
-&lt;span class="n"&gt;Or&lt;/span&gt; 
-    &lt;span class="n"&gt;pg_ctlcluster&lt;/span&gt; &lt;span class="mi"&gt;12&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
-&lt;span class="n"&gt;Or&lt;/span&gt; 
-&lt;span class="n"&gt;pg_ctl&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgres&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
-&lt;span class="n"&gt;Or&lt;/span&gt;
-    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;pg_ctl&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt; &lt;span class="n"&gt;logfile&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
-&lt;span class="n"&gt;Or&lt;/span&gt;
-   &lt;span class="n"&gt;sudo&lt;/span&gt; &lt;span class="n"&gt;systemctl&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="mi"&gt;@10&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;Sudo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;restart&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;pg_ctlcluster&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="n"&gt;pg_ctl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgres&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Or&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;pg_ctl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;logfile&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Or&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="n"&gt;sudo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;systemctl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="mi"&gt;@10&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Create users by first logging in &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo -u postgres psql
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo -u postgres psql
 create user sharath with encrypted password &lt;span class="s1"&gt;&amp;#39;foo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 ALTER USER sharath WITH SUPERUSER&lt;span class="p"&gt;;&lt;/span&gt;
 create database sharath&lt;span class="p"&gt;;&lt;/span&gt;
@@ -164,8 +252,7 @@ create database sharath&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="nv"&gt;logging_collector&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; on
 &lt;span class="nv"&gt;log_rotation_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 0d
 &lt;span class="nv"&gt;log_statement&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;all&amp;#39;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To view the logs
 &lt;code&gt;sudo grep SQLEditor /var/lib/postgresql/12/main/log/* |grep -v pg_catalog | grep -v SHOW | grep -v current_schema&lt;/code&gt;&lt;/p&gt;
@@ -192,7 +279,7 @@ create database sharath&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/ul&gt;
 &lt;h1&gt;&lt;a name="how-to-setup-a-new-linux-machine" href="#how-to-setup-a-new-linux-machine"&gt;How to setup a new linux machine&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;First, login as root. Here nm&amp;gt; means new machine and local&amp;gt; means laptop&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nm&amp;gt; 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;nm&amp;gt; 
 adduser -u &lt;span class="m"&gt;1001&lt;/span&gt; sharath&lt;span class="p"&gt;;&lt;/span&gt;
 usermod -aG sudo sharath
 su - sharath
@@ -204,11 +291,10 @@ vim /home/sharath/.ssh/authorized_keys
 chmod &lt;span class="m"&gt;644&lt;/span&gt; /home/sharath/.ssh/authorized_keys
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sharath ALL=(ALL) NOPASSWD: ALL&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /etc/sudoers.d/sharath
 sudo chmod &lt;span class="m"&gt;0440&lt;/span&gt; /etc/sudoers.d/sharath
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;IMPROVED (scriptable)&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;First, copy your public key to tmp on nm, like so
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;First, copy your public key to tmp on nm, like so
 scp ~/.ssh/id_rsa.pub root@&amp;lt;new_ip&amp;gt;:/tmp/ak 
 
 Login to the new box as root and &lt;span class="k"&gt;do&lt;/span&gt; the following
@@ -222,8 +308,7 @@ chmod &lt;span class="m"&gt;644&lt;/span&gt; /home/sharath/.ssh/authorized_keys
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sharath ALL=(ALL) NOPASSWD: ALL&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /etc/sudoers.d/sharath
 sudo chmod &lt;span class="m"&gt;0440&lt;/span&gt; /etc/sudoers.d/sharath
 rm /tmp/ak
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Bob should be your uncle&lt;/p&gt;
 &lt;h1&gt;&lt;a name="python-regex-recipes" href="#python-regex-recipes"&gt;Python regex recipes &lt;/a&gt;&lt;/h1&gt;
@@ -238,15 +323,14 @@ rm /tmp/ak
 &lt;/ul&gt;
 &lt;p&gt;groups enclose in (), numbered from x.group(1)
 named groups like this &lt;code&gt;(?P&amp;lt;name) access with x.group("name")&lt;/code&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;regexStr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;regexStr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;finditer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;(blue|red)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;())),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blue socks and red shoes&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;prints &lt;code&gt;4 socks and 3 shoes&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;validate a regex on https://regex101.com/&lt;/p&gt;
@@ -270,27 +354,24 @@ named groups like this &lt;code&gt;(?P&amp;lt;name) access with x.group("name")&
 &lt;/ul&gt;
 &lt;h1&gt;&lt;a name="cscope-for-linux" href="#cscope-for-linux"&gt;Cscope for linux &lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;To apply debian patches use &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;LNX&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/sharath/os/linux/linux-5.4.0
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;LNX&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/sharath/os/linux/linux-5.4.0
 quilt push -a 
 find  &lt;span class="nv"&gt;$LNX&lt;/span&gt;  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/arch/*&amp;quot;&lt;/span&gt; ! -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/arch/x86*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/include/asm-*&amp;quot;&lt;/span&gt; ! -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/include/asm-i386*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/tmp*&amp;quot;&lt;/span&gt; -prune  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/Documentation*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/scripts*&amp;quot;&lt;/span&gt; -prune -o    -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/drivers*&amp;quot;&lt;/span&gt; -prune -o   -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/.pc/*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/debian/*&amp;quot;&lt;/span&gt; -prune -o   -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/sound/*&amp;quot;&lt;/span&gt; -prune -o    -name &lt;span class="s2"&gt;&amp;quot;*.[chxsS]&amp;quot;&lt;/span&gt; -print &amp;gt; kernel.cscope
 
 cscope -q -R -b -i cscope.files
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In vim&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;:cs f g &amp;lt;foo&amp;gt; goto definition of foo
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;:cs f g &amp;lt;foo&amp;gt; goto definition of foo
 :cs f s &amp;lt;foo&amp;gt; find this symbol
 :cs f t &amp;lt;foo&amp;gt; find this string
 &amp;lt;ctrl&amp;gt;\ s on a word, find this symbol and so on
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="cscope-for-ceph" href="#cscope-for-ceph"&gt;Cscope for ceph&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;find /mnt/disks/sdb/ceph-pristine -type f -and &lt;span class="se"&gt;\(&lt;/span&gt; -name &lt;span class="s2"&gt;&amp;quot;*.c&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.h&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.cc&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.cpp&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.hh&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\)&lt;/span&gt; &amp;gt; zoo.cscope
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;find /mnt/disks/sdb/ceph-pristine -type f -and &lt;span class="se"&gt;\(&lt;/span&gt; -name &lt;span class="s2"&gt;&amp;quot;*.c&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.h&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.cc&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.cpp&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.hh&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\)&lt;/span&gt; &amp;gt; zoo.cscope
 cscope -q -R -b -i zoo.cscope 
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="building-linux" href="#building-linux"&gt;Building linux&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;You can get the linux source from 
@@ -298,41 +379,37 @@ cscope -q -R -b -i zoo.cscope
 &lt;p&gt;You can get the config file from 
 &lt;code&gt;cp /boot/config-5.4.0-26-generic .config&lt;/code&gt;
 To install dependencies&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
 sudo apt-get build-dep linux linux-image-&lt;span class="k"&gt;$(&lt;/span&gt;uname -r&lt;span class="k"&gt;)&lt;/span&gt;
 
 make &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86 &lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS -j14 &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make -j14 &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86 &lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS install &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make -j14 &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86 &lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS modules_install&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;------------------------- DONE --------------------------------&amp;quot;&lt;/span&gt;
 rm /boot/initrd.img-3.16.43-SS
 update-initramfs -c -k &lt;span class="m"&gt;3&lt;/span&gt;.16.43-SS
 update-grub
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="using-ftrace-to-trace-linux-functions" href="#using-ftrace-to-trace-linux-functions"&gt;Using Ftrace to trace linux functions&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee  /sys/kernel/debug/tracing/tracing_on
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee  /sys/kernel/debug/tracing/tracing_on
 And &lt;span class="k"&gt;then&lt;/span&gt; use brendan greggs perf-tools
 sudo ./funcgraph -D  ext4_readpages &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /mnt/tmpfs/write
 sudo ./funcgraph -Dp &lt;span class="m"&gt;51985&lt;/span&gt;  ext4_readpages &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /mnt/tmpfs/write
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="how-to-build-linux-on-one-machine-and-deploy-on-another" href="#how-to-build-linux-on-one-machine-and-deploy-on-another"&gt;How to build linux on one machine and deploy on another&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Use “building linux” to build linux on one machine A. Suppose you want to install it on machine B
 On machine B&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Mkdir -p ~/kernel/boot
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Mkdir -p ~/kernel/boot
 Mkdir -p ~/kernel/modules
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;On machine A&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar -cvzf ~/modules /lib/modules/3.16.43-SS
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tar -cvzf ~/modules /lib/modules/3.16.43-SS
 scp -r *SS* &amp;lt;B&amp;gt;:~/kernel/boot
 scp ~/modules &amp;lt;B&amp;gt;:~/kernel/modules/
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;On machine B:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Cd ~/kernel/modules
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Cd ~/kernel/modules
 tar -xvzf modules
 sudo mv ~/kernel/modules/3.16.43-SS /lib/modules/
 sudo cp ~/kernel/boot/* /boot/
@@ -343,12 +420,11 @@ sudo update-grub
 
 &lt;span class="c1"&gt;#And… reboot!&lt;/span&gt;
 Sudo reboot now
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="jemalloc" href="#jemalloc"&gt;JeMalloc &lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Do a git clone.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./autogen.sh 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;./autogen.sh 
 ./configure --enable-prof --enable-stats --enable-debug
 Make
 
@@ -362,8 +438,7 @@ lib
 
 &lt;span class="c1"&gt;#To generate the profile:&lt;/span&gt;
 &lt;span class="o"&gt;(&lt;/span&gt;reverse-i-search&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;java&lt;span class="s1"&gt;&amp;#39;: rm jeprof*; rm /tmp/prof.gif; MALLOC_CONF=prof:true,lg_prof_sample:0,lg_prof_interval:25 LD_PRELOAD=${JEMALLOC_PATH}/lib/libjemalloc.so.2 java -Xmx1096m -cp  &amp;#39;&lt;/span&gt;/home/sharath.g/diskbench/:/home/sharath.g/diskbench/*&lt;span class="err"&gt;&amp;#39;&lt;/span&gt; sha.Memory&lt;span class="p"&gt;;&lt;/span&gt; ls jeprof*&lt;span class="p"&gt;;&lt;/span&gt; ~/code/jemalloc/bin/jeprof --show_bytes --gif &lt;span class="sb"&gt;`&lt;/span&gt;which java&lt;span class="sb"&gt;`&lt;/span&gt; jeprof*.heap &amp;gt; /tmp/prof.gif 
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you’ve compiled jemalloc on some other machine and copied it to this machine, youget teh error Can't exec "objdump": No such file or directory at /home/sharath.g/jemalloc/bin/jeprof line 4459.
 Then objdump is 
@@ -374,13 +449,12 @@ Resident: active + metadata
 Mapped: multiple of chunk size. Total chunks that have one byte of allocated 
 See that man pages for a clear explanation.&lt;/p&gt;
 &lt;h1&gt;&lt;a name="objdump" href="#objdump"&gt;Objdump&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;objdump -drSt hello.o
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;objdump -drSt hello.o
 -d dissasemble
 -r show relocation info inline
 -S show C &lt;span class="nb"&gt;source&lt;/span&gt; code
 -t show symbol table
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="installing-latest-version-of-cmake" href="#installing-latest-version-of-cmake"&gt;Installing latest version of cmake&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Either apt-get install cmake or get it from here
@@ -393,10 +467,9 @@ If you’re lucky, you can download it and it works http://insightfullogic.com/h
 &lt;p&gt;Start the java program with     &lt;br&gt;
 &lt;code&gt;-agentpath:$HONEST_PROFILER_HOME/liblagent.so=host=localhost,port=4242,logPath=/grid/1/log/hadoop-yarn/yarn/honest-profiler.hpl&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Start and stop profiling with &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; start &lt;span class="p"&gt;|&lt;/span&gt; nc localhost &lt;span class="m"&gt;4242&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; start &lt;span class="p"&gt;|&lt;/span&gt; nc localhost &lt;span class="m"&gt;4242&lt;/span&gt;
  &lt;span class="nb"&gt;echo&lt;/span&gt; stop &lt;span class="p"&gt;|&lt;/span&gt; nc localhost &lt;span class="m"&gt;4242&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Collapse the stacks with &lt;code&gt;java -cp $HONEST_PROFILER_HOME/honest-profiler.jar com.insightfullogic.honest_profiler.ports.console.FlameGraphDumperApplication netty.hpl netty.cstk&lt;/code&gt;&lt;/p&gt;
 &lt;h1&gt;&lt;a name="gcc-important-options" href="#gcc-important-options"&gt;GCC important options&lt;/a&gt;&lt;/h1&gt;
@@ -457,10 +530,9 @@ An interrupt handler cannot sleep/block because there is no “process” to sle
 &lt;h1&gt;&lt;a name="hdfs-proxy-user-setting" href="#hdfs-proxy-user-setting"&gt;HDFS proxy user setting&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;In addition to the modifications in core-site.xml we need to create the user and (add it to a group (?)) on the namenode. Even this is not working. It looks like the user needs to be added on the datanodes too. Is this true?
 The logs from namenode are like this: &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;2017-06-05 11:48:27,271 INFO  ipc.Server (Server.java:doRead(850)) - Socket Reader #1 for port 8020: readAndProcess from client 10.32.10.3 threw exception [org.apache.hadoop.security.authorize.AuthorizationException: Unauthorized connection for super-user: hue from IP 10.32.10.3]
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;2017-06-05 11:48:27,271 INFO  ipc.Server (Server.java:doRead(850)) - Socket Reader #1 for port 8020: readAndProcess from client 10.32.10.3 threw exception [org.apache.hadoop.security.authorize.AuthorizationException: Unauthorized connection for super-user: hue from IP 10.32.10.3]
 The ip 10.32.10.3 is a datanode.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="http-proxy-with-squid" href="#http-proxy-with-squid"&gt;Http proxy with squid&lt;/a&gt;&lt;/h1&gt;
 &lt;h3&gt;On the client machine&lt;/h3&gt;
@@ -490,7 +562,7 @@ The ip 10.32.10.3 is a datanode.
 &lt;p&gt;And thats it! &lt;code&gt;curl -L www.google.com&lt;/code&gt; (&lt;code&gt;-L&lt;/code&gt; to follow redirects) will work.&lt;/p&gt;
 &lt;p&gt;I needed this for &lt;code&gt;pip&lt;/code&gt;. With my setup, I can do &lt;code&gt;sudo export &amp;lt;blah&amp;gt;;export&amp;lt;blah&amp;gt;;pip install &amp;lt;package&amp;gt;&lt;/code&gt;. &lt;/p&gt;
 &lt;p&gt;FYI, my squid version is&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
 Package: squid
 Status: install ok installed
 Priority: optional
@@ -513,8 +585,7 @@ Description: Internet object cache (WWW proxy cache)
  the National Laboratory for Applied Networking Research (NLANR) and
  Internet volunteers.
 Homepage: http://www.squid-cache.org/
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="kafka-metrics" href="#kafka-metrics"&gt;kafka metrics&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;&lt;strong&gt;Bytes in&lt;/strong&gt; is number of bytes from external producers only. It does not include, for example, the bytes read by followers during replication. So &lt;code&gt;bytes_in = message_produce_rate * average_message_size&lt;/code&gt;&lt;/p&gt;
@@ -755,23 +826,21 @@ The costs below are &lt;em&gt;excluding&lt;/em&gt; hotel bookings and flights.&l
 &lt;/table&gt;
 &lt;p&gt;The excrutiangly detailed breakup of costs is &lt;a href="https://docs.google.com/spreadsheets/d/1uVaI5bQ702zNCqu6tZL-GoIzKm4CGlxRkincuRJys5k/edit?usp=sharing"&gt;here&lt;/a&gt;&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>The affair between iostat and fio</title><link href="/the-affair-between-iostat-and-fio.html" rel="alternate"></link><published>2016-06-02T16:20:00+00:00</published><updated>2016-06-02T16:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-06-02:/the-affair-between-iostat-and-fio.html</id><summary type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
 &lt;h3&gt;fio output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;io = bw*runt
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;io = bw*runt
 io = iops*runt*bs
-issued(r …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
+issued(r …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;In the following analysis, I'm going to assume you already know what &lt;code&gt;fio&lt;/code&gt; and &lt;code&gt;iostat&lt;/code&gt; is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers&lt;/p&gt;
 &lt;h3&gt;fio output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;io = bw*runt
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;io = bw*runt
 io = iops*runt*bs
 issued(r) = iops*runt
 io = ios*bs
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;iostat output&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[sharath.g@prod-d42ar-osd-a-00079-423040 /home/sharath.g]$ iostat -x -d 2 /dev/vdb 
 Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
 vdb               0.00     0.00  179.00    0.00   716.00     0.00     8.00     1.00    5.59    5.59    0.00   5.58  99.80
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3&gt;some inferences&lt;/h3&gt;
 &lt;p&gt;From the line &lt;code&gt;read : io=78556KB, bw=670322 B/s, iops=163 , runt=120004msec&lt;/code&gt; 
@@ -833,21 +902,19 @@ The error rates are exactly the same as r/s which stresses that &lt;code&gt;rKB/
 &lt;p&gt;The iops graph is explained simply as &lt;code&gt;bw/bs&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;It is also easy to explain the graph from bs=20 onwards. Each fio block translates into bs/avrq-sq sequential disk read operations. For example, A fio block of size 2 MB results in 4 sequential reads (each of 1024 sectors = 0.5 MB). That explains the sudden increase in r/s after bs=19. 
 If we now use hdd throughput = 120 MBps (retrofitted, but i've seen the throughput varying between 110-120MBps) with the formula &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;computed_read_s = (bs / (1024*512)) / (5.6*10**-3 + bs/(120*2**20) )
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;computed_read_s = (bs / (1024*512)) / (5.6*10**-3 + bs/(120*2**20) )
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The errors against actual values are as follows:
 0.38%, 0.92%, -1.21%, -4.98%, -1.99%&lt;/p&gt;
 &lt;p&gt;As always, the &lt;code&gt;rKB/s&lt;/code&gt; is r/s*avgrq-sz&lt;/p&gt;
 &lt;p&gt;The iops and the bw graph is more interesting. Another thing that happened at bs=19 was that the page-cache was completely filled. (see the io column) This results in requests being served from RAM which explains the tremendous shootup in fio iops and fio bw&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;number of ios for reading the 3G file into memory = 3G/bs ------&amp;gt; (3)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;number of ios for reading the 3G file into memory = 3G/bs ------&amp;gt; (3)
 time to read it from hard disk = 3G/rKBps
 time for which requests were served from page-cache = 60-3G/rKBps   ----&amp;gt; (1)
 Time of a single page-cache io operation = 1.1 microseconds + bs / (4.8 GBps = ram  bandwidth) ----&amp;gt; (2)
 expected iops = ((3)+(1)/(2)) / 60
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With the above formula, the errors of expected vs actual are 
 10.11%, 1.39%, 2.22%, 3.41%, 9.97%&lt;/p&gt;
@@ -857,9 +924,8 @@ expected iops = ((3)+(1)/(2)) / 60
 &lt;p&gt;Furthermore, to launch a radosgw instance, you &lt;em&gt;need&lt;/em&gt; to have a section in your host file called &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and your  keyring should have a corresponding key section called  &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and you should have imported that key into ceph    via &lt;code&gt;sudo ceph auth import -i /etc/ceph/&amp;lt;keyring_file&amp;gt;&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;All the three names must match: the one in ceph.conf, in the keyring and in &lt;code&gt;ceph auth list&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Oh, and yeah, do &lt;strong&gt;NOT&lt;/strong&gt; put a line like this in your &lt;code&gt;ceph.conf&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;rgw &lt;span class="nv"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;rgw &lt;span class="nv"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you do, you'l get weird messages like &lt;/p&gt;
 &lt;blockquote&gt;
@@ -867,7 +933,7 @@ expected iops = ((3)+(1)/(2)) / 60
 &lt;/blockquote&gt;
 &lt;p&gt;and you'll go crazy trying to debug it.&lt;/p&gt;
 &lt;p&gt;So the working &lt;code&gt;ceph.conf&lt;/code&gt; with comments is: &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;global&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;[&lt;/span&gt;global&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;span class="nv"&gt;fsid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; a7f64266-0894-4f1e-a635-d0aeaca0e993 &lt;span class="c1"&gt;#anything random, generated from uuidgen&lt;/span&gt;
 auth cluster &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
 auth service &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
@@ -895,7 +961,7 @@ osd crush chooseleaf &lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="o"
     log &lt;span class="nv"&gt;file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /var/log/radosgw/client.radosgw.gateway.log
     rgw &lt;span class="nv"&gt;frontends&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; civetweb &lt;span class="nv"&gt;port&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;80&lt;/span&gt;
     rgw print &lt;span class="k"&gt;continue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="ceph"></category></entry><entry><title>I finally setup a blog</title><link href="/i-finally-setup-a-blog.html" rel="alternate"></link><published>2016-02-02T22:20:00+00:00</published><updated>2016-02-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-02:/i-finally-setup-a-blog.html</id><summary type="html">&lt;p&gt;&lt;strong&gt;I finally setup my own blog!&lt;/strong&gt; and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on &lt;a href="www.digitalocean.com"&gt;digital ocean&lt;/a&gt;. &lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="ceph"></category></entry><entry><title>I finally setup a blog</title><link href="/i-finally-setup-a-blog.html" rel="alternate"></link><published>2016-02-02T22:20:00+00:00</published><updated>2016-02-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-02:/i-finally-setup-a-blog.html</id><summary type="html">&lt;p&gt;&lt;strong&gt;I finally setup my own blog!&lt;/strong&gt; and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on &lt;a href="www.digitalocean.com"&gt;digital ocean&lt;/a&gt;. &lt;/p&gt;
 &lt;p&gt;Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;I finally setup my own blog!&lt;/strong&gt; and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on &lt;a href="www.digitalocean.com"&gt;digital ocean&lt;/a&gt;. &lt;/p&gt;
 &lt;p&gt;Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can ssh into and have   root access. It cost me ~Re 300 per month for their most basic droplet. I set it up with a static ipv4.&lt;/p&gt;
 &lt;p&gt;Since digitalocean has no DNS service, I bought a domain on &lt;a href="www.namecheap.com"&gt;namecheap&lt;/a&gt; for Re 500 per year and pointed it to the droplet. I   am hosting this as a static site powered by pelican. Using the built-in python server for now.  &lt;/p&gt;

@@ -49,9 +49,8 @@
 <p>Furthermore, to launch a radosgw instance, you <em>need</em> to have a section in your host file called <code>client.rgw.&lt;some_name&gt;</code> and your  keyring should have a corresponding key section called  <code>client.rgw.&lt;some_name&gt;</code> and you should have imported that key into ceph    via <code>sudo ceph auth import -i /etc/ceph/&lt;keyring_file&gt;</code>.</p>
 <p><strong>All the three names must match: the one in ceph.conf, in the keyring and in <code>ceph auth list</code></strong></p>
 <p>Oh, and yeah, do <strong>NOT</strong> put a line like this in your <code>ceph.conf</code>:</p>
-<div class="highlight"><pre><span></span>rgw <span class="nv">data</span> <span class="o">=</span> /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>rgw <span class="nv">data</span> <span class="o">=</span> /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
+</code></pre></div>
 
 <p>If you do, you'l get weird messages like </p>
 <blockquote>
@@ -59,7 +58,7 @@
 </blockquote>
 <p>and you'll go crazy trying to debug it.</p>
 <p>So the working <code>ceph.conf</code> with comments is: </p>
-<div class="highlight"><pre><span></span><span class="o">[</span>global<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>global<span class="o">]</span>
 <span class="nv">fsid</span> <span class="o">=</span> a7f64266-0894-4f1e-a635-d0aeaca0e993 <span class="c1">#anything random, generated from uuidgen</span>
 auth cluster <span class="nv">required</span> <span class="o">=</span> cephx
 auth service <span class="nv">required</span> <span class="o">=</span> cephx
@@ -87,7 +86,7 @@ osd crush chooseleaf <span class="nb">type</span> <span class="o">=</span> <span
     log <span class="nv">file</span> <span class="o">=</span> /var/log/radosgw/client.radosgw.gateway.log
     rgw <span class="nv">frontends</span> <span class="o">=</span> civetweb <span class="nv">port</span><span class="o">=</span><span class="m">80</span>
     rgw print <span class="k">continue</span> <span class="o">=</span> <span class="nb">false</span>
-</pre></div> 
+</code></pre></div> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>

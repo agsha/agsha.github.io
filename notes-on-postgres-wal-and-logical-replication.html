@@ -1,0 +1,189 @@
+<!-- same as index.html, except that only one article is shown -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Sharath's core dump</title>
+
+
+    <!-- Custom styles for this template -->
+    <link href="theme/blog.css" rel="stylesheet">
+    <link href="theme/hilite.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="/">Latest articles</a>
+          <a class="blog-nav-item" href="/archives.html">Archive</a>
+          <a class="blog-nav-item" href="/pages/about.html">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-12 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/notes-on-postgres-wal-and-logical-replication.html" rel="bookmark" title="Permalink to Notes on Postgres WAL and logical replication">Notes on Postgres WAL and logical replication</a></h2>
+            <p class="blog-post-meta">Mon, 20 Sep 2021</p>
+		    <p>I am trying to implement change data capture (CDC) from several postgres databases and expose it as a stream of inserts/updates/deletes to any consumer. </p>
+<p>One property of all our tables, which makes our life much easier is:</p>
+<ul>
+<li>all tables have an immutable primary key (usually a UUID), although sometimes, the primary key may be a composite key. </li>
+<li>All tables also have audit columns (created_at, updated_at)</li>
+</ul>
+<p>Here are some practical requirements from any such CDC system.</p>
+<ul>
+<li>In case, the destination crashes, I want to replay the changes from the last X days (assuming WAL logs are maintained)</li>
+<li>In case of master failover to replica, I want to "continue from where the master fell off", or at least, rewind back a couple of hours and replay the messages.</li>
+<li>We want to selectively choose what tables to replicate, and this set of tables might change. (typically, new tables will be added to the captured list)`</li>
+<li>The ability to perform paralell initial snapshot and streaming, and the ability to resume initial snapshot in case of error </li>
+</ul>
+<p>It seems like the <em>de facto</em> choice for CDC these days is debezium, which uses logical replication to expose a stream of changes. When practically trying to build such a system, I had a hard time figuring out how all the components fit together. The postgres and debezium docs are very good, but they have big gaps if you want to understand the systems well enough to architect a solution. So in this blog, I will cover the missing pieces that I figured out reading the source code. </p>
+<p>This article is meant to be read along with the available documentation of postgres logical replication and debezium documentation. As such, I will not cover introductory things like what is logical replication, etc. I will go straight to the points which I consider is not clear in the documentation. A really fantastic place to get background information is <a href="https://www.interdb.jp/pg/">https://www.interdb.jp/pg/</a>.</p>
+<h2>Some implementation details of the postgres WAL mechanism</h2>
+<p>As soon as queries execute <code>insert/delete/updates</code>, The generated <code>XLogRecords</code> are put in a shared memory called the <strong>WAL Buffers</strong>. There is a <strong>WAL Writer</strong> process that wakes up regularly and flushes the WAL Buffer to disk. Note that this writing happens even for potentially uncommited transactions. The fact that a transaction is rolled back is handled by simply marking the transaction in the <code>pg_xact</code> as <code>rolled_back</code>. There are two invariants that are maintained.</p>
+<ul>
+<li>All <code>XLogRecords</code> are flushed to disk at some point <strong>before</strong> the transaction is marked as committed</li>
+<li>When the WAL Writer kicks in, all <code>XLogRecords</code> <strong>upto a specific LSN</strong> are written. This means that <strong><code>XLogRecords</code> from different transactions can be intermixed freeley</strong>. For example, the following is a valid sequence of records in the WAL File</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">begin_tx1</span><span class="p">,</span> <span class="n">begin_tx2</span><span class="p">,</span> <span class="n">tx1_xlogrecord1</span><span class="p">,</span> <span class="n">tx2_xlogrecord1</span><span class="p">,</span> <span class="n">commit_tx1</span><span class="p">,</span> <span class="n">commit_tx2</span>
+</code></pre></div>
+
+<h2>Some implementation details of logical replication</h2>
+<ul>
+<li>On the server side, the replication slot primarily holds information about how much LSN the client has read so far.</li>
+<li>On the server side the flow of reading the logs is like this</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">WalSender</span> <span class="o">--&gt;</span> <span class="n">ReorderBuffer</span> <span class="o">--&gt;</span> <span class="n">OutputPlugin</span> <span class="p">(</span><span class="k">for</span> <span class="n">example</span> <span class="n">pgoutput</span><span class="p">)</span>
+</code></pre></div>
+
+<ul>
+<li>Each replication slot has its own WALSender process. </li>
+<li>The output plugin free to do whatever it wants with the decoded <code>XLogRecords</code>. It may or may not send the changes over on the network to a remote peer. For example, there is a <a href="https://www.postgresql.org/docs/10/logicaldecoding-example.html">SQL interface</a> which is a plugin which exposes the functionalities through a few SQL functions. </li>
+<li>Any logical replication plugin must be associated with a replication slot to start doing the magic.</li>
+<li>pgoutput is one such plugin, that streams the changes over the network, with a well defined <a href="https://www.postgresql.org/docs/current/protocol-logical-replication.html">protocol</a>.</li>
+<li>On the client side, the WALReciever process understands the protocol of pgoutput, and converts the messages to SQL and replays it on the client.</li>
+<li>As with all output plugins, pgoutput also requires a replication slot. However, unlike other plugins, pgoutput requires another object called a <em>publication</em>. The publication is effectively nothing more than a list of tables that need to be captured. It is read only during the startup of streaming, or when we manually refresh a publication</li>
+</ul>
+<p>Now I would like to point out a tricky implementation detail.
+- On the server side, we saw that WAL files contain <code>XLogRecords</code> intermixed records from different transactions. However, when the changes appear on the client side, they are no longer intermixed. For example, suppose the WAL file on server looks like this:</p>
+<div class="highlight"><pre><span></span><code><span class="n">begin_tx1</span><span class="p">,</span> <span class="n">begin_tx2</span><span class="p">,</span> <span class="n">tx1_xlogrecord1</span><span class="p">,</span> <span class="n">tx2_xlogrecord1</span><span class="p">,</span> <span class="n">commit_tx1</span><span class="p">,</span> <span class="n">commit_tx2</span>
+</code></pre></div>
+
+<p>but the client sees the changes look like this:</p>
+<div class="highlight"><pre><span></span><code><span class="n">begin_tx1</span><span class="p">,</span> <span class="n">tx1_xlogrecord1</span><span class="p">,</span> <span class="n">commit_tx1</span><span class="p">,</span> <span class="n">begin_tx2</span><span class="p">,</span> <span class="n">tx2_xlogrecord1</span><span class="p">,</span> <span class="n">commit_tx2</span>
+</code></pre></div>
+
+<p>This magic is performed by the <code>ReorderBuffer</code> module pointed out above. Note that this component comes before the output plugins, so all output plugins behave this way. </p>
+<p>By now, you must be wondering that the only way to accomplish is to buffer the <code>XLogRecords</code> in memory until we encounter the commit record, and then emit all changes without intermix.</p>
+<p>Well you are right. ReorderBuffer does exactly that. The astute observer will note that the amount of transaction record can grow big. Much bigger than available memory. Well, the ReorderBuffer infact has the capability to splill its data structures to disk to accomplish this de-intermix!</p>
+<p>The pseudocode of ReorderBuffer is something like this</p>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span> <span class="n">Maintain</span> <span class="n">a</span> <span class="n">datastructure</span> <span class="n">recordMap</span><span class="p">::</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">txid</span><span class="p">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">XLogRecords</span><span class="o">&gt;</span>
+<span class="mf">2.</span> <span class="n">start</span> <span class="n">reading</span> <span class="n">the</span> <span class="n">WAL</span>
+<span class="mf">3.</span> <span class="k">for</span> <span class="n">each</span> <span class="n">XLogRecord</span> <span class="n">rec</span><span class="p">:</span>
+       <span class="n">a</span><span class="p">.</span> <span class="n">recordMap</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">rec</span><span class="p">.</span><span class="na">txid</span><span class="p">).</span><span class="na">append</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+       <span class="n">b</span><span class="p">.</span> <span class="k">if</span> <span class="n">the</span> <span class="n">list</span> <span class="n">is</span> <span class="n">bigger</span> <span class="n">than</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">spill</span> <span class="n">to</span> <span class="n">disk</span>
+       <span class="n">c</span><span class="p">.</span> <span class="k">if</span> <span class="n">rec</span><span class="o">==</span><span class="n">COMMIT</span><span class="p">,</span> <span class="n">then</span> <span class="n">emit</span> <span class="n">all</span> <span class="n">the</span> <span class="n">changes</span> <span class="n">of</span> <span class="n">recordMap</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">rec</span><span class="p">.</span><span class="na">txid</span><span class="p">)</span>
+</code></pre></div>
+
+<p>An important consequence of this "de-mixing" is that the LSN of records as seen by the client need not be in increasing order.
+However, the following two invariants are still maintained
+- LSNs of each transaction is ordered
+- LSNs of commit messages are ordered</p>
+<h2>Keeping track of progress of logical replication</h2>
+<p>Periodically, the client sends back heartbeat messages to server, which contain the following three lsns. 
+- confirm_flush_lsn
+- recieve_lsn
+- apply_lsn</p>
+<p>To understand these LSN, consider the client as a database. When it recieves a message, it performs the following steps
+- recieve the lsn
+- apply it to tables
+- fsync and flush the changes</p>
+<p>So each lsn corresponds to these steps. Usually, <code>recieve_lsn&gt;apply_lsn&gt;flush_lsn</code></p>
+<p>Of course, a client may not actually use three different steps. The most important of these is <code>flush_lsn</code>. It tells the server that lsns before this will no longer be required by the client and free to reclaim the space in WAL</p>
+<h2>On server restart, from where does the server restart the WAL decoding?</h2>
+<p>The server keeps track of all three progress lsns. In particular the <code>flush_lsn</code>. So logically, one might think that on restart, this is the point from where the server will play back the WAL. However, the server persists the <code>flush_lsn</code> only at checkpoint, so it is entirely possible that the client may recieve duplicate entries on restart. It is upto the client to skip duplicates. Furthermore, one can actually specify the restart LSN during startup.</p>
+<p>There is in fact another LSN called <code>restart_lsn</code> that is tracked by the server. I am not able to figure out the difference between <code>restart_lsn</code> and <code>flush_lsn</code></p>
+<h2>Some notes for architects</h2>
+<p>Q: How far can I go back and restart the streaming?
+A: By cleverly controlling flush_lsn, you can control the amount of WAL retained on the server.</p>
+<p>Q: How do I make sure server does not crash due to WAL locking up disk space due to inactive replication client
+A: You can play with some postgres parameters, notably <code>wal_keep_size</code> and <code>max_slot_wal_keep_size</code></p>
+<p>Q: How do I get resumable and parallell initial snapshots? 
+A: refers to these links. <a href="https://github.com/debezium/debezium-design-documents/blob/main/DDD-3.md">DDD-3</a> and <a href="https://arxiv.org/pdf/2010.12597v1.pdf">DbLog</a></p>
+<p>Q: If the master fails-over to a replica, the LSNs will go out of sync. Do I need to resetup the entire snapshot?
+A: Here's the idea:
+- create a replication slot on the new primary (previously standby)
+- issue a query like so <code>select * from mytable where updated_at &gt; now()-2hrs</code>
+- start the streaming replication.
+Assuming your primary keys are idempotent, you should be back in business</p>
+<h2>Conclusion</h2>
+<p>Logical decoding is a very powerful tool in the data engineering toolkit. It opens up a host of possibilities. I hope this article fills in the gap left in official documentation and enables architects to design effective CDC systems.</p> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+        </div><!-- /.blog-main -->
+
+      </div><!-- /.row -->
+
+		  <div id="disqus_thread"></div>
+		  <script>
+			  /**
+			  * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+			  * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+			  */
+			  /*
+			  var disqus_config = function () {
+				  this.page.url = notes-on-postgres-wal-and-logical-replication.html; // Replace PAGE_URL with your page's canonical URL variable
+				  this.page.identifier = my_blog; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+			  };
+			  */
+			  (function() { // DON'T EDIT BELOW THIS LINE
+				  var d = document, s = d.createElement('script');
+
+				  s.src = '//agsha.disqus.com/embed.js';
+
+				  s.setAttribute('data-timestamp', +new Date());
+				  (d.head || d.body).appendChild(s);
+			  })();
+		  </script>
+		  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+
+   <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  </body>
+</html>

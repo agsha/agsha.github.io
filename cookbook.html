@@ -49,7 +49,6 @@
 (the links are not working yet :( )</p>
 <h1><a name="table-of-contents" href="#table-of-contents">Table of contents</a></h1>
 <!-- toc -->
-
 <ul>
 <li><a href="#table-of-contents">Table of contents</a></li>
 <li><a href="#julia-arrays">Julia Arrays</a></li>
@@ -85,9 +84,10 @@
 <li><a href="#linux-interrupt-handling">Linux Interrupt Handling</a></li>
 <li><a href="#hdfs-proxy-user-setting">HDFS proxy user setting</a></li>
 <li><a href="#http-proxy-with-squid">Http proxy with squid</a></li>
-<li><a href="#kafka-metrics">kafka metrics</a>
-<!-- tocstop --></li>
+<li><a href="#kafka-metrics">kafka metrics</a></li>
 </ul>
+<!-- tocstop -->
+
 <h1><a name="julia-arrays" href="#julia-arrays">Julia Arrays</a></h1>
 <ul>
 <li>tabs or spaces: concat to the right</li>
@@ -96,19 +96,16 @@
 </ul>
 <h1><a name="anaconda-dont-start-at-shell" href="#anaconda-dont-start-at-shell">Anaconda dont start at shell</a></h1>
 <p>If you'd prefer that conda's base environment not be activated on startup, </p>
-<div class="highlight"><pre><span></span>conda config --set auto_activate_base <span class="nb">false</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>conda config --set auto_activate_base <span class="nb">false</span>
+</code></pre></div>
 
 <h1><a name="how-to-mount-samba-folder-in-ubuntu" href="#how-to-mount-samba-folder-in-ubuntu">How to mount samba folder in ubuntu</a></h1>
-<div class="highlight"><pre><span></span>sudo mount -t cifs -o <span class="nv">user</span><span class="o">=</span>sharath //192.168.29.28/HOMEPI /mnt/pi
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo mount -t cifs -o <span class="nv">user</span><span class="o">=</span>sharath //192.168.29.28/HOMEPI /mnt/pi
+</code></pre></div>
 
 <h1><a name="how-to-use-du-to-search-for-hidden-folders" href="#how-to-use-du-to-search-for-hidden-folders">How to use du to search for hidden folders</a></h1>
-<div class="highlight"><pre><span></span>du -schx .<span class="o">[</span>!.<span class="o">]</span>* *
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>du -schx .<span class="o">[</span>!.<span class="o">]</span>* *
+</code></pre></div>
 
 <p>To exclude other mount points use <code>--exclude</code></p>
 <h1><a name="sublime-text-keyboard-shortcuts" href="#sublime-text-keyboard-shortcuts">Sublime text keyboard shortcuts</a></h1>
@@ -126,10 +123,9 @@ Verify that password login does not work
 For resolution, the key idea is that there should be no x server running already on the machine. If there is no x server, then nx will create its own, and by default try to match the client resolution, which is what we want. Unfortunately, when we install gnome desktop, it automatically changes the systemd runlevel to graphical.target which means systemd will spawn gdm and an xserver /usr/lib/xorg/Xorg (hope you dont get into wayland and shit). So we have to change the default systemd target to shell mode, which can be done by <code>sudo systemctl set-default multi-user.target</code>* 
 And thats it, nx should automatically try to match client resolution if client is running in full screen mode!</p>
 <p>Sometimes, you will see a black screen when you login, to solve this</p>
-<div class="highlight"><pre><span></span>sudo service gdm stop
+<div class="highlight"><pre><span></span><code>sudo service gdm stop
 /usr/NX/bin/nxserver --restart
-</pre></div>
-
+</code></pre></div>
 
 <h1><a name="remote-desktop-to-raspberry-pi" href="#remote-desktop-to-raspberry-pi">Remote desktop to raspberry pi</a></h1>
 <p>We will use real vnc. From terminal, ssh to raspberry pi. On the pi run
@@ -141,15 +137,14 @@ And thats it, nx should automatically try to match client resolution if client i
 <p>Client 
 <code>telnet ip 8888</code></p>
 <h1><a name="mounting-a-disk-on-gcp" href="#mounting-a-disk-on-gcp">Mounting a disk on GCP</a></h1>
-<div class="highlight"><pre><span></span>sudo lsblk
+<div class="highlight"><pre><span></span><code>sudo lsblk
 sudo mkdir -p /mnt/disks/sdb
 sudo cp /etc/fstab /etc/fstab.backup
 sudo blkid /dev/sdb
 In /etc/fstb
 <span class="nv">UUID</span><span class="o">=[</span>UUID_VALUE<span class="o">]</span> /mnt/disks/<span class="o">[</span>MNT_DIR<span class="o">]</span> ext4 discard,defaults,nofail <span class="m">0</span> <span class="m">2</span>
 Sudo mount -a 
-</pre></div>
-
+</code></pre></div>
 
 <h1><a name="describe-type-of-command" href="#describe-type-of-command">Describe type of command</a></h1>
 <p><code>type ls</code></p>
@@ -171,36 +166,33 @@ The netfilter hooks are exposed through various  userspace programs: notably </p
 </ul>
 <h1><a name="postgres" href="#postgres">Postgres</a></h1>
 <p>To create a data directory, first </p>
-<div class="highlight"><pre><span></span>mkdir -p /path/to/data
+<div class="highlight"><pre><span></span><code>mkdir -p /path/to/data
 chown postgres  /path/to/data
 Sudo -u postgres /usr/lib/postgresql/11/bin/Initdb -D /path/to/data
 vim /etc/postgresql/11/main/postgresql.conf <span class="c1">#and modify the data_dir</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>To make postgres listen to remote connections in the same file:
 <code>listen_addresses = '*'</code></p>
 <p><code>vim /etc/postgresql/11/main/pg_hba.conf</code>
 Add this line (probably give stronger restrictions)</p>
-<div class="highlight"><pre><span></span>host    all             all             0.0.0.0/0            md5
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>host    all             all             0.0.0.0/0            md5
+</code></pre></div>
 
 <p>Restart postgres. There are several ways. One of these should work:</p>
-<div class="highlight"><pre><span></span>    <span class="n">Sudo</span> <span class="n">service</span> <span class="n">postgresql</span> <span class="n">restart</span>
-<span class="n">Or</span> 
-    <span class="n">pg_ctlcluster</span> <span class="mi">12</span> <span class="n">main</span> <span class="n">start</span>
-<span class="n">Or</span> 
-<span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span> <span class="n">start</span>
-<span class="n">Or</span>
-    <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">main</span> <span class="o">-</span><span class="n">l</span> <span class="n">logfile</span> <span class="n">start</span>
-<span class="n">Or</span>
-   <span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">postgresql</span><span class="mi">@10</span><span class="o">-</span><span class="n">main</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="n">Sudo</span><span class="w"> </span><span class="n">service</span><span class="w"> </span><span class="n">postgresql</span><span class="w"> </span><span class="n">restart</span><span class="w"></span>
+<span class="n">Or</span><span class="w"> </span>
+<span class="w">    </span><span class="n">pg_ctlcluster</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="n">start</span><span class="w"></span>
+<span class="n">Or</span><span class="w"> </span>
+<span class="n">pg_ctl</span><span class="w"> </span><span class="o">-</span><span class="n">D</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span><span class="w"> </span><span class="n">start</span><span class="w"></span>
+<span class="n">Or</span><span class="w"></span>
+<span class="w">    </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pg_ctl</span><span class="w"> </span><span class="o">-</span><span class="n">D</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">main</span><span class="w"> </span><span class="o">-</span><span class="n">l</span><span class="w"> </span><span class="n">logfile</span><span class="w"> </span><span class="n">start</span><span class="w"></span>
+<span class="n">Or</span><span class="w"></span>
+<span class="w">   </span><span class="n">sudo</span><span class="w"> </span><span class="n">systemctl</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="n">postgresql</span><span class="mi">@10</span><span class="o">-</span><span class="n">main</span><span class="w"></span>
+</code></pre></div>
 
 <p>Create users by first logging in </p>
-<div class="highlight"><pre><span></span>sudo -u postgres psql
+<div class="highlight"><pre><span></span><code>sudo -u postgres psql
 create user sharath with encrypted password <span class="s1">&#39;foo&#39;</span><span class="p">;</span>
 ALTER USER sharath WITH SUPERUSER<span class="p">;</span>
 create database sharath<span class="p">;</span>
@@ -210,8 +202,7 @@ create database sharath<span class="p">;</span>
 <span class="nv">logging_collector</span> <span class="o">=</span> on
 <span class="nv">log_rotation_age</span> <span class="o">=</span> 0d
 <span class="nv">log_statement</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>To view the logs
 <code>sudo grep SQLEditor /var/lib/postgresql/12/main/log/* |grep -v pg_catalog | grep -v SHOW | grep -v current_schema</code></p>
@@ -238,7 +229,7 @@ create database sharath<span class="p">;</span>
 </ul>
 <h1><a name="how-to-setup-a-new-linux-machine" href="#how-to-setup-a-new-linux-machine">How to setup a new linux machine</a></h1>
 <p>First, login as root. Here nm&gt; means new machine and local&gt; means laptop</p>
-<div class="highlight"><pre><span></span>nm&gt; 
+<div class="highlight"><pre><span></span><code>nm&gt; 
 adduser -u <span class="m">1001</span> sharath<span class="p">;</span>
 usermod -aG sudo sharath
 su - sharath
@@ -250,11 +241,10 @@ vim /home/sharath/.ssh/authorized_keys
 chmod <span class="m">644</span> /home/sharath/.ssh/authorized_keys
 <span class="nb">echo</span> <span class="s1">&#39;sharath ALL=(ALL) NOPASSWD: ALL&#39;</span> <span class="p">|</span> sudo tee /etc/sudoers.d/sharath
 sudo chmod <span class="m">0440</span> /etc/sudoers.d/sharath
-</pre></div>
-
+</code></pre></div>
 
 <p>IMPROVED (scriptable)</p>
-<div class="highlight"><pre><span></span>First, copy your public key to tmp on nm, like so
+<div class="highlight"><pre><span></span><code>First, copy your public key to tmp on nm, like so
 scp ~/.ssh/id_rsa.pub root@&lt;new_ip&gt;:/tmp/ak 
 
 Login to the new box as root and <span class="k">do</span> the following
@@ -268,8 +258,7 @@ chmod <span class="m">644</span> /home/sharath/.ssh/authorized_keys
 <span class="nb">echo</span> <span class="s1">&#39;sharath ALL=(ALL) NOPASSWD: ALL&#39;</span> <span class="p">|</span> sudo tee /etc/sudoers.d/sharath
 sudo chmod <span class="m">0440</span> /etc/sudoers.d/sharath
 rm /tmp/ak
-</pre></div>
-
+</code></pre></div>
 
 <p>Bob should be your uncle</p>
 <h1><a name="python-regex-recipes" href="#python-regex-recipes">Python regex recipes </a></h1>
@@ -284,15 +273,14 @@ rm /tmp/ak
 </ul>
 <p>groups enclose in (), numbered from x.group(1)
 named groups like this <code>(?P&lt;name) access with x.group("name")</code></p>
-<div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">regexStr</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">regexStr</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
     <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(blue|red)&quot;</span><span class="p">)</span>
 <span class="n">r</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())),</span> <span class="s2">&quot;blue socks and red shoes&quot;</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>prints <code>4 socks and 3 shoes</code></p>
 <p>validate a regex on https://regex101.com/</p>
@@ -316,27 +304,24 @@ named groups like this <code>(?P&lt;name) access with x.group("name")</code></p>
 </ul>
 <h1><a name="cscope-for-linux" href="#cscope-for-linux">Cscope for linux </a></h1>
 <p>To apply debian patches use </p>
-<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LNX</span><span class="o">=</span>/home/sharath/os/linux/linux-5.4.0
+<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">LNX</span><span class="o">=</span>/home/sharath/os/linux/linux-5.4.0
 quilt push -a 
 find  <span class="nv">$LNX</span>  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/arch/*&quot;</span> ! -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/arch/x86*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/include/asm-*&quot;</span> ! -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/include/asm-i386*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/tmp*&quot;</span> -prune  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/Documentation*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/scripts*&quot;</span> -prune -o    -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/drivers*&quot;</span> -prune -o   -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/.pc/*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/debian/*&quot;</span> -prune -o   -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/sound/*&quot;</span> -prune -o    -name <span class="s2">&quot;*.[chxsS]&quot;</span> -print &gt; kernel.cscope
 
 cscope -q -R -b -i cscope.files
-</pre></div>
-
+</code></pre></div>
 
 <p>In vim</p>
-<div class="highlight"><pre><span></span>:cs f g &lt;foo&gt; goto definition of foo
+<div class="highlight"><pre><span></span><code>:cs f g &lt;foo&gt; goto definition of foo
 :cs f s &lt;foo&gt; find this symbol
 :cs f t &lt;foo&gt; find this string
 &lt;ctrl&gt;\ s on a word, find this symbol and so on
-</pre></div>
-
+</code></pre></div>
 
 <h1><a name="cscope-for-ceph" href="#cscope-for-ceph">Cscope for ceph</a></h1>
-<div class="highlight"><pre><span></span>find /mnt/disks/sdb/ceph-pristine -type f -and <span class="se">\(</span> -name <span class="s2">&quot;*.c&quot;</span> -o -name <span class="s2">&quot;*.h&quot;</span> -o -name <span class="s2">&quot;*.cc&quot;</span> -o -name <span class="s2">&quot;*.cpp&quot;</span> -o -name <span class="s2">&quot;*.hh&quot;</span> <span class="se">\)</span> &gt; zoo.cscope
+<div class="highlight"><pre><span></span><code>find /mnt/disks/sdb/ceph-pristine -type f -and <span class="se">\(</span> -name <span class="s2">&quot;*.c&quot;</span> -o -name <span class="s2">&quot;*.h&quot;</span> -o -name <span class="s2">&quot;*.cc&quot;</span> -o -name <span class="s2">&quot;*.cpp&quot;</span> -o -name <span class="s2">&quot;*.hh&quot;</span> <span class="se">\)</span> &gt; zoo.cscope
 cscope -q -R -b -i zoo.cscope 
-</pre></div>
-
+</code></pre></div>
 
 <h1><a name="building-linux" href="#building-linux">Building linux</a></h1>
 <p>You can get the linux source from 
@@ -344,41 +329,37 @@ cscope -q -R -b -i zoo.cscope
 <p>You can get the config file from 
 <code>cp /boot/config-5.4.0-26-generic .config</code>
 To install dependencies</p>
-<div class="highlight"><pre><span></span>sudo apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
+<div class="highlight"><pre><span></span><code>sudo apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
 sudo apt-get build-dep linux linux-image-<span class="k">$(</span>uname -r<span class="k">)</span>
 
 make <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS -j14 <span class="o">&amp;&amp;</span> make -j14 <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS install <span class="o">&amp;&amp;</span> make -j14 <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS modules_install<span class="p">;</span> <span class="nb">echo</span> <span class="s2">&quot;------------------------- DONE --------------------------------&quot;</span>
 rm /boot/initrd.img-3.16.43-SS
 update-initramfs -c -k <span class="m">3</span>.16.43-SS
 update-grub
-</pre></div>
-
+</code></pre></div>
 
 <h1><a name="using-ftrace-to-trace-linux-functions" href="#using-ftrace-to-trace-linux-functions">Using Ftrace to trace linux functions</a></h1>
-<div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="m">1</span> <span class="p">|</span> sudo tee  /sys/kernel/debug/tracing/tracing_on
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span> <span class="m">1</span> <span class="p">|</span> sudo tee  /sys/kernel/debug/tracing/tracing_on
 And <span class="k">then</span> use brendan greggs perf-tools
 sudo ./funcgraph -D  ext4_readpages <span class="p">|</span> sudo tee /mnt/tmpfs/write
 sudo ./funcgraph -Dp <span class="m">51985</span>  ext4_readpages <span class="p">|</span> sudo tee /mnt/tmpfs/write
-</pre></div>
-
+</code></pre></div>
 
 <h1><a name="how-to-build-linux-on-one-machine-and-deploy-on-another" href="#how-to-build-linux-on-one-machine-and-deploy-on-another">How to build linux on one machine and deploy on another</a></h1>
 <p>Use “building linux” to build linux on one machine A. Suppose you want to install it on machine B
 On machine B</p>
-<div class="highlight"><pre><span></span>Mkdir -p ~/kernel/boot
+<div class="highlight"><pre><span></span><code>Mkdir -p ~/kernel/boot
 Mkdir -p ~/kernel/modules
-</pre></div>
-
+</code></pre></div>
 
 <p>On machine A</p>
-<div class="highlight"><pre><span></span>tar -cvzf ~/modules /lib/modules/3.16.43-SS
+<div class="highlight"><pre><span></span><code>tar -cvzf ~/modules /lib/modules/3.16.43-SS
 scp -r *SS* &lt;B&gt;:~/kernel/boot
 scp ~/modules &lt;B&gt;:~/kernel/modules/
-</pre></div>
-
+</code></pre></div>
 
 <p>On machine B:</p>
-<div class="highlight"><pre><span></span>Cd ~/kernel/modules
+<div class="highlight"><pre><span></span><code>Cd ~/kernel/modules
 tar -xvzf modules
 sudo mv ~/kernel/modules/3.16.43-SS /lib/modules/
 sudo cp ~/kernel/boot/* /boot/
@@ -389,12 +370,11 @@ sudo update-grub
 
 <span class="c1">#And… reboot!</span>
 Sudo reboot now
-</pre></div>
-
+</code></pre></div>
 
 <h1><a name="jemalloc" href="#jemalloc">JeMalloc </a></h1>
 <p>Do a git clone.</p>
-<div class="highlight"><pre><span></span>./autogen.sh 
+<div class="highlight"><pre><span></span><code>./autogen.sh 
 ./configure --enable-prof --enable-stats --enable-debug
 Make
 
@@ -408,8 +388,7 @@ lib
 
 <span class="c1">#To generate the profile:</span>
 <span class="o">(</span>reverse-i-search<span class="o">)</span><span class="sb">`</span>java<span class="s1">&#39;: rm jeprof*; rm /tmp/prof.gif; MALLOC_CONF=prof:true,lg_prof_sample:0,lg_prof_interval:25 LD_PRELOAD=${JEMALLOC_PATH}/lib/libjemalloc.so.2 java -Xmx1096m -cp  &#39;</span>/home/sharath.g/diskbench/:/home/sharath.g/diskbench/*<span class="err">&#39;</span> sha.Memory<span class="p">;</span> ls jeprof*<span class="p">;</span> ~/code/jemalloc/bin/jeprof --show_bytes --gif <span class="sb">`</span>which java<span class="sb">`</span> jeprof*.heap &gt; /tmp/prof.gif 
-</pre></div>
-
+</code></pre></div>
 
 <p>If you’ve compiled jemalloc on some other machine and copied it to this machine, youget teh error Can't exec "objdump": No such file or directory at /home/sharath.g/jemalloc/bin/jeprof line 4459.
 Then objdump is 
@@ -420,13 +399,12 @@ Resident: active + metadata
 Mapped: multiple of chunk size. Total chunks that have one byte of allocated 
 See that man pages for a clear explanation.</p>
 <h1><a name="objdump" href="#objdump">Objdump</a></h1>
-<div class="highlight"><pre><span></span>objdump -drSt hello.o
+<div class="highlight"><pre><span></span><code>objdump -drSt hello.o
 -d dissasemble
 -r show relocation info inline
 -S show C <span class="nb">source</span> code
 -t show symbol table
-</pre></div>
-
+</code></pre></div>
 
 <h1><a name="installing-latest-version-of-cmake" href="#installing-latest-version-of-cmake">Installing latest version of cmake</a></h1>
 <p>Either apt-get install cmake or get it from here
@@ -439,10 +417,9 @@ If you’re lucky, you can download it and it works http://insightfullogic.com/h
 <p>Start the java program with     <br>
 <code>-agentpath:$HONEST_PROFILER_HOME/liblagent.so=host=localhost,port=4242,logPath=/grid/1/log/hadoop-yarn/yarn/honest-profiler.hpl</code></p>
 <p>Start and stop profiling with </p>
-<div class="highlight"><pre><span></span> <span class="nb">echo</span> start <span class="p">|</span> nc localhost <span class="m">4242</span>
+<div class="highlight"><pre><span></span><code> <span class="nb">echo</span> start <span class="p">|</span> nc localhost <span class="m">4242</span>
  <span class="nb">echo</span> stop <span class="p">|</span> nc localhost <span class="m">4242</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Collapse the stacks with <code>java -cp $HONEST_PROFILER_HOME/honest-profiler.jar com.insightfullogic.honest_profiler.ports.console.FlameGraphDumperApplication netty.hpl netty.cstk</code></p>
 <h1><a name="gcc-important-options" href="#gcc-important-options">GCC important options</a></h1>
@@ -503,10 +480,9 @@ An interrupt handler cannot sleep/block because there is no “process” to sle
 <h1><a name="hdfs-proxy-user-setting" href="#hdfs-proxy-user-setting">HDFS proxy user setting</a></h1>
 <p>In addition to the modifications in core-site.xml we need to create the user and (add it to a group (?)) on the namenode. Even this is not working. It looks like the user needs to be added on the datanodes too. Is this true?
 The logs from namenode are like this: </p>
-<div class="highlight"><pre><span></span>2017-06-05 11:48:27,271 INFO  ipc.Server (Server.java:doRead(850)) - Socket Reader #1 for port 8020: readAndProcess from client 10.32.10.3 threw exception [org.apache.hadoop.security.authorize.AuthorizationException: Unauthorized connection for super-user: hue from IP 10.32.10.3]
+<div class="highlight"><pre><span></span><code>2017-06-05 11:48:27,271 INFO  ipc.Server (Server.java:doRead(850)) - Socket Reader #1 for port 8020: readAndProcess from client 10.32.10.3 threw exception [org.apache.hadoop.security.authorize.AuthorizationException: Unauthorized connection for super-user: hue from IP 10.32.10.3]
 The ip 10.32.10.3 is a datanode.
-</pre></div>
-
+</code></pre></div>
 
 <h1><a name="http-proxy-with-squid" href="#http-proxy-with-squid">Http proxy with squid</a></h1>
 <h3>On the client machine</h3>
@@ -536,7 +512,7 @@ The ip 10.32.10.3 is a datanode.
 <p>And thats it! <code>curl -L www.google.com</code> (<code>-L</code> to follow redirects) will work.</p>
 <p>I needed this for <code>pip</code>. With my setup, I can do <code>sudo export &lt;blah&gt;;export&lt;blah&gt;;pip install &lt;package&gt;</code>. </p>
 <p>FYI, my squid version is</p>
-<div class="highlight"><pre><span></span>[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
+<div class="highlight"><pre><span></span><code>[sharath.g@d42-a-0003 /home/sharath.g]$ dpkg -s squid
 Package: squid
 Status: install ok installed
 Priority: optional
@@ -559,8 +535,7 @@ Description: Internet object cache (WWW proxy cache)
  the National Laboratory for Applied Networking Research (NLANR) and
  Internet volunteers.
 Homepage: http://www.squid-cache.org/
-</pre></div>
-
+</code></pre></div>
 
 <h1><a name="kafka-metrics" href="#kafka-metrics">kafka metrics</a></h1>
 <p><strong>Bytes in</strong> is number of bytes from external producers only. It does not include, for example, the bytes read by followers during replication. So <code>bytes_in = message_produce_rate * average_message_size</code></p>

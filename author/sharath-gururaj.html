@@ -54,6 +54,17 @@
         <div class="col-sm-12 blog-main">
 
           <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/notes-on-postgres-wal-and-logical-replication.html" rel="bookmark" title="Permalink to Notes on Postgres WAL and logical replication">Notes on Postgres WAL and logical replication</a></h2>
+            <p class="blog-post-meta">Mon, 20 Sep 2021</p>
+		    <p>I am trying to implement change data capture (CDC) from several postgres databases and expose it as a stream of inserts/updates/deletes to any consumer. </p>
+<p>One property of all our tables, which makes our life much easier is:</p>
+<ul>
+<li>all tables have an immutable primary key (usually a UUID), although …</li></ul> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+
+          <div class="blog-post">
             <h2 class="blog-post-title"><a href="/cookbook.html" rel="bookmark" title="Permalink to Cookbook">Cookbook</a></h2>
             <p class="blog-post-meta">Mon, 31 Aug 2020</p>
 		    <p>This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its …</p> 
@@ -84,9 +95,9 @@
             <p class="blog-post-meta">Thu, 02 Jun 2016</p>
 		    <p>In the following analysis, I'm going to assume you already know what <code>fio</code> and <code>iostat</code> is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers</p>
 <h3>fio output</h3>
-<div class="highlight"><pre><span></span>io = bw*runt
+<div class="highlight"><pre><span></span><code>io = bw*runt
 io = iops*runt*bs
-issued(r …</pre></div> 
+issued(r …</code></pre></div> 
           </div><!-- /.blog-post -->
 		  <hr>
 		  </hr>
