@@ -46,17 +46,17 @@
             <h2 class="blog-post-title"><a href="/notes-on-postgres-wal-and-logical-replication.html" rel="bookmark" title="Permalink to Notes on Postgres WAL and logical replication">Notes on Postgres WAL and logical replication</a></h2>
             <p class="blog-post-meta">Mon, 20 Sep 2021</p>
 		    <p>I am trying to implement change data capture (CDC) from several postgres databases and expose it as a stream of inserts/updates/deletes to any consumer. </p>
-<p>One property of all our tables, which makes our life much easier is:</p>
+<p>A couple of properties of all our tables, which makes our life much easier is:</p>
 <ul>
-<li>all tables have an immutable primary key (usually a UUID), although sometimes, the primary key may be a composite key. </li>
-<li>All tables also have audit columns (created_at, updated_at)</li>
+<li>All tables have an immutable primary key (usually a UUID), although sometimes, the primary key may be a composite key. It allows us to "replay" rows over and over again, without worrying about duplicates, etc</li>
+<li>All tables also have audit columns (created_at, updated_at). It allows us to query changes since (say) yesterday and reingest the data using the immutable primary keys</li>
 </ul>
 <p>Here are some practical requirements from any such CDC system.</p>
 <ul>
 <li>In case, the destination crashes, I want to replay the changes from the last X days (assuming WAL logs are maintained)</li>
 <li>In case of master failover to replica, I want to "continue from where the master fell off", or at least, rewind back a couple of hours and replay the messages.</li>
 <li>We want to selectively choose what tables to replicate, and this set of tables might change. (typically, new tables will be added to the captured list)`</li>
-<li>The ability to perform paralell initial snapshot and streaming, and the ability to resume initial snapshot in case of error </li>
+<li>The ability to perform parallel initial snapshot and streaming, and the ability to resume initial snapshot in case of error </li>
 </ul>
 <p>It seems like the <em>de facto</em> choice for CDC these days is debezium, which uses logical replication to expose a stream of changes. When practically trying to build such a system, I had a hard time figuring out how all the components fit together. The postgres and debezium docs are very good, but they have big gaps if you want to understand the systems well enough to architect a solution. So in this blog, I will cover the missing pieces that I figured out reading the source code. </p>
 <p>This article is meant to be read along with the available documentation of postgres logical replication and debezium documentation. As such, I will not cover introductory things like what is logical replication, etc. I will go straight to the points which I consider is not clear in the documentation. A really fantastic place to get background information is <a href="https://www.interdb.jp/pg/">https://www.interdb.jp/pg/</a>.</p>
@@ -125,14 +125,14 @@ However, the following two invariants are still maintained
 <p>The server keeps track of all three progress lsns. In particular the <code>flush_lsn</code>. So logically, one might think that on restart, this is the point from where the server will play back the WAL. However, the server persists the <code>flush_lsn</code> only at checkpoint, so it is entirely possible that the client may recieve duplicate entries on restart. It is upto the client to skip duplicates. Furthermore, one can actually specify the restart LSN during startup.</p>
 <p>There is in fact another LSN called <code>restart_lsn</code> that is tracked by the server. I am not able to figure out the difference between <code>restart_lsn</code> and <code>flush_lsn</code></p>
 <h2>Some notes for architects</h2>
-<p>Q: How far can I go back and restart the streaming?
-A: By cleverly controlling flush_lsn, you can control the amount of WAL retained on the server.</p>
-<p>Q: How do I make sure server does not crash due to WAL locking up disk space due to inactive replication client
-A: You can play with some postgres parameters, notably <code>wal_keep_size</code> and <code>max_slot_wal_keep_size</code></p>
-<p>Q: How do I get resumable and parallell initial snapshots? 
-A: refers to these links. <a href="https://github.com/debezium/debezium-design-documents/blob/main/DDD-3.md">DDD-3</a> and <a href="https://arxiv.org/pdf/2010.12597v1.pdf">DbLog</a></p>
-<p>Q: If the master fails-over to a replica, the LSNs will go out of sync. Do I need to resetup the entire snapshot?
-A: Here's the idea:
+<p>Q: How far can I go back and restart the streaming?</p>
+<p>A: By cleverly controlling flush_lsn, you can control the amount of WAL retained on the server.</p>
+<p>Q: How do I make sure server does not crash due to WAL locking up disk space due to inactive replication client</p>
+<p>A: You can play with some postgres parameters, notably <code>wal_keep_size</code> and <code>max_slot_wal_keep_size</code></p>
+<p>Q: How do I get resumable and parallell initial snapshots? </p>
+<p>A: refers to these links. <a href="https://github.com/debezium/debezium-design-documents/blob/main/DDD-3.md">DDD-3</a> and <a href="https://arxiv.org/pdf/2010.12597v1.pdf">DbLog</a></p>
+<p>Q: If the master fails-over to a replica, the LSNs will go out of sync. Do I need to resetup the entire snapshot?</p>
+<p>A: Here's the idea:
 - create a replication slot on the new primary (previously standby)
 - issue a query like so <code>select * from mytable where updated_at &gt; now()-2hrs</code>
 - start the streaming replication.
