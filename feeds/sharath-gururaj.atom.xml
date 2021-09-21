@@ -82,18 +82,20 @@ However, the following two invariants are still maintained
 &lt;p&gt;The server keeps track of all three progress lsns. In particular the &lt;code&gt;flush_lsn&lt;/code&gt;. So logically, one might think that on restart, this is the point from where the server will play back the WAL. However, the server persists the &lt;code&gt;flush_lsn&lt;/code&gt; only at checkpoint, so it is entirely possible that the client may recieve duplicate entries on restart. It is upto the client to skip duplicates. Furthermore, one can actually specify the restart LSN during startup.&lt;/p&gt;
 &lt;p&gt;There is in fact another LSN called &lt;code&gt;restart_lsn&lt;/code&gt; that is tracked by the server. I am not able to figure out the difference between &lt;code&gt;restart_lsn&lt;/code&gt; and &lt;code&gt;flush_lsn&lt;/code&gt;&lt;/p&gt;
 &lt;h2&gt;Some notes for architects&lt;/h2&gt;
-&lt;p&gt;Q: How far can I go back and restart the streaming?&lt;/p&gt;
-&lt;p&gt;A: By cleverly controlling flush_lsn, you can control the amount of WAL retained on the server.&lt;/p&gt;
-&lt;p&gt;Q: How do I make sure server does not crash due to WAL locking up disk space due to inactive replication client&lt;/p&gt;
-&lt;p&gt;A: You can play with some postgres parameters, notably &lt;code&gt;wal_keep_size&lt;/code&gt; and &lt;code&gt;max_slot_wal_keep_size&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Q: How do I get resumable and parallell initial snapshots? &lt;/p&gt;
-&lt;p&gt;A: refers to these links. &lt;a href="https://github.com/debezium/debezium-design-documents/blob/main/DDD-3.md"&gt;DDD-3&lt;/a&gt; and &lt;a href="https://arxiv.org/pdf/2010.12597v1.pdf"&gt;DbLog&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Q: If the master fails-over to a replica, the LSNs will go out of sync. Do I need to resetup the entire snapshot?&lt;/p&gt;
-&lt;p&gt;A: Here's the idea:
+&lt;p&gt;Q: How far can I go back and restart the streaming?&lt;br/&gt;
+A: By cleverly controlling flush_lsn, you can control the amount of WAL retained on the server.&lt;/p&gt;
+&lt;p&gt;Q: How do I make sure server does not crash due to WAL locking up disk space due to inactive replication client&lt;br/&gt;
+A: You can play with some postgres parameters, notably &lt;code&gt;wal_keep_size&lt;/code&gt; and &lt;code&gt;max_slot_wal_keep_size&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Q: How do I get resumable and parallel initial snapshots?&lt;br/&gt;
+A: refers to these links. &lt;a href="https://github.com/debezium/debezium-design-documents/blob/main/DDD-3.md"&gt;DDD-3&lt;/a&gt; and &lt;a href="https://arxiv.org/pdf/2010.12597v1.pdf"&gt;DbLog&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Q: If the master fails-over to a replica, the LSNs will go out of sync. Do I need to resetup the entire snapshot?&lt;br/&gt;
+A: Here's the idea:
 - create a replication slot on the new primary (previously standby)
 - issue a query like so &lt;code&gt;select * from mytable where updated_at &amp;gt; now()-2hrs&lt;/code&gt;
 - start the streaming replication.
 Assuming your primary keys are idempotent, you should be back in business&lt;/p&gt;
+&lt;p&gt;Q: How can I add or remove from the list of captured tables?&lt;br/&gt;
+A: Since debezium reads pgoutput protocol, just alter the publication and restart debezium &lt;/p&gt;
 &lt;h2&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;Logical decoding is a very powerful tool in the data engineering toolkit. It opens up a host of possibilities. I hope this article fills in the gap left in official documentation and enables architects to design effective CDC systems.&lt;/p&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>Cookbook</title><link href="/cookbook.html" rel="alternate"></link><published>2020-08-31T12:22:00+00:00</published><updated>2020-08-31T12:22:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2020-08-31:/cookbook.html</id><summary type="html">&lt;p&gt;This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its own. Hopefully, you'll find the table of contexts helpful to navigate.
 (the links are not working yet :( )&lt;/p&gt;

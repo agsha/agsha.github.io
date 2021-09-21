@@ -125,18 +125,20 @@ However, the following two invariants are still maintained
 <p>The server keeps track of all three progress lsns. In particular the <code>flush_lsn</code>. So logically, one might think that on restart, this is the point from where the server will play back the WAL. However, the server persists the <code>flush_lsn</code> only at checkpoint, so it is entirely possible that the client may recieve duplicate entries on restart. It is upto the client to skip duplicates. Furthermore, one can actually specify the restart LSN during startup.</p>
 <p>There is in fact another LSN called <code>restart_lsn</code> that is tracked by the server. I am not able to figure out the difference between <code>restart_lsn</code> and <code>flush_lsn</code></p>
 <h2>Some notes for architects</h2>
-<p>Q: How far can I go back and restart the streaming?</p>
-<p>A: By cleverly controlling flush_lsn, you can control the amount of WAL retained on the server.</p>
-<p>Q: How do I make sure server does not crash due to WAL locking up disk space due to inactive replication client</p>
-<p>A: You can play with some postgres parameters, notably <code>wal_keep_size</code> and <code>max_slot_wal_keep_size</code></p>
-<p>Q: How do I get resumable and parallell initial snapshots? </p>
-<p>A: refers to these links. <a href="https://github.com/debezium/debezium-design-documents/blob/main/DDD-3.md">DDD-3</a> and <a href="https://arxiv.org/pdf/2010.12597v1.pdf">DbLog</a></p>
-<p>Q: If the master fails-over to a replica, the LSNs will go out of sync. Do I need to resetup the entire snapshot?</p>
-<p>A: Here's the idea:
+<p>Q: How far can I go back and restart the streaming?<br/>
+A: By cleverly controlling flush_lsn, you can control the amount of WAL retained on the server.</p>
+<p>Q: How do I make sure server does not crash due to WAL locking up disk space due to inactive replication client<br/>
+A: You can play with some postgres parameters, notably <code>wal_keep_size</code> and <code>max_slot_wal_keep_size</code></p>
+<p>Q: How do I get resumable and parallel initial snapshots?<br/>
+A: refers to these links. <a href="https://github.com/debezium/debezium-design-documents/blob/main/DDD-3.md">DDD-3</a> and <a href="https://arxiv.org/pdf/2010.12597v1.pdf">DbLog</a></p>
+<p>Q: If the master fails-over to a replica, the LSNs will go out of sync. Do I need to resetup the entire snapshot?<br/>
+A: Here's the idea:
 - create a replication slot on the new primary (previously standby)
 - issue a query like so <code>select * from mytable where updated_at &gt; now()-2hrs</code>
 - start the streaming replication.
 Assuming your primary keys are idempotent, you should be back in business</p>
+<p>Q: How can I add or remove from the list of captured tables?<br/>
+A: Since debezium reads pgoutput protocol, just alter the publication and restart debezium </p>
 <h2>Conclusion</h2>
 <p>Logical decoding is a very powerful tool in the data engineering toolkit. It opens up a host of possibilities. I hope this article fills in the gap left in official documentation and enables architects to design effective CDC systems.</p> 
           </div><!-- /.blog-post -->
