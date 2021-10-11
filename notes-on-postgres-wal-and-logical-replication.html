@@ -134,8 +134,7 @@ A: refers to these links. <a href="https://github.com/debezium/debezium-design-d
 <p>Q: If the master fails-over to a replica, the LSNs will go out of sync. Do we need to resetup the entire snapshot?<br/>
 A: Here's the idea:
 - create a replication slot on the new primary (previously standby)
-- issue a query like so <code>select * from mytable where updated_at &gt; now()-2hrs</code>
-- start the streaming replication.
+- issue a query like so <code>select * from mytable where updated_at &gt; now()-2hrs</code>. Once it's done, start the streaming replication.
 Assuming your primary keys are idempotent, you should be back in business</p>
 <p>Q: How can we add or remove from the list of captured tables?<br/>
 A: Since debezium reads pgoutput protocol, just alter the publication and restart debezium </p>

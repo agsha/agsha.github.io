@@ -1,0 +1,264 @@
+<!-- same as index.html, except that only one article is shown -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Sharath's core dump</title>
+
+
+    <!-- Custom styles for this template -->
+    <link href="theme/blog.css" rel="stylesheet">
+    <link href="theme/hilite.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="/">Latest articles</a>
+          <a class="blog-nav-item" href="/archives.html">Archive</a>
+          <a class="blog-nav-item" href="/pages/about.html">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-12 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/the-choice-of-programming-languages.html" rel="bookmark" title="Permalink to The choice of programming languages">The choice of programming languages</a></h2>
+            <p class="blog-post-meta">Sun, 10 Oct 2021</p>
+		    <h1>Introduction</h1>
+<p>Thanks to advances in compiler technologies, Programmers today are spoilt for choice with the myriad of mainstream programming languages available your next big idea. However, the landscape can quickly get confusing. Many different languages seem to offer the same features and generally "looks the same". Consider the website description of two languages:</p>
+<ul>
+<li>Kotlin: "A modern programming language
+  that makes developers happier."</li>
+<li>Swift: "Swift is a general-purpose programming language built using a modern approach to safety, performance, and software design patterns."</li>
+</ul>
+<p>You get the idea.</p>
+<p>Young programmers with the next brilliant idea for a startup often pick languages for no more reason than the fact that its the "cool kid on the block".</p>
+<p>This blog tries to throw some light on the factors you should consider while picking a language.</p>
+<h1>Language features</h1>
+<p>Before we get to the languages themselves, let us briefly review some key terminology relating to language features</p>
+<h2>Target language</h2>
+<p>There are three major types </p>
+<ul>
+<li>Compiled to Native: This means that the compiler generates machine code that can be directly executed by the CPU. Example C, C++, Rust, Go</li>
+<li>Compiled to bytecode: This means that the compiler compiles to a intermediate "low level" language,  which then requires an interpreter. Example: Java compiles down to "bytecode" which is then interpreted by the jvm during execution.</li>
+<li>Interpreted: No separate compilation step is necessary. The language source code is interpreted "on the fly" by an interpreter. For example, python, javascript</li>
+</ul>
+<p>Note that some languages offer multiple targets. For example, kotlin can be compiled both to bytecode as well as native. But they are usually popular only  in one particular mode. For example, kotlin is usually compiled to bytecode.</p>
+<h2>Static typed vs dynamic typed</h2>
+<p>Statically typed means that the type of every variable is known during compile time. This generally means that we need to specify the type of the variable while declaring the vaiable. For example, in java <code>String name;</code>. The variable <code>name</code> cannot hold anything other than a <code>String</code></p>
+<p>In contrast, In dynamic typed languages, the type of variables is not known to compilers and no such type declaration is necessary for variables. For example in python, The following is possible</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># amount is a string</span>
+<span class="n">amount</span> <span class="o">=</span> <span class="s2">&quot;2&quot;</span> 
+
+<span class="c1"># amount is a number</span>
+<span class="n">amount</span> <span class="o">=</span> <span class="mi">2</span>
+</code></pre></div>
+
+<p>Static typed languages are more verbose compared to dynamic typed languages. But they are much easier to refactor, and eliminate a large class of programming errors at compile time. Static languages are also much more IDE friendly. This is because IDE tooling can easily figure out valid methods for auto complete. Once the codebase and the team grows larger, static typing makes the codebase easier to learn for new joinees, and easier to refactor.</p>
+<h1>Garbage collection</h1>
+<p>There are 3 main classes of languages:</p>
+<h2>Automatic garbage collection</h2>
+<p>These programming languages track references to variables and can automatically free the memory when a variable is no longer used. Example: java, python, javascript, go</p>
+<h2>Garbage collection by reference counting</h2>
+<p>In some programming languages, there is no built in garbage collection, but rather, the language offers standard libraries that can ease memory management. These libraries typically work by maintaining reference counters which automatically get incremented on an assignment, or decrementd when a variable goes out of scope. When properly used, these languages feel almost like true garbage collected languages, without the runtime overhead of an actual garbage collector. For example, <code>unique_ptr</code> in C++ offers such capabilities.</p>
+<p>In other languages, such reference counting is built-in to the language itself. Thus, memory allocation is always "safe", and yet there is no separate garbage collection component. For example: rust.</p>
+<h2>No garbage collection</h2>
+<p>Low level languages like C offer no GC.</p>
+<h1>Threading support</h1>
+<h2>Support through standard libraries</h2>
+<p>Some languages have no built-in support for threads, but offer standard libraries which allows us to create native threads. For example, C, C++</p>
+<h2>Language support for threads</h2>
+<p>Some languages offer language native syntax for paralellism and threads and come with strong memory models. For example, Java, Go, Rust. In the case of C++, although there is no language support for threads, it does have a well defined memory model. Sometimes, the language itself offers an abstraction of threads, which may or maynot correlate to operating system threads. For example, Go offers "green threads", which are supposedly more lightweight than OS threads. These green threads are managed by the language runtime and do no directly correspond to OS threads. For example, n green threads can be mapped to m OS threads.</p>
+<h2>Very little or no language support</h2>
+<p>Python and Javascript are examples. In the case of python, there is a "Global interpreter lock" which effectively kills any possibility for true multi threading. In the case of Javascript, the language design constraints it to be single-threaded. More on this later.</p>
+<p>Having covered the salient language features of interest, let us know discuss specific languages</p>
+<h1>Java</h1>
+<p>Java is a bytecode-compiled, static-typed, garbage collected language with built-in thread support which maps directly to operating system threads. Java should be your go-to general purpose language for any project that lasts more than a few months.</p>
+<p>Java has a reputation to be <a href="http://steve-yegge.blogspot.com/2006/03/execution-in-kingdom-of-nouns.html">very verbose</a> But this is not a problem with the language itself, but rather with the conventions that have come to be associated with the langauge. For example, for "value objects" go ahead and skip the setters and getters and directly use public variables. It is easy to refactor it later with the help of IDE if the need arises.</p>
+<p>Java is sometimes castigated for the arbitrary stop-the-world garbage collection pauses. But in my experience, if you're running into this problem, there is probably a bug which is causing excessive temporary objects to be created. The garbage collector can easily collect several 10s of GB of garbage per second.</p>
+<p>Although Java is an bytecode interpreted language, it is no slouch when compared to performance. Java speed can be expected to be around 70% to 90% of the speed of C/C++, the runtime safety offered by the JVM far outweighs the performance hit.</p>
+<h2>What is Java good for</h2>
+<ul>
+<li>Web applications: Java has library support for epoll system calls, which makes it good for serving CDN and static content. The good thread support can make effective use of todays multi-core CPUs</li>
+<li>Large enterprise projects. The static typing enables very intelligent IDE support and makes refactoring easy. As long as you keep your code simple, (don't create BS classes like <code>Delegator, ResourceManager, blah blah</code>) Java will be your friend for years to come. </li>
+</ul>
+<h1>Python</h1>
+<p>Python is a dynamic typed, interpreted, garbage collected language with very little thread support.</p>
+<p>Python is a favorite for many programmers and is highly adopted in enterprise software as well as startups for their implementation. This, I think is a major mistake, which causes no end of troubles later on. Here are some reasons</p>
+<h2>Speed</h2>
+<p>Python is <strong>dead slow</strong>. Python can be expected to be about <strong>20-100 times slower</strong> than Java or C/C++. If you want to see it for yourself, just implement this simple program in various languages and time the execution.</p>
+<div class="highlight"><pre><span></span><code><span class="n">count</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">while</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="mi">100000000</span>
+    <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+</code></pre></div>
+
+<h2>Maintenance</h2>
+<p>Python is dynamic typed. Python looks pretty in the beginning, but as the project grows, the lack of static typing will really bite you. Code gets harder to refactor. New joinees take longer to understand the contracts, Subtle corner cases are introduced, etc. Soon you'll be introducing bugs as fast as you fix them.</p>
+<h2>Lack of thread support</h2>
+<p>As we all know, processor speeds have stopped increasing for almost a decade now. Moore's law is now seen in the core count, rather than the clock speed. In this age of multi-core, do you really want to choose a language which has almost no threading support? The global interpreter lock all but prevents use of multi-core CPUs. This makes python especially bad as a language for web servers, and yet, paradoxically, it is a popular choice for web servers. </p>
+<h2>What is python is good for</h2>
+<ul>
+<li>As a replacement for bash scripts. This is because, readability matters more than speed, and the script size is small</li>
+<li>For small throw-away projects. Maybe, you want to quick filter a log file, or do some small string manipulation. Python is perfect for these, where you don't want static typing to get in the way</li>
+<li>For <strong>interactive programming</strong>. For example, in data science, we are exploring data, we need to quickly try out many different things. Furthermore, we don't want to recompute intermediate data everytime. The python REPL is very useful for this kind of programming.</li>
+</ul>
+<h2>Avoid python for</h2>
+<ul>
+<li>Web server and backend code. There is no multi threading support, pssh.</li>
+<li>Long lived software: The maintenance cost in the long run is much higher than static typed languages</li>
+</ul>
+<h1>Javascript</h1>
+<p>Hoo boy, where to start? Let's start with a brief history. From the beginning, Javascript was designed and implemented to run on browsers. It started its life as a hacky scripting language, with equal parts good and bad, which lead to <a href="https://www.oreilly.com/library/view/javascript-the-good/9780596517748/">books like these</a>. Later, google arrived on the scene, with plans for their own chrome browser in 2004. As part of the browser, Google of course needed a good javascript interpreter and virtual machine. In 2004, they hired Lars Bak, gave him a big pile of money and sent him to a cave in Denmark, and asked him not to emerge until he had a world class js interpretor. As a result, he created precisely that: the v8 javascript virtual machine. Fast forward 2009, Ryan dahl get the idea to rip out the v8 engine from chrome, and run it as a standalone virtual machines with a good enough runtime library, and node.js was born.</p>
+<p>Meanwhile, javascript: the language itself underwent a massive upheaval in the the of ECMAScript 6 specification. It cleaned up a lot of the syntax and enabled basic modular packaging capabilities.
+The architecture of Javascript reflects its origins in the bowels of the  browser. Here it is heavily used almost as a event driven programming language, primarily to drive the GUI. For example, "on click of submit button, send a request to the server and fetch some data". Historically, there have been many attempts at a multi-threaded graphics library, but all thus far have been doomed to fail. Multi threaded even driven programming is notoriously hard.</p>
+<p>Thus, by design, Javascript in its very nature is single threaded. The virtual machine maintains an "event queue". All javascript code executes in response to events in a single thread. Thus, coding in javascript leads to callback hell.</p>
+<p>This has the very important consequence that if usercode blocks the single thread, (or example, maybe you're running some heavy encryption algorithm), then the entire event queue effectively gets blocked.</p>
+<p>Proponents of node.js will point to one advantage that is quite popular.
+The node.js eventing engine is implemented using <a href="https://github.com/libuv/libuv">libuv</a> which uses native asynchronous I/O (for example, the <code>epoll</code> system call in linux) to avoid allocating a thread for each event. Although this is true, the real world benefits come with a lot of caveats that we'll cover shortly.</p>
+<h2>Why you should never use node.js for the backend</h2>
+<ul>
+<li>The asynchronous coding still is simply not how the human brain works. There are better things to do in life than debug a deeply nested asynchronous callback hell</li>
+<li>The single threaded nature of V8 means that<ul>
+<li>Its very difficult to exploit todays multicore CPU architectures</li>
+<li>You have to take great care to make sure you don't block the main thread. Doing this will cause huge queueing delays for all other users</li>
+</ul>
+</li>
+<li>The asynchronous I/O bit is more hype than real usefulness. Modern linux kernel threads are lightweight enough to switch thousands of threads without any noticeable context switching overhead. For example, these days, the linux kernel can switch thread context in a couple of hundred nanoseconds. The asynchronous IO maybe useful in some niche use cases such as CDN serving. However, in this case, there are much better native implementations, for example nginx. Asynchronous IO is only really useful when you have hundreds of thousands of connections, all of which  are mostly idle. In the real world, this is rarely the case.</li>
+<li>All the other bad things that come as part of being a dynamic typed language (see the section on python)</li>
+<li>Although the recent ECMAScript specifications have improved the language a lot, there is a bit chunk of a <a href="https://medium.com/@Rewieer/javascript-the-bad-parts-and-how-to-avoid-them-1a7c9bc5a0dd">bad part</a>, much bigger than other programming languages</li>
+</ul>
+<p>Thus, the bottomline is that if you're coding for the browser, there is no escaping javascript. But if you're coding for a backend, it seems there is never really a justification to use javascript or node.js. You're better off using python or java</p>
+<h1>Languages for System programming</h1>
+<p>By system programming, we mean access to low level machine features, such as pointers, or the memory layout of datastructures, or special purpose CPU instructions, or low level kernel APIs etc. For example, perhaps, you're building a database, and you need precise control over the header of your data files. System programming also places a premium on performance, often trying to extract every last bit of juice from the hardware.</p>
+<p>System programming languages usually have the following features. They are statically typed and compiles to native code. </p>
+<h2>C/C++</h2>
+<p>We need no introduction to these languages here. Everything from operating systems to databases have been built with these languages. However we should talk about why people found the need to invent new system programming languages</p>
+<ul>
+<li>C/C++ compilation is slow. This is because the <code>#include</code> in each file makes compilation reuse very difficult. This is fine if the headers only contain declarations, but the recursive nature of headers means that even one bad header will propagate everywhere. </li>
+<li>No garbage collection. Usually, a full-featured garbage collector is frowned upon in system programming languages, because there needs to be tight and predictable performance bounds for the running code. It is often unacceptable for the program to "freeze" because of a running garbage collector. However, it is possible to build deterministic garbage collection using some common techniques, such as incrementing a hidden reference count on variable assignment and decrementing the count in the object destructor. For example C++ offers the so called <code>smart pointers</code> which automatically manage the lifecycle of the underlying objects. However, built-in language support would always be a welcome feature</li>
+<li>No language support for threading and concurrency. Although C++ now has a well defined threading library and a memory model, having builtin threading support can make programming much simpler, for example using go <code>channels</code>.</li>
+<li>Obsolete syntax: C and C++ are well over 30 years old, and advancements in compiler technologies enables much cleaner syntax in a modern language</li>
+</ul>
+<h1>When should you use C/C++</h1>
+<ul>
+<li>If you're doing system programming, C/C++ is still an excellent choice.</li>
+<li>If you place an extreme premium on performance, C/C++ offers best in class performance. However, other languages such as go and rust can offer equally good performance with a much cleaner syntax</li>
+</ul>
+<h1>Go</h1>
+<p>Go is a statically typed, native compiled, garbage collected language with built-in support for concurrency.
+Go was created at google over the many frustrations faced with C++. It offers fast compilation speeds with a full featured garbage collector as well as language syntax for built in concurrency.</p>
+<h2>When should you use go</h2>
+<ul>
+<li>If you're doing system programming, but would like to make your life easier with a cleaner syntax, garbage collection and builtin concurrency, go for go. </li>
+</ul>
+<h1>Rust</h1>
+<p>Rust is a statically typed, native compiled, deterministic garbage collected language with built in thread support. 
+Both go and rust offer a much cleaner syntax compared to C/C++. The main differences between Go and Rust are the following</p>
+<ul>
+<li>The Go garbage collector runs as a separate thread, and is non deterministic (i.e., you don't know when it will run and for how long), much similar to the java garbage collector. However rust uses a deterministic garbage collector similar to the smart pointer mechanism in C++</li>
+<li>Go threads are "green" threads, managed by the Go runtime, and may not correspond one-to-one with system threads, whereas rust threads are true system threads</li>
+</ul>
+<h2>When should you use Rust</h2>
+<ul>
+<li>If you're doing system programming, but would like to make your life easier with a cleaner syntax, a deterministic garbage collector and low level concurrency control, use rust. </li>
+</ul>
+<h1>Julia vs Python: The sad state of data science today</h1>
+<p>We will end this blog with a note on the current sad state of data science</p>
+<p>Data Science has some unique requirements that has challenged the limits of compiler technology</p>
+<ul>
+<li>Often data scientists are precisely that: scientists. They are not well versed with programming languages. A simple syntax would be much preferable</li>
+<li>The need for a REPL: The day of a data scientist begins and ends with the REPL. This exploratory programming is an intrinsic part of the very nature of data science. For example, a data scientist may work in the following steps<ul>
+<li>read raw data from disk and do some cleansing and transformation. Call this pristine data</li>
+<li>repeatedly make a copy of the pristine data, slice and dice it, explore alternatives, backtrack, explore other alternatives. Without a repl, we would need to keep saving the pristine data to disk and reload it when the program start, which makes for a terrible exploratory experience</li>
+</ul>
+</li>
+<li>The need for speed. More often than not, todays data is <strong>big</strong> data. We need computation speeds approaching C/C++ or at least java. Certainly not the speed of python</li>
+<li>The need for rich text and graphical output. If you're a data scientist, you usually want to tell a story with the data. You want to write headings, you want boldface, italics, images, graphs and tables to tell your story. </li>
+</ul>
+<p>The reason that python is bad for data science today is due to the third point. <strong>Python is very slow</strong> and not really suitable for data of (say) tens of GBs. Currently the workaround is to use an optimized library such as <code>pandas</code>. However, pandas is fast only because the core parts are implemented in C (the so called <code>vectorized operations</code>). Pandas itself has weird quirks which I will cover in a later blog. If you ever need something that is not available in pandas, well good luck writing a C binding for python code.</p>
+<h2>Julia</h2>
+<p>Enter Julia, the latest kid on the block. Sometimes it feels like a supwerpowered mutant language. Some examples</p>
+<ul>
+<li>It is <em>optionally</em> typed. You can go with either static or dynamic typing</li>
+<li>It compiles to native code thus offering C like performance</li>
+<li>It is purpose built for data science and thus offers a true REPL. (languages like java offer a REPL as an afterthoughts and are not really true REPLs)</li>
+</ul>
+<p>However, in practice, the language is pretty far from mainstream adoption</p>
+<ul>
+<li>The native speed is obtained only under specific conditions. For example, that all variables are statically typed. In general, it is extremely easy to screw up performance by forgetting to declare the types of some variables</li>
+<li>The REPL compilation is mind numbingly slow. It takes several seconds or sometimes minutes to (just in time) compile the code. It leads to a very frustrating experience</li>
+<li>This last point does not really have to with Julia, but rather to do with the need for rich text and graphical output. Currently, the de-facto standard for this rich graphical environment is the Jupyter notebook running on a browser. However, the user experience is far from satisfactory due to the inability to use your favorite IDE and all the tooling that comes along with it, for example, autocomplete, familiar key mappings, debugging tools, etc.</li>
+</ul>
+<p>Thus data science today is in a sad state. Julia tries to fix it. Its heart is in the right place, but it is unlikely it will ever be as usable as python in the repl, while maintaining the speed of C.</p>
+<h1>Conclusion</h1>
+<p>Programming languages were designed to solve specific classes of problems. Understanding the motivation and architecture of programming languages allows us to pick one that is well suited for the task at hand. On the flip side, a bad choice can quickly burden the dev team with tech debt. </p> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+        </div><!-- /.blog-main -->
+
+      </div><!-- /.row -->
+
+		  <div id="disqus_thread"></div>
+		  <script>
+			  /**
+			  * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+			  * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+			  */
+			  /*
+			  var disqus_config = function () {
+				  this.page.url = the-choice-of-programming-languages.html; // Replace PAGE_URL with your page's canonical URL variable
+				  this.page.identifier = my_blog; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+			  };
+			  */
+			  (function() { // DON'T EDIT BELOW THIS LINE
+				  var d = document, s = d.createElement('script');
+
+				  s.src = '//agsha.disqus.com/embed.js';
+
+				  s.setAttribute('data-timestamp', +new Date());
+				  (d.head || d.body).appendChild(s);
+			  })();
+		  </script>
+		  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+
+   <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  </body>
+</html>
