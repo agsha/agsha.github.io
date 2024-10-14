@@ -1,0 +1,422 @@
+<!-- same as index.html, except that only one article is shown -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Sharath's core dump</title>
+
+
+    <!-- Custom styles for this template -->
+    <link href="theme/blog.css" rel="stylesheet">
+    <link href="theme/hilite.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="/">Latest articles</a>
+          <a class="blog-nav-item" href="/archives.html">Archive</a>
+          <a class="blog-nav-item" href="/pages/about.html">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-12 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="/notes-on-the-rank-theorem-in-linear-algebra.html" rel="bookmark" title="Permalink to Notes on the rank theorem in linear algebra">Notes on the rank theorem in linear algebra</a></h2>
+            <p class="blog-post-meta">Fri, 11 Oct 2024</p>
+		    <p>I have always been fascinated by the rank theorem in linear algebra. It is known sometimes by other names:</p>
+<ol>
+<li>The rank-nullity theorem</li>
+<li>Fundamental theorem of linear algebra (part 1)</li>
+</ol>
+<p>Stated simply, The rank theorem asserts that in any matrix, the row rank is equal to the column rank.</p>
+<p>The result of the theorem always seems a bit magical to me (as I will explain later). It is as if someone told me the following - In a room, close your eyes and randomly throw a crumpled ball of paper. It will always land in the waste paper bin!</p>
+<p>So naturally, I have put quite a bit of effort to understand the proof, but most proofs seem like "rabbit-out-of-a-hat". And yet, it is a fundamental theorem that is used ubiquitously in linear algebra.</p>
+<p>In this post, I hope to give an intuitive understanding of the rank theorem. The structure of this post is as follows:</p>
+<ol>
+<li>Cover some basic definitions and theorems to get everyone on the same page</li>
+<li>Show just how profound and non-obvious is the result of the theorem</li>
+<li>Illustrate an intuitive way of thinking about the theorem</li>
+<li>Explore some other common proofs of the theorem</li>
+</ol>
+<p>The target audience for this post is people who already have a decent understanding of the matrix-oriented proofs, as well as the more abstract proofs, and who are looking for a more intuitive explanation of the result.</p>
+<p>Although I try to cover most of the basic facts for the sake of completeness and as a refresher, It is by no means sufficient as an introduction to someone who is not aware of the subject.</p>
+<p>In particular, familiarity with the following two books will be immensely helpful</p>
+<ol>
+<li><a href="https://www.amazon.com/Introduction-Linear-Algebra-Gilbert-Strang/dp/1733146679/ref=sr_1_1?crid=1JW0E99JN5SKE&amp;dib=eyJ2IjoiMSJ9.F5NXQBUERLV6mEXR0WvWdC1VIo5KtbzV8WZcVUP2Dg4cb4i4DR40XDLNrVXwixRol38MYo6BTvYpyNTQVQ0gImwXuiqCQ59piMxv2_tRyE44IAugYBc4-ZNbbapORHJvxiCa1y1Dmv2TKy9e3Ss9FNH_k5b179BLKOjRGpHcSZiTDj5njPwn8N8jmqDIILP_SJ-OGLVSjZwqkUiOw5K5xa7fM9dhW9Yd2ITMbkE1hR4.ea-vft9gJC1k1gLg1yAzgwQ31yIYCgzAnEuQE1JHUwo&amp;dib_tag=se&amp;keywords=introduction+to+linear+algebra+gilbert+strang&amp;qid=1728671128&amp;s=books&amp;sprefix=introduction+to+linear+algebra+gilbert+strang%2Cstripbooks%2C277&amp;sr=1-1">Linear algebra and its applications - by Gilbert Strang</a>. This book is more of an application oriented introductory textbook for undergrads</li>
+<li><a href="https://www.amazon.com/Linear-Algebra-Its-Applications-Peter/dp/0471751561/ref=sr_1_1?crid=3DTKAMQYELAH8&amp;dib=eyJ2IjoiMSJ9.QS-53qTNH2oNYLIfPP8d2aRRsbCOzpvSrfGrUdb_pa0qIz1_f0pjjxnk1y_WceOgvpwmS6HwJSYPaL6XGVINCFDPGVG98qD5yNvmlUTYpNvoNGbu17lBruy_brAbN0oG9iDTdBS8LO0LoaWQMFoTOg.r4QjPYISMr7QqB_7PAKk3omHi-hcFnfYlbUBYVR2UOA&amp;dib_tag=se&amp;keywords=linear+algebra+-+by+Peter+Lax&amp;qid=1728671251&amp;s=books&amp;sprefix=linear+algebra+-+by+peter+lax%2Cstripbooks%2C260&amp;sr=1-1">Linear algebra and its applications - by Peter Lax</a>. This book is also an undergrad texbook, Contrary to its name, it is a very abstract book, with a more rigorous approach, suitable for (example), an "honors" undergraduate course</li>
+</ol>
+<p>Alright, lets begin!</p>
+<p>Let's start with some basic definitions and simple theorems, whose proof I shall skip. The proofs should be part of any standard linear algebra fare (in particular, the textbook by Peter lax)</p>
+<h1>Basic definitions and theorems</h1>
+<p><strong>vector space</strong></p>
+<p>A vector space over a field of scalars is a mathematical object that supports</p>
+<ol>
+<li>addition</li>
+<li>multiplication by a scalar</li>
+</ol>
+<p><strong>linear combination</strong></p>
+<p>A linear combination of vectors <span class="math">\(x_1, x_2, \cdots, x_n\)</span> is a vector of the form <span class="math">\(k_1x_1+k_2x_2+\cdots+k_nx_n\)</span></p>
+<p><strong>subspace</strong></p>
+<p>A subspace <span class="math">\(Y\)</span> of a vector space <span class="math">\(X\)</span> is a subset that is closed under the vector operations. i.e., linear combination of members of the space is also a member of the space. Please note here the difference between a <em>subset</em> and a <em>subspace</em>. A subset need not be closed under the vector operations</p>
+<p><strong>linear independence</strong></p>
+<p>A set of vectors <span class="math">\(x_1, \cdots, x_n\)</span> are linearly dependent iff</p>
+<div class="math">$$
+k_1x_1 + k_2x_2 + \cdots + k_nx_n = 0
+$$</div>
+<p>where the <span class="math">\(k\)</span>s are scalars and not all of them are zero. If the vectors are not linearly dependent, they are called linearly independent. </p>
+<p><strong>basis vectors</strong></p>
+<p>A finite set of vectors that span a space <span class="math">\(X\)</span> and are linearly independent, are called the basis. The number of vectors in the set is called the <strong>dimension</strong> of the space (denoted as <span class="math">\(dim\ X\)</span>). There can be many different sets of basis vectors but the dimension is always the same</p>
+<p><strong>Completion of a partial basis</strong></p>
+<p>Every linearly independent set of vectors of a space <span class="math">\(X\)</span> can be completed to form a basis for <span class="math">\(X\)</span>. This theorem is very important and we will be using it a lot.</p>
+<p><strong>Isomorphism of same dimension spaces</strong></p>
+<p>Once we fix any basis for a space <span class="math">\(X\)</span> with dimension <span class="math">\(n\)</span>, every vector <span class="math">\(x \in X\)</span> can be represented by a <span class="math">\(n\)</span> tuple of scalars <span class="math">\((k_1, \cdots k_n)\)</span>. Using this representation, two different spaces <span class="math">\(X\)</span> and <span class="math">\(Y\)</span> of the same dimension are isomorphic to one another.</p>
+<p>Intuition - Any vector <span class="math">\(y \in X\)</span> can be written as <span class="math">\(x = k_1x_1 + \cdots + k_nx_n\)</span> where the <span class="math">\(x\)</span>s are the basis. here, the <span class="math">\(k\)</span>s form the tuple which defines the vector.</p>
+<p><strong>Linear Map</strong></p>
+<p>A linear map <span class="math">\(T\)</span> from a vector space <span class="math">\(X\)</span> to another space <span class="math">\(U\)</span> (not necessarily of the same dimensions) is a function which takes input an <span class="math">\(x \in X\)</span> and gives the output <span class="math">\(u \in U\)</span>. As usual, <span class="math">\(X\)</span> is called the <em>domain</em> of <span class="math">\(X\)</span> and <span class="math">\(U\)</span> is called the <em>target space</em>. </p>
+<p>A linear map has the additional property</p>
+<ol>
+<li>Sums and (scalar) product of input maps to sums and (scalar) product of the outputs. i.e., <span class="math">\(T(x+y) = T(x) + T(y)\)</span> and <span class="math">\(T(kx) = kT(x)\)</span></li>
+</ol>
+<p>The image of <span class="math">\(X\)</span> under <span class="math">\(T\)</span> is also called the <em>range</em> of T.</p>
+<p>Lets momentarily descend from the abstract world and to the world of matrices and relate the two.</p>
+<p>An <span class="math">\(m \times n\)</span> matrix is an example of a linear map <span class="math">\(T\)</span>, and a tuple of scalars in column format is an example of a vector <span class="math">\(v\)</span> </p>
+<p>A quick example is in order.</p>
+<div class="math">$$T = 
+\begin{bmatrix}
+1 &amp; 5 &amp; 6 \\
+2 &amp; 7 &amp; 9 
+\end{bmatrix}, x = \begin{bmatrix}1 \\ 3 \\ 5\end{bmatrix}$$</div>
+<p>Then,</p>
+<div class="math">$$y=T(x) = T \times x = \begin{bmatrix}28 \\ 43\end{bmatrix}$$</div>
+<p>Here, <span class="math">\(T : X \mapsto U\)</span>, where <span class="math">\(X\)</span> is a 3-dimension vector space and <span class="math">\(U\)</span> is a 2-dimensional vector space, and <span class="math">\(x \in X\)</span> and <span class="math">\(y \in Y\)</span></p>
+<p>The following are some important properties of linear maps</p>
+<ol>
+<li>The value of the map on any given basis completely defines the map. This follows from the linearity property of the map</li>
+<li>In matrix form, multiplication on the right side by a column vector gives a column vector which is a linear combination of the columns of the matrix. By this interpretation, the column rank is equal to the dimension of the range of <span class="math">\(T\)</span></li>
+</ol>
+<p>Quick example:</p>
+<div class="math">$$\begin{bmatrix}
+\vdots &amp; \vdots &amp; \vdots \\
+col1 &amp; col2 &amp; col3 \\
+\vdots &amp; \vdots &amp; \vdots
+\end{bmatrix} \cdot 
+\begin{bmatrix}a\\b\\c\end{bmatrix} = \begin{bmatrix} \vdots \\ a\cdot col1 + b\cdot col2 + c\cdot col3 \\ \vdots \end{bmatrix}$$</div>
+<ol>
+<li>Similarly, multiplication from the left side by a row vector gives a row vector which is the linear combination of rows of the matrix. By this interpretation, the row rank is the dimension of the rowspace. </li>
+</ol>
+<div class="math">$$\begin{bmatrix}a &amp; b &amp; c\end{bmatrix} \cdot \begin{bmatrix} 
+\cdots &amp; row1 &amp; \cdots \\
+\cdots &amp; row2 &amp; \cdots \\
+\cdots &amp; row3 &amp; \cdots \\
+\end{bmatrix} = \begin{bmatrix}\cdots &amp; a\cdot row1 + b\cdot row2 + c\cdot row3 &amp; \cdots\end{bmatrix}$$</div>
+<ol>
+<li><strong>range-nullspace theorem</strong>: the set of all vectors <span class="math">\(v \in X\)</span> such that <span class="math">\(T(v) = 0\)</span> forms a subspace of <span class="math">\(X\)</span> and is called the nullspace <span class="math">\(N_T\)</span> of <span class="math">\(T\)</span>. We can show that <span class="math">\(dim(X) = dim(R) + dim(N_T)\)</span>. This is a very fundamental result.</li>
+</ol>
+<p><strong>Intuitive proof</strong>: It is easy to show that the complement of <span class="math">\(N_T\)</span> is isomorphic to <span class="math">\(R\)</span>. </p>
+<p><strong>Dot product or bilinear forms</strong></p>
+<p>Once we choose a basis for a vector space, we can represent each vector by an element from <span class="math">\(R^n\)</span>. Having done so, we can define a <em>dot product</em> of two vectors, which produces a scalar in the usual way, for example</p>
+<div class="math">$$\begin{bmatrix}a_1 &amp; a_2 &amp; a_3\end{bmatrix} \cdot \begin{bmatrix}b_1 \\ b_2 \\ b_3\end{bmatrix} = a_1b_1 + a_2b_2 + a_3b_3$$</div>
+<p>In abstract terms, it is possible to define the dot product without the need for basis vectors. It is done by defining a <em>dual</em> vector space consisting of linear functions operating on the primal vector space. It can be shown that the dual and the primal vector space have the same dimensions.</p>
+<p>In concrete terms, when dealing with <span class="math">\(R^n\)</span>, if the vectors of primal space are denoted by column vectors, the elements of the dual space can be considered to be represented by row vectors</p>
+<p>While solving linear equations, the row vectors typically arise as coefficients, and the column vectors arise as the unknowns. The coefficients are dual to the unknowns. This is in some sense reminiscent of the duality that is also encountered in linear programming.</p>
+<p><strong>Change of Basis</strong></p>
+<p>While dealing with <span class="math">\(R^n\)</span>, when we don't explicitly specify the basis, we usually have in mind the <strong>standard basis</strong>, which has a 1 in the <span class="math">\(j^{th}\)</span> position and zero everywhere else. Of course, there is nothing special about the standard basis, and any other basis can be used equally well. Suppose we want to use vectors <span class="math">\(e_j\)</span> where <span class="math">\(j \in [1, n]\)</span> as the basis, and suppose we want to convert between the old representation and the new representation, we can use a map which maps each old basis to its corresponding new basis. This is well defined, since a map is well defined if we specify the values on all the basis vectors. Furthermore, it is easy to see that this map is one-to-one. </p>
+<p><strong>Complement of a subspace</strong></p>
+<p>For every subspace <span class="math">\(Y\)</span> of space <span class="math">\(X\)</span>, there is a complementary subspace <span class="math">\(Z\)</span> of <span class="math">\(X\)</span> such that every vector <span class="math">\(x \in X\)</span> can be written <em>uniquely</em> as <span class="math">\(x = y + z\)</span> where <span class="math">\(y \in Y\)</span> and <span class="math">\(z \in Z\)</span>. Furthermore, <span class="math">\(dim\ X = dim\ Y + dim\ Z\)</span></p>
+<p>Intuition: consider a basis <span class="math">\(y_1, \cdots, y_m\)</span> for <span class="math">\(Y\)</span>. These can be completed by adding more linearly independent vectors <span class="math">\(z_1, \cdots, z_n\)</span> to form a full basis of <span class="math">\(X\)</span>. The subspace spanned by the <span class="math">\(z\)</span>s is the basis for <span class="math">\(Z\)</span></p>
+<p>Some important points:</p>
+<ol>
+<li>The complement of a subspace is not unique. There are many ways to complete the partial basis of <span class="math">\(Y\)</span>, and each different choice gives rise to a different complement</li>
+<li>
+<p>A subspace and its complement are mutually exclusive, but <em>not</em> collectively exhaustive, and as such, they do not partition the parent vector space. i.e., there can be vectors which are not present either in <span class="math">\(Y\)</span> or its complement. For example, if <span class="math">\(x\)</span> is decomposed as <span class="math">\(y + z\)</span> as above, with both components non-zero, then <span class="math">\(x\)</span> is neither in <span class="math">\(Y\)</span>, nor in its complement. Thus, it gives rise to 4 cases</p>
+<table>
+<thead>
+<tr>
+<th>y component</th>
+<th>z component</th>
+<th>location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>the zero vector</td>
+</tr>
+<tr>
+<td>0</td>
+<td>non-zero</td>
+<td>in complement</td>
+</tr>
+<tr>
+<td>non-zero</td>
+<td>0</td>
+<td>in subspace</td>
+</tr>
+<tr>
+<td>non-zero</td>
+<td>non-zero</td>
+<td>as a direct-sum subset</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>The direct-sum subset is <em>not</em> a subspace. Example - the sum of the following two direct-sum vectors is not in the direct-sum: <span class="math">\((y+z), (y-z)\)</span></p>
+</li>
+</ol>
+<p><strong>Orthogonal complement</strong></p>
+<p>There is however, one unique complement called the orthogonal complement. In the same notation as above, suppose <span class="math">\(Z\)</span> is an orthogonal complement. then <span class="math">\(\forall y \ \ \forall z, \ \  y \cdot z = 0\)</span>.</p>
+<p>In abstract language, the orthogonal complement is a subset of the dual space, and it is usually called the annihilator of <span class="math">\(Y\)</span>.</p>
+<p>Note that, all the other properties of complements are still true for orthogonal complements.</p>
+<p>In particular, <span class="math">\(dim\ X = dim\ Y + dim\ Z\)</span>.</p>
+<p>This fact is so important, but it is not usually part of the standard fare, that I will give the outline of a proof here.</p>
+<p><strong>Theorem</strong>: Let <span class="math">\(X\)</span> be a vector space, <span class="math">\(dim(X) = n\)</span>. Let <span class="math">\(Y\)</span> be a subspace of <span class="math">\(X\)</span>, spanned by <span class="math">\(v_1, \cdots, v_r\)</span>. <span class="math">\(dim(Y)=r\)</span>, then the orthogonal complement <span class="math">\(Z\)</span> has <span class="math">\(dim(Z) = n-r\)</span>.</p>
+<p><strong>Proof</strong>: We will establish a 1:1 mapping between <span class="math">\(Z\)</span> and <span class="math">\(R^{n-r}\)</span>.</p>
+<p>First complete the partial basis of <span class="math">\(Y\)</span> to get a full basis <span class="math">\(v_1, \cdots, v_n\)</span>. Every vector can be represented as <span class="math">\(\sum{a_iv_i}\)</span>, so this is 1:1 with <span class="math">\(\{a_i\}\)</span>. Let <span class="math">\(z \in Z\)</span>. Define the mapping <span class="math">\(T:z \mapsto z'\)</span> where </p>
+<div class="math">$$z' = [0, 0, \cdots, 0, z\cdot v_{r+1}, \cdots, z\cdot v_n]$$</div>
+<p>Any such <span class="math">\(z'\)</span> also maps back to a unique <span class="math">\(z \in Z\)</span> by <span class="math">\(z \cdot v_i = z'[i]\)</span>. Here we use the fact that a vector is uniquely specified by its values on the dot product on the basis vectors</p>
+<p>In abstract language, the orthogonal complement is called annihilator and represented as a subspace of the dual space (remember that the dual space is a space of all bilinear functions). The proof of dimension usually involves proving an isomorphism between the annihilator and the dual of the quotient space <span class="math">\((X/Y)\)</span>. Effectively quotient space of a subspace is what you get by throwing away components of the basis of the subspace. i.e., the "rest" of the space apart from the subspace. </p>
+<p>Although the proof looks much cleaner there, I find the vesion I presented here to be more clear conceptually, where we establish an isomorphism between annihilator and <span class="math">\(z' = [0, 0, \cdots, 0, l\cdot v_{r+1}, \cdots, l\cdot v_n]\)</span></p>
+<p><strong>Rowspace, columnspace and nullspace of a matrix</strong></p>
+<p>The rows and columns of a matrix can be considered to be vectors. An <span class="math">\(m \times n\)</span> matrix has <span class="math">\(m\)</span> row vectors of dimension <span class="math">\(n\)</span> and <span class="math">\(n\)</span> column vectors of dimension <span class="math">\(m\)</span>.</p>
+<p>The rowspace is the subspace spanned by rows, and similarly for column space. The nullspace is the set of input vectors that maps to 0 vector under <span class="math">\(T\)</span>.</p>
+<p>The row/column rank of a matrix is defined as the max number of linearly independent rows/columns.</p>
+<p>We are now in a position to restate the rank theorem</p>
+<p><strong>The rank theorem</strong></p>
+<p>The row rank of a matrix is the same as the column rank. i.e., the number of LI rows in a matrix is equal to the number of LI columns in the matrix</p>
+<h1>The surprising nature of the rank theorem</h1>
+<p>Consider any matrix of any size, say <span class="math">\(100 \times 1000\)</span>, filled with random numbers. </p>
+<ol>
+<li>There are 100 row vectors each of dimension 1000. The rows vectors look like <span class="math">\((x_1, x_2, \cdots, x_{1000})\)</span></li>
+<li>And there are 1000 column vectors, each of dimension 100. The column vectors look like <span class="math">\((y_1, y_2, \cdots, y_{100})\)</span>. </li>
+</ol>
+<p>The row vectors look very different from the column vectors. Looking individually, the numbers also seem to bear no relationship to each other. Even the dimensions do not match. And yet, the rank theorem asserts that if there are only 50 LI rows, then there will only be 50 LI columns amongst the 1000.</p>
+<p>Another example: Consider the following matrix</p>
+<div class="math">$$T = 
+\begin{bmatrix}
+1 &amp; 5 &amp; 6 \\
+2 &amp; 7 &amp; 9 \\
+3 &amp; 6 &amp; 1 \\
+\end{bmatrix}$$</div>
+<p>Here, all the three rows are LI, as are all the columns. However, I have made the column <span class="math">\(C_3\)</span> "just miss" to be equal to <span class="math">\(C_1 + C_2\)</span>. (<span class="math">\(3+6 \ne 1\)</span>). If I change that one number <span class="math">\(x_{33}\)</span> from 1 to 9, there are only 2 LI columns. Now the rank theorem asserts that this change has forced one of the rows also to be linearly dependent on the other two rows. Yet, I am hard pressed to find out what is that linear combination by visual inspection. Can you spot the linear relationship between rows <span class="math">\(R_1, R_2, R_3\)</span>?</p>
+<p>i.e., given <span class="math">\(R_1 = [1, 5, 6]\)</span>, <span class="math">\(R_2 = [2, 7, 9]\)</span> and <span class="math">\(R_3 = [3, 6, 9]\)</span>, can you find three numbers <span class="math">\(a, b, c\)</span> (not all zero) such that <span class="math">\(aR_1 + bR_2 + cR_3 = 0\)</span> by visual inspection? The rank theorem guarantees its existence, and indeed, <span class="math">\(3R_1 - 3R_2 + R_3 = 0\)</span>.</p>
+<p>Lets look at the previous example a bit more closely. Suppose</p>
+<div class="math">$$T = 
+\begin{bmatrix}
+a &amp; d &amp; a+d \\
+b &amp; e &amp; b+e \\
+c &amp; f &amp; c+f \\
+\end{bmatrix}$$</div>
+<p>So that <span class="math">\(C_3 = C_1 + C_2\)</span> and lets try to solve generally for <span class="math">\(xR_1 + yR_2 + zR_3 = 0\)</span>. Can you guess the values for <span class="math">\(x, y, z\)</span> from visual inspection? I certainly couldn't! We can use standard techniques (from linear algebra itself, of course!) to find </p>
+<div class="math">$$\begin{eqnarray}
+x &amp;= bf - ce \\
+y &amp;= dc - af \\
+z &amp;= ae - bd 
+\end{eqnarray}$$</div>
+<p>To me, it is surprising that a simple relationship between columns translates to such a complicated relationship among the rows. Now if you consider a <span class="math">\(1000 \times 1000\)</span> matrix with a complicated relationship among the columns, one can only imagine how complicated the relationship between the rows will be, and yet, the rank theorem guarantees that such a relationship must exist!</p>
+<p>Having thus shown how surprising the result of the theorem is, lets explore some common approaches to proving the rank theorem.</p>
+<h1>An intuitive proof</h1>
+<p><strong>Transpose</strong> of a matrix is the matrix obtained by swapping its rows and columns</p>
+<p>Let <span class="math">\(T: X \mapsto U\)</span> be a linear map and <span class="math">\(m \times n\)</span> matrix. So <span class="math">\(dim(X) = n\)</span> and <span class="math">\(dim(U) = m\)</span>. Let <span class="math">\(T'\)</span> be its transpose. Let <span class="math">\(R \subset U\)</span> be the range of <span class="math">\(T\)</span>, with <span class="math">\(dim(R)=r\)</span>. So the dimension of columnspace is <span class="math">\(r\)</span>. And we need to show that the dimension of rowspace of <span class="math">\(T\)</span> (which is dimension of colspace of <span class="math">\(T'\)</span>) = <span class="math">\(r\)</span>.</p>
+<p><span class="math">\(R\)</span> has a orthogonal complement <span class="math">\(S\)</span>, with <span class="math">\(dim(S)=m-r\)</span>. let <span class="math">\(s \in S\)</span>. Now <span class="math">\(s\)</span> kills every vector in <span class="math">\(R\)</span>, which are nothing but linear combinations of columns of <span class="math">\(T\)</span>, and hence in matrix form, we can write</p>
+<div class="math">$$\begin{bmatrix} 
+\cdots &amp; col1 &amp; \cdots \\
+\cdots &amp; col2 &amp; \cdots \\
+\cdots &amp; coln &amp; \cdots \\
+\end{bmatrix} \cdot s = 0$$</div>
+<p>Observe that here, the columns have become rows, and it is actually the transpose matrix <span class="math">\(T'\)</span>. Thus it is clear that <span class="math">\(s \in N_{T'}\)</span> where <span class="math">\(N_{T'}\)</span> is the nullspace of <span class="math">\(T'\)</span>. So, <span class="math">\(S = N_{T'}\)</span> and thus <span class="math">\(dim(N_{T'}) = m-r\)</span>.</p>
+<p>Applying the range-nullspace theorem to <span class="math">\(T'\)</span>, immediately gives the dimension of the range of <span class="math">\(T'\)</span> as <span class="math">\(dim(R_{T'}) = r\)</span>. This is what we wanted to prove.</p>
+<p>Leaving the mathematics aside, lets try to describe in words what is happening. Consider a <span class="math">\(n \times n\)</span> matrix with all rows and columns independent. Now lets see what happens when we make one of the columns to be linearly dependent on the other columns.</p>
+<ol>
+<li>The columns fail to span the full space of <span class="math">\(U\)</span>, and thus the range of <span class="math">\(T\)</span> decreases by 1.</li>
+<li>This gives rise to an orthogonal complement subspace in U, with the dimension of 1</li>
+<li>Since a vector <span class="math">\(z\)</span> in the orthogonal complement kills every vector in the range of <span class="math">\(T\)</span>, it actually provides a linear combination between the rows of <span class="math">\(T\)</span>. Just re-iterating this step in math: </li>
+</ol>
+<div class="math">$$\begin{eqnarray}z \cdot c_1  &amp;= 0 \\
+z \cdot c_2 &amp;= 0 \\
+&amp;\vdots \\
+z \cdot c_n &amp;= 0 \\
+\implies z \cdot \begin{bmatrix}c_1 &amp; \cdots &amp; c_n\end{bmatrix} &amp;= z \cdot T = 0\end{eqnarray}$$</div>
+<p>.
+Remember that left multiplication by a row vector is equivalent to a linear combination of the rows. So the last equation is saying that there is a lienar combination of rows that gives 0, which means that the rows are not linearly independent! Thus, In this way, we see how a linear combination of columns have forced a linear combination of rows.</p>
+<p>Now, we will briefly explore some other common proofs
+:</p>
+<h1>Proof using elementary operations</h1>
+<p>This is the most common proof</p>
+<p><strong>elementary row operations</strong></p>
+<p>There are 3 such elementary row operations</p>
+<ol>
+<li>swap two rows of a matrix</li>
+<li>add another row to current row</li>
+<li>multiply current row by a scalar</li>
+</ol>
+<p>The proof proceeds in the following steps</p>
+<ol>
+<li>Show that each elementary row operation corresponds to multiplying by an elementary matrix that is invertible</li>
+<li>Show that multiplying by an elementary matrix has the following effects<ol>
+<li>Rowspace - unchanged, because the row operations are simply linear combinations of other rows</li>
+<li>nullspace - unchanged, because, if <span class="math">\(ET(x) = 0\)</span> iff <span class="math">\(T(x) = 0\)</span></li>
+<li>columnspace - changed, but preserves linear combinations. short proof - suppose <span class="math">\(c_x\)</span> are the columns, and suppose <span class="math">\(a_1c_1 + \cdots + a_nc_n = 0\)</span>, then 
+<div class="math">$$a_1c_1 + \cdots + a_nc_n =  
+\begin{bmatrix}
+c1 &amp; \cdots &amp; c_n\end{bmatrix}\begin{bmatrix}
+a1 \\ \vdots \\ a_n\end{bmatrix} = 0$$</div>. So <div class="math">$$\begin{bmatrix}
+a1 \\ \vdots \\ a_n\end{bmatrix}$$</div> is in the nullspace of <span class="math">\(T\)</span> and thus also in the nullspace after the elementary row operation</li>
+</ol>
+</li>
+<li>Use the elementary row operations to arrive at the <a href="https://en.wikipedia.org/wiki/Row_echelon_form#Reduced_row_echelon_form"><em>reduced row echelon form</em></a> <span class="math">\(rref(T)\)</span>, from which you can just visually see that the row rank and column rank are equal</li>
+</ol>
+<p>This proof is actually pretty elegant, especially when it shows that the column space does not change under elementary row operations. However, I don't find it very clear why a linear dependence on the rows/columns should induce a corresponding linear dependence on the column/rows </p>
+<h1>A small improvement of the above proof</h1>
+<p>The following improvement perhaps cuts more directly to the issue at hand.</p>
+<p>Let <span class="math">\(c_1, \cdots, c_r\)</span> be independent column vectors in the matrix <span class="math">\(T\)</span> In the target space U, the basis is the <a href="https://en.wikipedia.org/wiki/Standard_basis">standard basis</a>. Perform a change of basis by choosing the LI column vectors as a partial basis, and complete them to get a full basis. This <a href="https://en.wikipedia.org/wiki/Change_of_basis">change of basis</a> can be represented as another invertible matrix <span class="math">\(S:U \mapsto V\)</span>, where <span class="math">\(V\)</span> is another vector space of the same dimensions. Now consider the matrix <span class="math">\(Q : X \mapsto V \stackrel{\text{def}}{=} S \cdot T\)</span>. It is easy to see that 
+Q is of the following form
+</p>
+<div class="math">$$Q = \begin{bmatrix}
+ I &amp; X \\ 
+ 0 &amp; 0\end{bmatrix}$$</div>
+<p>
+ Since <span class="math">\(S\)</span> is invertible, <span class="math">\(Q\)</span> and <span class="math">\(T\)</span> have the same rowspace, nullspace, and preserves linear combinations on the column space. And from this matrix, it is easy to see that the row rank is equal to the column rank</p>
+<p>There are two other less well known proofs, and I really like them, and can't help but mention one of these proofs. Both of these are mentioned on this <a href="https://proofwiki.org/wiki/Column_Rank_of_Matrix_equals_Row_Rank">webpage</a></p>
+<h1>Proof using orthogonality</h1>
+<p>It proceeds by the following steps</p>
+<ol>
+<li>Prove that LI rows are mapped to LI columns (really clever!)</li>
+<li>this proves that $rowrank &lt;= column rank</li>
+<li>Apply the same method to the transpose, giving columnrank &lt;= rowrank</li>
+<li>hence rowrank=columnrank!</li>
+</ol>
+<p>So there you go! I hope these different viewpoints of looking at a fundamental result helps in a deeper understanding. It also shows such a rich structure for linear combinations. Keep on combining linearly!</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script> 
+          </div><!-- /.blog-post -->
+		  <hr>
+		  </hr>
+        </div><!-- /.blog-main -->
+
+      </div><!-- /.row -->
+
+		  <div id="disqus_thread"></div>
+		  <script>
+			  /**
+			  * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+			  * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+			  */
+			  /*
+			  var disqus_config = function () {
+				  this.page.url = notes-on-the-rank-theorem-in-linear-algebra.html; // Replace PAGE_URL with your page's canonical URL variable
+				  this.page.identifier = notes-on-the-rank-theorem-in-linear-algebra; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+			  };
+			  */
+			  (function() { // DON'T EDIT BELOW THIS LINE
+				  var d = document, s = d.createElement('script');
+
+				  s.src = '//agsha.disqus.com/embed.js';
+
+				  s.setAttribute('data-timestamp', +new Date());
+				  (d.head || d.body).appendChild(s);
+			  })();
+		  </script>
+		  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+
+   <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  </body>
+</html>

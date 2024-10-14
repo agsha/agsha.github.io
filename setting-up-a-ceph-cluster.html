@@ -49,7 +49,7 @@
 <p>Furthermore, to launch a radosgw instance, you <em>need</em> to have a section in your host file called <code>client.rgw.&lt;some_name&gt;</code> and your  keyring should have a corresponding key section called  <code>client.rgw.&lt;some_name&gt;</code> and you should have imported that key into ceph    via <code>sudo ceph auth import -i /etc/ceph/&lt;keyring_file&gt;</code>.</p>
 <p><strong>All the three names must match: the one in ceph.conf, in the keyring and in <code>ceph auth list</code></strong></p>
 <p>Oh, and yeah, do <strong>NOT</strong> put a line like this in your <code>ceph.conf</code>:</p>
-<div class="highlight"><pre><span></span><code>rgw <span class="nv">data</span> <span class="o">=</span> /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
+<div class="highlight"><pre><span></span><code>rgw<span class="w"> </span><span class="nv">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>/var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
 </code></pre></div>
 
 <p>If you do, you'l get weird messages like </p>
@@ -59,33 +59,33 @@
 <p>and you'll go crazy trying to debug it.</p>
 <p>So the working <code>ceph.conf</code> with comments is: </p>
 <div class="highlight"><pre><span></span><code><span class="o">[</span>global<span class="o">]</span>
-<span class="nv">fsid</span> <span class="o">=</span> a7f64266-0894-4f1e-a635-d0aeaca0e993 <span class="c1">#anything random, generated from uuidgen</span>
-auth cluster <span class="nv">required</span> <span class="o">=</span> cephx
-auth service <span class="nv">required</span> <span class="o">=</span> cephx
-auth client <span class="nv">required</span> <span class="o">=</span> cephx
-osd journal <span class="nv">size</span> <span class="o">=</span> <span class="m">1024</span>
-filestore xattr use <span class="nv">omap</span> <span class="o">=</span> <span class="nb">true</span>
-osd pool default <span class="nv">size</span> <span class="o">=</span> <span class="m">2</span> 
-osd pool default min <span class="nv">size</span> <span class="o">=</span> <span class="m">1</span> 
-osd pool default pg <span class="nv">num</span> <span class="o">=</span> <span class="m">333</span> 
-osd pool default pgp <span class="nv">num</span> <span class="o">=</span> <span class="m">333</span> 
-osd crush chooseleaf <span class="nb">type</span> <span class="o">=</span> <span class="m">1</span> 
+<span class="nv">fsid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>a7f64266-0894-4f1e-a635-d0aeaca0e993<span class="w"> </span><span class="c1">#anything random, generated from uuidgen</span>
+auth<span class="w"> </span>cluster<span class="w"> </span><span class="nv">required</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>cephx
+auth<span class="w"> </span>service<span class="w"> </span><span class="nv">required</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>cephx
+auth<span class="w"> </span>client<span class="w"> </span><span class="nv">required</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>cephx
+osd<span class="w"> </span>journal<span class="w"> </span><span class="nv">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1024</span>
+filestore<span class="w"> </span>xattr<span class="w"> </span>use<span class="w"> </span><span class="nv">omap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span>
+osd<span class="w"> </span>pool<span class="w"> </span>default<span class="w"> </span><span class="nv">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>
+osd<span class="w"> </span>pool<span class="w"> </span>default<span class="w"> </span>min<span class="w"> </span><span class="nv">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>
+osd<span class="w"> </span>pool<span class="w"> </span>default<span class="w"> </span>pg<span class="w"> </span><span class="nv">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">333</span><span class="w"> </span>
+osd<span class="w"> </span>pool<span class="w"> </span>default<span class="w"> </span>pgp<span class="w"> </span><span class="nv">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">333</span><span class="w"> </span>
+osd<span class="w"> </span>crush<span class="w"> </span>chooseleaf<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>
 <span class="c1"># useful for debugging</span>
 <span class="o">[</span>mon<span class="o">]</span>
-  debug <span class="nv">mon</span> <span class="o">=</span> <span class="m">20</span>
+<span class="w">  </span>debug<span class="w"> </span><span class="nv">mon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span>
 <span class="o">[</span>osd<span class="o">]</span>
-  debug <span class="nv">osd</span> <span class="o">=</span> <span class="m">20</span>
+<span class="w">  </span>debug<span class="w"> </span><span class="nv">osd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span>
 <span class="o">[</span>rgw<span class="o">]</span>
-  debug <span class="nv">rgw</span><span class="o">=</span><span class="m">20</span>
-<span class="o">[</span>mon.node1<span class="o">]</span> <span class="c1"># as many sections as monitors</span>
-  <span class="nv">host</span> <span class="o">=</span> dev-d42sharath1-mon-a-0001-389313 <span class="c1">#This NEEDS to be the actual hostname donno for what reasons</span>
-  mon <span class="nv">addr</span> <span class="o">=</span> <span class="m">10</span>.33.29.199 <span class="c1"># needs to be the actual address.</span>
+<span class="w">  </span>debug<span class="w"> </span><span class="nv">rgw</span><span class="o">=</span><span class="m">20</span>
+<span class="o">[</span>mon.node1<span class="o">]</span><span class="w"> </span><span class="c1"># as many sections as monitors</span>
+<span class="w">  </span><span class="nv">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>dev-d42sharath1-mon-a-0001-389313<span class="w"> </span><span class="c1">#This NEEDS to be the actual hostname donno for what reasons</span>
+<span class="w">  </span>mon<span class="w"> </span><span class="nv">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>.33.29.199<span class="w"> </span><span class="c1"># needs to be the actual address.</span>
 <span class="o">[</span>client.rgw.foo<span class="o">]</span>
-    <span class="nv">host</span> <span class="o">=</span> dev-d42sharath1-rgw-a-0001-389309
-    <span class="nv">keyring</span> <span class="o">=</span> /etc/ceph/ceph.client.rgw.keyring
-    log <span class="nv">file</span> <span class="o">=</span> /var/log/radosgw/client.radosgw.gateway.log
-    rgw <span class="nv">frontends</span> <span class="o">=</span> civetweb <span class="nv">port</span><span class="o">=</span><span class="m">80</span>
-    rgw print <span class="k">continue</span> <span class="o">=</span> <span class="nb">false</span>
+<span class="w">    </span><span class="nv">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>dev-d42sharath1-rgw-a-0001-389309
+<span class="w">    </span><span class="nv">keyring</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>/etc/ceph/ceph.client.rgw.keyring
+<span class="w">    </span>log<span class="w"> </span><span class="nv">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>/var/log/radosgw/client.radosgw.gateway.log
+<span class="w">    </span>rgw<span class="w"> </span><span class="nv">frontends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>civetweb<span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="m">80</span>
+<span class="w">    </span>rgw<span class="w"> </span>print<span class="w"> </span><span class="k">continue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span>
 </code></pre></div> 
           </div><!-- /.blog-post -->
 		  <hr>

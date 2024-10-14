@@ -1,5 +1,337 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog - misc</title><link href="/" rel="alternate"></link><link href="/feeds/misc.atom.xml" rel="self"></link><id>/</id><updated>2021-10-10T22:20:00+00:00</updated><subtitle></subtitle><entry><title>The choice of programming languages</title><link href="/the-choice-of-programming-languages.html" rel="alternate"></link><published>2021-10-10T22:20:00+00:00</published><updated>2021-10-10T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2021-10-10:/the-choice-of-programming-languages.html</id><summary type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>A Pelican Blog - misc</title><link href="/" rel="alternate"></link><link href="/feeds/misc.atom.xml" rel="self"></link><id>/</id><updated>2024-10-11T22:44:00+00:00</updated><entry><title>Notes on the rank theorem in linear algebra</title><link href="/notes-on-the-rank-theorem-in-linear-algebra.html" rel="alternate"></link><published>2024-10-11T22:44:00+00:00</published><updated>2024-10-11T22:44:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2024-10-11:/notes-on-the-rank-theorem-in-linear-algebra.html</id><summary type="html">&lt;p&gt;I have always been fascinated by the rank theorem in linear algebra. It is known sometimes by other names:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The rank-nullity theorem&lt;/li&gt;
+&lt;li&gt;Fundamental theorem of linear algebra (part 1)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Stated simply, The rank theorem asserts that in any matrix, the row rank is equal to the column rank.&lt;/p&gt;
+&lt;p&gt;The result …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I have always been fascinated by the rank theorem in linear algebra. It is known sometimes by other names:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The rank-nullity theorem&lt;/li&gt;
+&lt;li&gt;Fundamental theorem of linear algebra (part 1)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Stated simply, The rank theorem asserts that in any matrix, the row rank is equal to the column rank.&lt;/p&gt;
+&lt;p&gt;The result of the theorem always seems a bit magical to me (as I will explain later). It is as if someone told me the following - In a room, close your eyes and randomly throw a crumpled ball of paper. It will always land in the waste paper bin!&lt;/p&gt;
+&lt;p&gt;So naturally, I have put quite a bit of effort to understand the proof, but most proofs seem like "rabbit-out-of-a-hat". And yet, it is a fundamental theorem that is used ubiquitously in linear algebra.&lt;/p&gt;
+&lt;p&gt;In this post, I hope to give an intuitive understanding of the rank theorem. The structure of this post is as follows:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Cover some basic definitions and theorems to get everyone on the same page&lt;/li&gt;
+&lt;li&gt;Show just how profound and non-obvious is the result of the theorem&lt;/li&gt;
+&lt;li&gt;Illustrate an intuitive way of thinking about the theorem&lt;/li&gt;
+&lt;li&gt;Explore some other common proofs of the theorem&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The target audience for this post is people who already have a decent understanding of the matrix-oriented proofs, as well as the more abstract proofs, and who are looking for a more intuitive explanation of the result.&lt;/p&gt;
+&lt;p&gt;Although I try to cover most of the basic facts for the sake of completeness and as a refresher, It is by no means sufficient as an introduction to someone who is not aware of the subject.&lt;/p&gt;
+&lt;p&gt;In particular, familiarity with the following two books will be immensely helpful&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://www.amazon.com/Introduction-Linear-Algebra-Gilbert-Strang/dp/1733146679/ref=sr_1_1?crid=1JW0E99JN5SKE&amp;amp;dib=eyJ2IjoiMSJ9.F5NXQBUERLV6mEXR0WvWdC1VIo5KtbzV8WZcVUP2Dg4cb4i4DR40XDLNrVXwixRol38MYo6BTvYpyNTQVQ0gImwXuiqCQ59piMxv2_tRyE44IAugYBc4-ZNbbapORHJvxiCa1y1Dmv2TKy9e3Ss9FNH_k5b179BLKOjRGpHcSZiTDj5njPwn8N8jmqDIILP_SJ-OGLVSjZwqkUiOw5K5xa7fM9dhW9Yd2ITMbkE1hR4.ea-vft9gJC1k1gLg1yAzgwQ31yIYCgzAnEuQE1JHUwo&amp;amp;dib_tag=se&amp;amp;keywords=introduction+to+linear+algebra+gilbert+strang&amp;amp;qid=1728671128&amp;amp;s=books&amp;amp;sprefix=introduction+to+linear+algebra+gilbert+strang%2Cstripbooks%2C277&amp;amp;sr=1-1"&gt;Linear algebra and its applications - by Gilbert Strang&lt;/a&gt;. This book is more of an application oriented introductory textbook for undergrads&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.amazon.com/Linear-Algebra-Its-Applications-Peter/dp/0471751561/ref=sr_1_1?crid=3DTKAMQYELAH8&amp;amp;dib=eyJ2IjoiMSJ9.QS-53qTNH2oNYLIfPP8d2aRRsbCOzpvSrfGrUdb_pa0qIz1_f0pjjxnk1y_WceOgvpwmS6HwJSYPaL6XGVINCFDPGVG98qD5yNvmlUTYpNvoNGbu17lBruy_brAbN0oG9iDTdBS8LO0LoaWQMFoTOg.r4QjPYISMr7QqB_7PAKk3omHi-hcFnfYlbUBYVR2UOA&amp;amp;dib_tag=se&amp;amp;keywords=linear+algebra+-+by+Peter+Lax&amp;amp;qid=1728671251&amp;amp;s=books&amp;amp;sprefix=linear+algebra+-+by+peter+lax%2Cstripbooks%2C260&amp;amp;sr=1-1"&gt;Linear algebra and its applications - by Peter Lax&lt;/a&gt;. This book is also an undergrad texbook, Contrary to its name, it is a very abstract book, with a more rigorous approach, suitable for (example), an "honors" undergraduate course&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Alright, lets begin!&lt;/p&gt;
+&lt;p&gt;Let's start with some basic definitions and simple theorems, whose proof I shall skip. The proofs should be part of any standard linear algebra fare (in particular, the textbook by Peter lax)&lt;/p&gt;
+&lt;h1&gt;Basic definitions and theorems&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;vector space&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A vector space over a field of scalars is a mathematical object that supports&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;addition&lt;/li&gt;
+&lt;li&gt;multiplication by a scalar&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;linear combination&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A linear combination of vectors &lt;span class="math"&gt;\(x_1, x_2, \cdots, x_n\)&lt;/span&gt; is a vector of the form &lt;span class="math"&gt;\(k_1x_1+k_2x_2+\cdots+k_nx_n\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;subspace&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A subspace &lt;span class="math"&gt;\(Y\)&lt;/span&gt; of a vector space &lt;span class="math"&gt;\(X\)&lt;/span&gt; is a subset that is closed under the vector operations. i.e., linear combination of members of the space is also a member of the space. Please note here the difference between a &lt;em&gt;subset&lt;/em&gt; and a &lt;em&gt;subspace&lt;/em&gt;. A subset need not be closed under the vector operations&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;linear independence&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A set of vectors &lt;span class="math"&gt;\(x_1, \cdots, x_n\)&lt;/span&gt; are linearly dependent iff&lt;/p&gt;
+&lt;div class="math"&gt;$$
+k_1x_1 + k_2x_2 + \cdots + k_nx_n = 0
+$$&lt;/div&gt;
+&lt;p&gt;where the &lt;span class="math"&gt;\(k\)&lt;/span&gt;s are scalars and not all of them are zero. If the vectors are not linearly dependent, they are called linearly independent. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;basis vectors&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A finite set of vectors that span a space &lt;span class="math"&gt;\(X\)&lt;/span&gt; and are linearly independent, are called the basis. The number of vectors in the set is called the &lt;strong&gt;dimension&lt;/strong&gt; of the space (denoted as &lt;span class="math"&gt;\(dim\ X\)&lt;/span&gt;). There can be many different sets of basis vectors but the dimension is always the same&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Completion of a partial basis&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Every linearly independent set of vectors of a space &lt;span class="math"&gt;\(X\)&lt;/span&gt; can be completed to form a basis for &lt;span class="math"&gt;\(X\)&lt;/span&gt;. This theorem is very important and we will be using it a lot.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Isomorphism of same dimension spaces&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Once we fix any basis for a space &lt;span class="math"&gt;\(X\)&lt;/span&gt; with dimension &lt;span class="math"&gt;\(n\)&lt;/span&gt;, every vector &lt;span class="math"&gt;\(x \in X\)&lt;/span&gt; can be represented by a &lt;span class="math"&gt;\(n\)&lt;/span&gt; tuple of scalars &lt;span class="math"&gt;\((k_1, \cdots k_n)\)&lt;/span&gt;. Using this representation, two different spaces &lt;span class="math"&gt;\(X\)&lt;/span&gt; and &lt;span class="math"&gt;\(Y\)&lt;/span&gt; of the same dimension are isomorphic to one another.&lt;/p&gt;
+&lt;p&gt;Intuition - Any vector &lt;span class="math"&gt;\(y \in X\)&lt;/span&gt; can be written as &lt;span class="math"&gt;\(x = k_1x_1 + \cdots + k_nx_n\)&lt;/span&gt; where the &lt;span class="math"&gt;\(x\)&lt;/span&gt;s are the basis. here, the &lt;span class="math"&gt;\(k\)&lt;/span&gt;s form the tuple which defines the vector.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Linear Map&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A linear map &lt;span class="math"&gt;\(T\)&lt;/span&gt; from a vector space &lt;span class="math"&gt;\(X\)&lt;/span&gt; to another space &lt;span class="math"&gt;\(U\)&lt;/span&gt; (not necessarily of the same dimensions) is a function which takes input an &lt;span class="math"&gt;\(x \in X\)&lt;/span&gt; and gives the output &lt;span class="math"&gt;\(u \in U\)&lt;/span&gt;. As usual, &lt;span class="math"&gt;\(X\)&lt;/span&gt; is called the &lt;em&gt;domain&lt;/em&gt; of &lt;span class="math"&gt;\(X\)&lt;/span&gt; and &lt;span class="math"&gt;\(U\)&lt;/span&gt; is called the &lt;em&gt;target space&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;A linear map has the additional property&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Sums and (scalar) product of input maps to sums and (scalar) product of the outputs. i.e., &lt;span class="math"&gt;\(T(x+y) = T(x) + T(y)\)&lt;/span&gt; and &lt;span class="math"&gt;\(T(kx) = kT(x)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The image of &lt;span class="math"&gt;\(X\)&lt;/span&gt; under &lt;span class="math"&gt;\(T\)&lt;/span&gt; is also called the &lt;em&gt;range&lt;/em&gt; of T.&lt;/p&gt;
+&lt;p&gt;Lets momentarily descend from the abstract world and to the world of matrices and relate the two.&lt;/p&gt;
+&lt;p&gt;An &lt;span class="math"&gt;\(m \times n\)&lt;/span&gt; matrix is an example of a linear map &lt;span class="math"&gt;\(T\)&lt;/span&gt;, and a tuple of scalars in column format is an example of a vector &lt;span class="math"&gt;\(v\)&lt;/span&gt; &lt;/p&gt;
+&lt;p&gt;A quick example is in order.&lt;/p&gt;
+&lt;div class="math"&gt;$$T = 
+\begin{bmatrix}
+1 &amp;amp; 5 &amp;amp; 6 \\
+2 &amp;amp; 7 &amp;amp; 9 
+\end{bmatrix}, x = \begin{bmatrix}1 \\ 3 \\ 5\end{bmatrix}$$&lt;/div&gt;
+&lt;p&gt;Then,&lt;/p&gt;
+&lt;div class="math"&gt;$$y=T(x) = T \times x = \begin{bmatrix}28 \\ 43\end{bmatrix}$$&lt;/div&gt;
+&lt;p&gt;Here, &lt;span class="math"&gt;\(T : X \mapsto U\)&lt;/span&gt;, where &lt;span class="math"&gt;\(X\)&lt;/span&gt; is a 3-dimension vector space and &lt;span class="math"&gt;\(U\)&lt;/span&gt; is a 2-dimensional vector space, and &lt;span class="math"&gt;\(x \in X\)&lt;/span&gt; and &lt;span class="math"&gt;\(y \in Y\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;The following are some important properties of linear maps&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The value of the map on any given basis completely defines the map. This follows from the linearity property of the map&lt;/li&gt;
+&lt;li&gt;In matrix form, multiplication on the right side by a column vector gives a column vector which is a linear combination of the columns of the matrix. By this interpretation, the column rank is equal to the dimension of the range of &lt;span class="math"&gt;\(T\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Quick example:&lt;/p&gt;
+&lt;div class="math"&gt;$$\begin{bmatrix}
+\vdots &amp;amp; \vdots &amp;amp; \vdots \\
+col1 &amp;amp; col2 &amp;amp; col3 \\
+\vdots &amp;amp; \vdots &amp;amp; \vdots
+\end{bmatrix} \cdot 
+\begin{bmatrix}a\\b\\c\end{bmatrix} = \begin{bmatrix} \vdots \\ a\cdot col1 + b\cdot col2 + c\cdot col3 \\ \vdots \end{bmatrix}$$&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;Similarly, multiplication from the left side by a row vector gives a row vector which is the linear combination of rows of the matrix. By this interpretation, the row rank is the dimension of the rowspace. &lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="math"&gt;$$\begin{bmatrix}a &amp;amp; b &amp;amp; c\end{bmatrix} \cdot \begin{bmatrix} 
+\cdots &amp;amp; row1 &amp;amp; \cdots \\
+\cdots &amp;amp; row2 &amp;amp; \cdots \\
+\cdots &amp;amp; row3 &amp;amp; \cdots \\
+\end{bmatrix} = \begin{bmatrix}\cdots &amp;amp; a\cdot row1 + b\cdot row2 + c\cdot row3 &amp;amp; \cdots\end{bmatrix}$$&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;range-nullspace theorem&lt;/strong&gt;: the set of all vectors &lt;span class="math"&gt;\(v \in X\)&lt;/span&gt; such that &lt;span class="math"&gt;\(T(v) = 0\)&lt;/span&gt; forms a subspace of &lt;span class="math"&gt;\(X\)&lt;/span&gt; and is called the nullspace &lt;span class="math"&gt;\(N_T\)&lt;/span&gt; of &lt;span class="math"&gt;\(T\)&lt;/span&gt;. We can show that &lt;span class="math"&gt;\(dim(X) = dim(R) + dim(N_T)\)&lt;/span&gt;. This is a very fundamental result.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Intuitive proof&lt;/strong&gt;: It is easy to show that the complement of &lt;span class="math"&gt;\(N_T\)&lt;/span&gt; is isomorphic to &lt;span class="math"&gt;\(R\)&lt;/span&gt;. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dot product or bilinear forms&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Once we choose a basis for a vector space, we can represent each vector by an element from &lt;span class="math"&gt;\(R^n\)&lt;/span&gt;. Having done so, we can define a &lt;em&gt;dot product&lt;/em&gt; of two vectors, which produces a scalar in the usual way, for example&lt;/p&gt;
+&lt;div class="math"&gt;$$\begin{bmatrix}a_1 &amp;amp; a_2 &amp;amp; a_3\end{bmatrix} \cdot \begin{bmatrix}b_1 \\ b_2 \\ b_3\end{bmatrix} = a_1b_1 + a_2b_2 + a_3b_3$$&lt;/div&gt;
+&lt;p&gt;In abstract terms, it is possible to define the dot product without the need for basis vectors. It is done by defining a &lt;em&gt;dual&lt;/em&gt; vector space consisting of linear functions operating on the primal vector space. It can be shown that the dual and the primal vector space have the same dimensions.&lt;/p&gt;
+&lt;p&gt;In concrete terms, when dealing with &lt;span class="math"&gt;\(R^n\)&lt;/span&gt;, if the vectors of primal space are denoted by column vectors, the elements of the dual space can be considered to be represented by row vectors&lt;/p&gt;
+&lt;p&gt;While solving linear equations, the row vectors typically arise as coefficients, and the column vectors arise as the unknowns. The coefficients are dual to the unknowns. This is in some sense reminiscent of the duality that is also encountered in linear programming.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Change of Basis&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While dealing with &lt;span class="math"&gt;\(R^n\)&lt;/span&gt;, when we don't explicitly specify the basis, we usually have in mind the &lt;strong&gt;standard basis&lt;/strong&gt;, which has a 1 in the &lt;span class="math"&gt;\(j^{th}\)&lt;/span&gt; position and zero everywhere else. Of course, there is nothing special about the standard basis, and any other basis can be used equally well. Suppose we want to use vectors &lt;span class="math"&gt;\(e_j\)&lt;/span&gt; where &lt;span class="math"&gt;\(j \in [1, n]\)&lt;/span&gt; as the basis, and suppose we want to convert between the old representation and the new representation, we can use a map which maps each old basis to its corresponding new basis. This is well defined, since a map is well defined if we specify the values on all the basis vectors. Furthermore, it is easy to see that this map is one-to-one. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Complement of a subspace&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For every subspace &lt;span class="math"&gt;\(Y\)&lt;/span&gt; of space &lt;span class="math"&gt;\(X\)&lt;/span&gt;, there is a complementary subspace &lt;span class="math"&gt;\(Z\)&lt;/span&gt; of &lt;span class="math"&gt;\(X\)&lt;/span&gt; such that every vector &lt;span class="math"&gt;\(x \in X\)&lt;/span&gt; can be written &lt;em&gt;uniquely&lt;/em&gt; as &lt;span class="math"&gt;\(x = y + z\)&lt;/span&gt; where &lt;span class="math"&gt;\(y \in Y\)&lt;/span&gt; and &lt;span class="math"&gt;\(z \in Z\)&lt;/span&gt;. Furthermore, &lt;span class="math"&gt;\(dim\ X = dim\ Y + dim\ Z\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Intuition: consider a basis &lt;span class="math"&gt;\(y_1, \cdots, y_m\)&lt;/span&gt; for &lt;span class="math"&gt;\(Y\)&lt;/span&gt;. These can be completed by adding more linearly independent vectors &lt;span class="math"&gt;\(z_1, \cdots, z_n\)&lt;/span&gt; to form a full basis of &lt;span class="math"&gt;\(X\)&lt;/span&gt;. The subspace spanned by the &lt;span class="math"&gt;\(z\)&lt;/span&gt;s is the basis for &lt;span class="math"&gt;\(Z\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Some important points:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The complement of a subspace is not unique. There are many ways to complete the partial basis of &lt;span class="math"&gt;\(Y\)&lt;/span&gt;, and each different choice gives rise to a different complement&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A subspace and its complement are mutually exclusive, but &lt;em&gt;not&lt;/em&gt; collectively exhaustive, and as such, they do not partition the parent vector space. i.e., there can be vectors which are not present either in &lt;span class="math"&gt;\(Y\)&lt;/span&gt; or its complement. For example, if &lt;span class="math"&gt;\(x\)&lt;/span&gt; is decomposed as &lt;span class="math"&gt;\(y + z\)&lt;/span&gt; as above, with both components non-zero, then &lt;span class="math"&gt;\(x\)&lt;/span&gt; is neither in &lt;span class="math"&gt;\(Y\)&lt;/span&gt;, nor in its complement. Thus, it gives rise to 4 cases&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;y component&lt;/th&gt;
+&lt;th&gt;z component&lt;/th&gt;
+&lt;th&gt;location&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;the zero vector&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;non-zero&lt;/td&gt;
+&lt;td&gt;in complement&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;non-zero&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;in subspace&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;non-zero&lt;/td&gt;
+&lt;td&gt;non-zero&lt;/td&gt;
+&lt;td&gt;as a direct-sum subset&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The direct-sum subset is &lt;em&gt;not&lt;/em&gt; a subspace. Example - the sum of the following two direct-sum vectors is not in the direct-sum: &lt;span class="math"&gt;\((y+z), (y-z)\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Orthogonal complement&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There is however, one unique complement called the orthogonal complement. In the same notation as above, suppose &lt;span class="math"&gt;\(Z\)&lt;/span&gt; is an orthogonal complement. then &lt;span class="math"&gt;\(\forall y \ \ \forall z, \ \  y \cdot z = 0\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;In abstract language, the orthogonal complement is a subset of the dual space, and it is usually called the annihilator of &lt;span class="math"&gt;\(Y\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Note that, all the other properties of complements are still true for orthogonal complements.&lt;/p&gt;
+&lt;p&gt;In particular, &lt;span class="math"&gt;\(dim\ X = dim\ Y + dim\ Z\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;This fact is so important, but it is not usually part of the standard fare, that I will give the outline of a proof here.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Theorem&lt;/strong&gt;: Let &lt;span class="math"&gt;\(X\)&lt;/span&gt; be a vector space, &lt;span class="math"&gt;\(dim(X) = n\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(Y\)&lt;/span&gt; be a subspace of &lt;span class="math"&gt;\(X\)&lt;/span&gt;, spanned by &lt;span class="math"&gt;\(v_1, \cdots, v_r\)&lt;/span&gt;. &lt;span class="math"&gt;\(dim(Y)=r\)&lt;/span&gt;, then the orthogonal complement &lt;span class="math"&gt;\(Z\)&lt;/span&gt; has &lt;span class="math"&gt;\(dim(Z) = n-r\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Proof&lt;/strong&gt;: We will establish a 1:1 mapping between &lt;span class="math"&gt;\(Z\)&lt;/span&gt; and &lt;span class="math"&gt;\(R^{n-r}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;First complete the partial basis of &lt;span class="math"&gt;\(Y\)&lt;/span&gt; to get a full basis &lt;span class="math"&gt;\(v_1, \cdots, v_n\)&lt;/span&gt;. Every vector can be represented as &lt;span class="math"&gt;\(\sum{a_iv_i}\)&lt;/span&gt;, so this is 1:1 with &lt;span class="math"&gt;\(\{a_i\}\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(z \in Z\)&lt;/span&gt;. Define the mapping &lt;span class="math"&gt;\(T:z \mapsto z'\)&lt;/span&gt; where &lt;/p&gt;
+&lt;div class="math"&gt;$$z' = [0, 0, \cdots, 0, z\cdot v_{r+1}, \cdots, z\cdot v_n]$$&lt;/div&gt;
+&lt;p&gt;Any such &lt;span class="math"&gt;\(z'\)&lt;/span&gt; also maps back to a unique &lt;span class="math"&gt;\(z \in Z\)&lt;/span&gt; by &lt;span class="math"&gt;\(z \cdot v_i = z'[i]\)&lt;/span&gt;. Here we use the fact that a vector is uniquely specified by its values on the dot product on the basis vectors&lt;/p&gt;
+&lt;p&gt;In abstract language, the orthogonal complement is called annihilator and represented as a subspace of the dual space (remember that the dual space is a space of all bilinear functions). The proof of dimension usually involves proving an isomorphism between the annihilator and the dual of the quotient space &lt;span class="math"&gt;\((X/Y)\)&lt;/span&gt;. Effectively quotient space of a subspace is what you get by throwing away components of the basis of the subspace. i.e., the "rest" of the space apart from the subspace. &lt;/p&gt;
+&lt;p&gt;Although the proof looks much cleaner there, I find the vesion I presented here to be more clear conceptually, where we establish an isomorphism between annihilator and &lt;span class="math"&gt;\(z' = [0, 0, \cdots, 0, l\cdot v_{r+1}, \cdots, l\cdot v_n]\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Rowspace, columnspace and nullspace of a matrix&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The rows and columns of a matrix can be considered to be vectors. An &lt;span class="math"&gt;\(m \times n\)&lt;/span&gt; matrix has &lt;span class="math"&gt;\(m\)&lt;/span&gt; row vectors of dimension &lt;span class="math"&gt;\(n\)&lt;/span&gt; and &lt;span class="math"&gt;\(n\)&lt;/span&gt; column vectors of dimension &lt;span class="math"&gt;\(m\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The rowspace is the subspace spanned by rows, and similarly for column space. The nullspace is the set of input vectors that maps to 0 vector under &lt;span class="math"&gt;\(T\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The row/column rank of a matrix is defined as the max number of linearly independent rows/columns.&lt;/p&gt;
+&lt;p&gt;We are now in a position to restate the rank theorem&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The rank theorem&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The row rank of a matrix is the same as the column rank. i.e., the number of LI rows in a matrix is equal to the number of LI columns in the matrix&lt;/p&gt;
+&lt;h1&gt;The surprising nature of the rank theorem&lt;/h1&gt;
+&lt;p&gt;Consider any matrix of any size, say &lt;span class="math"&gt;\(100 \times 1000\)&lt;/span&gt;, filled with random numbers. &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;There are 100 row vectors each of dimension 1000. The rows vectors look like &lt;span class="math"&gt;\((x_1, x_2, \cdots, x_{1000})\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;And there are 1000 column vectors, each of dimension 100. The column vectors look like &lt;span class="math"&gt;\((y_1, y_2, \cdots, y_{100})\)&lt;/span&gt;. &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The row vectors look very different from the column vectors. Looking individually, the numbers also seem to bear no relationship to each other. Even the dimensions do not match. And yet, the rank theorem asserts that if there are only 50 LI rows, then there will only be 50 LI columns amongst the 1000.&lt;/p&gt;
+&lt;p&gt;Another example: Consider the following matrix&lt;/p&gt;
+&lt;div class="math"&gt;$$T = 
+\begin{bmatrix}
+1 &amp;amp; 5 &amp;amp; 6 \\
+2 &amp;amp; 7 &amp;amp; 9 \\
+3 &amp;amp; 6 &amp;amp; 1 \\
+\end{bmatrix}$$&lt;/div&gt;
+&lt;p&gt;Here, all the three rows are LI, as are all the columns. However, I have made the column &lt;span class="math"&gt;\(C_3\)&lt;/span&gt; "just miss" to be equal to &lt;span class="math"&gt;\(C_1 + C_2\)&lt;/span&gt;. (&lt;span class="math"&gt;\(3+6 \ne 1\)&lt;/span&gt;). If I change that one number &lt;span class="math"&gt;\(x_{33}\)&lt;/span&gt; from 1 to 9, there are only 2 LI columns. Now the rank theorem asserts that this change has forced one of the rows also to be linearly dependent on the other two rows. Yet, I am hard pressed to find out what is that linear combination by visual inspection. Can you spot the linear relationship between rows &lt;span class="math"&gt;\(R_1, R_2, R_3\)&lt;/span&gt;?&lt;/p&gt;
+&lt;p&gt;i.e., given &lt;span class="math"&gt;\(R_1 = [1, 5, 6]\)&lt;/span&gt;, &lt;span class="math"&gt;\(R_2 = [2, 7, 9]\)&lt;/span&gt; and &lt;span class="math"&gt;\(R_3 = [3, 6, 9]\)&lt;/span&gt;, can you find three numbers &lt;span class="math"&gt;\(a, b, c\)&lt;/span&gt; (not all zero) such that &lt;span class="math"&gt;\(aR_1 + bR_2 + cR_3 = 0\)&lt;/span&gt; by visual inspection? The rank theorem guarantees its existence, and indeed, &lt;span class="math"&gt;\(3R_1 - 3R_2 + R_3 = 0\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Lets look at the previous example a bit more closely. Suppose&lt;/p&gt;
+&lt;div class="math"&gt;$$T = 
+\begin{bmatrix}
+a &amp;amp; d &amp;amp; a+d \\
+b &amp;amp; e &amp;amp; b+e \\
+c &amp;amp; f &amp;amp; c+f \\
+\end{bmatrix}$$&lt;/div&gt;
+&lt;p&gt;So that &lt;span class="math"&gt;\(C_3 = C_1 + C_2\)&lt;/span&gt; and lets try to solve generally for &lt;span class="math"&gt;\(xR_1 + yR_2 + zR_3 = 0\)&lt;/span&gt;. Can you guess the values for &lt;span class="math"&gt;\(x, y, z\)&lt;/span&gt; from visual inspection? I certainly couldn't! We can use standard techniques (from linear algebra itself, of course!) to find &lt;/p&gt;
+&lt;div class="math"&gt;$$\begin{eqnarray}
+x &amp;amp;= bf - ce \\
+y &amp;amp;= dc - af \\
+z &amp;amp;= ae - bd 
+\end{eqnarray}$$&lt;/div&gt;
+&lt;p&gt;To me, it is surprising that a simple relationship between columns translates to such a complicated relationship among the rows. Now if you consider a &lt;span class="math"&gt;\(1000 \times 1000\)&lt;/span&gt; matrix with a complicated relationship among the columns, one can only imagine how complicated the relationship between the rows will be, and yet, the rank theorem guarantees that such a relationship must exist!&lt;/p&gt;
+&lt;p&gt;Having thus shown how surprising the result of the theorem is, lets explore some common approaches to proving the rank theorem.&lt;/p&gt;
+&lt;h1&gt;An intuitive proof&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Transpose&lt;/strong&gt; of a matrix is the matrix obtained by swapping its rows and columns&lt;/p&gt;
+&lt;p&gt;Let &lt;span class="math"&gt;\(T: X \mapsto U\)&lt;/span&gt; be a linear map and &lt;span class="math"&gt;\(m \times n\)&lt;/span&gt; matrix. So &lt;span class="math"&gt;\(dim(X) = n\)&lt;/span&gt; and &lt;span class="math"&gt;\(dim(U) = m\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(T'\)&lt;/span&gt; be its transpose. Let &lt;span class="math"&gt;\(R \subset U\)&lt;/span&gt; be the range of &lt;span class="math"&gt;\(T\)&lt;/span&gt;, with &lt;span class="math"&gt;\(dim(R)=r\)&lt;/span&gt;. So the dimension of columnspace is &lt;span class="math"&gt;\(r\)&lt;/span&gt;. And we need to show that the dimension of rowspace of &lt;span class="math"&gt;\(T\)&lt;/span&gt; (which is dimension of colspace of &lt;span class="math"&gt;\(T'\)&lt;/span&gt;) = &lt;span class="math"&gt;\(r\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(R\)&lt;/span&gt; has a orthogonal complement &lt;span class="math"&gt;\(S\)&lt;/span&gt;, with &lt;span class="math"&gt;\(dim(S)=m-r\)&lt;/span&gt;. let &lt;span class="math"&gt;\(s \in S\)&lt;/span&gt;. Now &lt;span class="math"&gt;\(s\)&lt;/span&gt; kills every vector in &lt;span class="math"&gt;\(R\)&lt;/span&gt;, which are nothing but linear combinations of columns of &lt;span class="math"&gt;\(T\)&lt;/span&gt;, and hence in matrix form, we can write&lt;/p&gt;
+&lt;div class="math"&gt;$$\begin{bmatrix} 
+\cdots &amp;amp; col1 &amp;amp; \cdots \\
+\cdots &amp;amp; col2 &amp;amp; \cdots \\
+\cdots &amp;amp; coln &amp;amp; \cdots \\
+\end{bmatrix} \cdot s = 0$$&lt;/div&gt;
+&lt;p&gt;Observe that here, the columns have become rows, and it is actually the transpose matrix &lt;span class="math"&gt;\(T'\)&lt;/span&gt;. Thus it is clear that &lt;span class="math"&gt;\(s \in N_{T'}\)&lt;/span&gt; where &lt;span class="math"&gt;\(N_{T'}\)&lt;/span&gt; is the nullspace of &lt;span class="math"&gt;\(T'\)&lt;/span&gt;. So, &lt;span class="math"&gt;\(S = N_{T'}\)&lt;/span&gt; and thus &lt;span class="math"&gt;\(dim(N_{T'}) = m-r\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Applying the range-nullspace theorem to &lt;span class="math"&gt;\(T'\)&lt;/span&gt;, immediately gives the dimension of the range of &lt;span class="math"&gt;\(T'\)&lt;/span&gt; as &lt;span class="math"&gt;\(dim(R_{T'}) = r\)&lt;/span&gt;. This is what we wanted to prove.&lt;/p&gt;
+&lt;p&gt;Leaving the mathematics aside, lets try to describe in words what is happening. Consider a &lt;span class="math"&gt;\(n \times n\)&lt;/span&gt; matrix with all rows and columns independent. Now lets see what happens when we make one of the columns to be linearly dependent on the other columns.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The columns fail to span the full space of &lt;span class="math"&gt;\(U\)&lt;/span&gt;, and thus the range of &lt;span class="math"&gt;\(T\)&lt;/span&gt; decreases by 1.&lt;/li&gt;
+&lt;li&gt;This gives rise to an orthogonal complement subspace in U, with the dimension of 1&lt;/li&gt;
+&lt;li&gt;Since a vector &lt;span class="math"&gt;\(z\)&lt;/span&gt; in the orthogonal complement kills every vector in the range of &lt;span class="math"&gt;\(T\)&lt;/span&gt;, it actually provides a linear combination between the rows of &lt;span class="math"&gt;\(T\)&lt;/span&gt;. Just re-iterating this step in math: &lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="math"&gt;$$\begin{eqnarray}z \cdot c_1  &amp;amp;= 0 \\
+z \cdot c_2 &amp;amp;= 0 \\
+&amp;amp;\vdots \\
+z \cdot c_n &amp;amp;= 0 \\
+\implies z \cdot \begin{bmatrix}c_1 &amp;amp; \cdots &amp;amp; c_n\end{bmatrix} &amp;amp;= z \cdot T = 0\end{eqnarray}$$&lt;/div&gt;
+&lt;p&gt;.
+Remember that left multiplication by a row vector is equivalent to a linear combination of the rows. So the last equation is saying that there is a lienar combination of rows that gives 0, which means that the rows are not linearly independent! Thus, In this way, we see how a linear combination of columns have forced a linear combination of rows.&lt;/p&gt;
+&lt;p&gt;Now, we will briefly explore some other common proofs
+:&lt;/p&gt;
+&lt;h1&gt;Proof using elementary operations&lt;/h1&gt;
+&lt;p&gt;This is the most common proof&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;elementary row operations&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There are 3 such elementary row operations&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;swap two rows of a matrix&lt;/li&gt;
+&lt;li&gt;add another row to current row&lt;/li&gt;
+&lt;li&gt;multiply current row by a scalar&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The proof proceeds in the following steps&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Show that each elementary row operation corresponds to multiplying by an elementary matrix that is invertible&lt;/li&gt;
+&lt;li&gt;Show that multiplying by an elementary matrix has the following effects&lt;ol&gt;
+&lt;li&gt;Rowspace - unchanged, because the row operations are simply linear combinations of other rows&lt;/li&gt;
+&lt;li&gt;nullspace - unchanged, because, if &lt;span class="math"&gt;\(ET(x) = 0\)&lt;/span&gt; iff &lt;span class="math"&gt;\(T(x) = 0\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;columnspace - changed, but preserves linear combinations. short proof - suppose &lt;span class="math"&gt;\(c_x\)&lt;/span&gt; are the columns, and suppose &lt;span class="math"&gt;\(a_1c_1 + \cdots + a_nc_n = 0\)&lt;/span&gt;, then 
+&lt;div class="math"&gt;$$a_1c_1 + \cdots + a_nc_n =  
+\begin{bmatrix}
+c1 &amp;amp; \cdots &amp;amp; c_n\end{bmatrix}\begin{bmatrix}
+a1 \\ \vdots \\ a_n\end{bmatrix} = 0$$&lt;/div&gt;. So &lt;div class="math"&gt;$$\begin{bmatrix}
+a1 \\ \vdots \\ a_n\end{bmatrix}$$&lt;/div&gt; is in the nullspace of &lt;span class="math"&gt;\(T\)&lt;/span&gt; and thus also in the nullspace after the elementary row operation&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Use the elementary row operations to arrive at the &lt;a href="https://en.wikipedia.org/wiki/Row_echelon_form#Reduced_row_echelon_form"&gt;&lt;em&gt;reduced row echelon form&lt;/em&gt;&lt;/a&gt; &lt;span class="math"&gt;\(rref(T)\)&lt;/span&gt;, from which you can just visually see that the row rank and column rank are equal&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This proof is actually pretty elegant, especially when it shows that the column space does not change under elementary row operations. However, I don't find it very clear why a linear dependence on the rows/columns should induce a corresponding linear dependence on the column/rows &lt;/p&gt;
+&lt;h1&gt;A small improvement of the above proof&lt;/h1&gt;
+&lt;p&gt;The following improvement perhaps cuts more directly to the issue at hand.&lt;/p&gt;
+&lt;p&gt;Let &lt;span class="math"&gt;\(c_1, \cdots, c_r\)&lt;/span&gt; be independent column vectors in the matrix &lt;span class="math"&gt;\(T\)&lt;/span&gt; In the target space U, the basis is the &lt;a href="https://en.wikipedia.org/wiki/Standard_basis"&gt;standard basis&lt;/a&gt;. Perform a change of basis by choosing the LI column vectors as a partial basis, and complete them to get a full basis. This &lt;a href="https://en.wikipedia.org/wiki/Change_of_basis"&gt;change of basis&lt;/a&gt; can be represented as another invertible matrix &lt;span class="math"&gt;\(S:U \mapsto V\)&lt;/span&gt;, where &lt;span class="math"&gt;\(V\)&lt;/span&gt; is another vector space of the same dimensions. Now consider the matrix &lt;span class="math"&gt;\(Q : X \mapsto V \stackrel{\text{def}}{=} S \cdot T\)&lt;/span&gt;. It is easy to see that 
+Q is of the following form
+&lt;/p&gt;
+&lt;div class="math"&gt;$$Q = \begin{bmatrix}
+ I &amp;amp; X \\ 
+ 0 &amp;amp; 0\end{bmatrix}$$&lt;/div&gt;
+&lt;p&gt;
+ Since &lt;span class="math"&gt;\(S\)&lt;/span&gt; is invertible, &lt;span class="math"&gt;\(Q\)&lt;/span&gt; and &lt;span class="math"&gt;\(T\)&lt;/span&gt; have the same rowspace, nullspace, and preserves linear combinations on the column space. And from this matrix, it is easy to see that the row rank is equal to the column rank&lt;/p&gt;
+&lt;p&gt;There are two other less well known proofs, and I really like them, and can't help but mention one of these proofs. Both of these are mentioned on this &lt;a href="https://proofwiki.org/wiki/Column_Rank_of_Matrix_equals_Row_Rank"&gt;webpage&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Proof using orthogonality&lt;/h1&gt;
+&lt;p&gt;It proceeds by the following steps&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Prove that LI rows are mapped to LI columns (really clever!)&lt;/li&gt;
+&lt;li&gt;this proves that $rowrank &amp;lt;= column rank&lt;/li&gt;
+&lt;li&gt;Apply the same method to the transpose, giving columnrank &amp;lt;= rowrank&lt;/li&gt;
+&lt;li&gt;hence rowrank=columnrank!&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;So there you go! I hope these different viewpoints of looking at a fundamental result helps in a deeper understanding. It also shows such a rich structure for linear combinations. Keep on combining linearly!&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="misc"></category><category term="misc"></category></entry><entry><title>The choice of programming languages</title><link href="/the-choice-of-programming-languages.html" rel="alternate"></link><published>2021-10-10T22:20:00+00:00</published><updated>2021-10-10T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2021-10-10:/the-choice-of-programming-languages.html</id><summary type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Thanks to advances in compiler technologies, Programmers today are spoilt for choice with the myriad of mainstream programming languages available your next big idea. However, the landscape can quickly get confusing. Many different languages seem to offer the same features and generally "looks the same". Consider the website description …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Thanks to advances in compiler technologies, Programmers today are spoilt for choice with the myriad of mainstream programming languages available your next big idea. However, the landscape can quickly get confusing. Many different languages seem to offer the same features and generally "looks the same". Consider the website description of two languages:&lt;/p&gt;
 &lt;ul&gt;
@@ -192,7 +524,7 @@ Both go and rust offer a much cleaner syntax compared to C/C++. The main differe
 &lt;li&gt;All &lt;code&gt;XLogRecords&lt;/code&gt; are flushed to disk at some point &lt;strong&gt;before&lt;/strong&gt; the transaction is marked as committed&lt;/li&gt;
 &lt;li&gt;When the WAL Writer kicks in, all &lt;code&gt;XLogRecords&lt;/code&gt; &lt;strong&gt;upto a specific LSN&lt;/strong&gt; are written. This means that &lt;strong&gt;&lt;code&gt;XLogRecords&lt;/code&gt; from different transactions can be intermixed freeley&lt;/strong&gt;. For example, the following is a valid sequence of records in the WAL File&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;begin_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;begin_tx2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx1_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx2_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx2&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;begin_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;begin_tx2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tx1_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tx2_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;commit_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;commit_tx2&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2&gt;Some implementation details of logical replication&lt;/h2&gt;
@@ -200,7 +532,7 @@ Both go and rust offer a much cleaner syntax compared to C/C++. The main differe
 &lt;li&gt;On the server side, the replication slot primarily holds information about how much LSN the client has read so far.&lt;/li&gt;
 &lt;li&gt;On the server side the flow of reading the logs is like this&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;WalSender&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;ReorderBuffer&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;OutputPlugin&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;example&lt;/span&gt; &lt;span class="n"&gt;pgoutput&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;WalSender&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ReorderBuffer&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OutputPlugin&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;example&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pgoutput&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;ul&gt;
@@ -213,23 +545,23 @@ Both go and rust offer a much cleaner syntax compared to C/C++. The main differe
 &lt;/ul&gt;
 &lt;p&gt;Now we would like to point out a tricky implementation detail.
 - On the server side, we saw that WAL files contain &lt;code&gt;XLogRecords&lt;/code&gt; intermixed records from different transactions. However, when the changes appear on the client side, they are no longer intermixed. For example, suppose the WAL file on server looks like this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;begin_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;begin_tx2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx1_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx2_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx2&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;begin_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;begin_tx2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tx1_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tx2_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;commit_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;commit_tx2&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;but the client sees the changes look like this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;begin_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx1_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;begin_tx2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tx2_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;commit_tx2&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;begin_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tx1_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;commit_tx1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;begin_tx2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tx2_xlogrecord1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;commit_tx2&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This magic is performed by the &lt;code&gt;ReorderBuffer&lt;/code&gt; module pointed out above. Note that this component comes before the output plugins, so all output plugins behave this way. &lt;/p&gt;
 &lt;p&gt;By now, you must be wondering that the only way to accomplish is to buffer the &lt;code&gt;XLogRecords&lt;/code&gt; in memory until we encounter the commit record, and then emit all changes without intermix.&lt;/p&gt;
 &lt;p&gt;Well you are right. ReorderBuffer does exactly that. The astute observer will note that the amount of transaction record can grow big. Much bigger than available memory. Well, the ReorderBuffer infact has the capability to splill its data structures to disk to accomplish this de-intermix!&lt;/p&gt;
 &lt;p&gt;The pseudocode of ReorderBuffer is something like this&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="mf"&gt;1.&lt;/span&gt; &lt;span class="n"&gt;Maintain&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;datastructure&lt;/span&gt; &lt;span class="n"&gt;recordMap&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;txid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;XLogRecords&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
-&lt;span class="mf"&gt;2.&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="n"&gt;reading&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;WAL&lt;/span&gt;
-&lt;span class="mf"&gt;3.&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;each&lt;/span&gt; &lt;span class="n"&gt;XLogRecord&lt;/span&gt; &lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-       &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;recordMap&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;txid&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-       &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;bigger&lt;/span&gt; &lt;span class="n"&gt;than&lt;/span&gt; &lt;span class="n"&gt;threshold&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;spill&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;disk&lt;/span&gt;
-       &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="n"&gt;COMMIT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;then&lt;/span&gt; &lt;span class="n"&gt;emit&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;changes&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;recordMap&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;txid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="mf"&gt;1.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Maintain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;datastructure&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;recordMap&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;txid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;XLogRecords&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="mf"&gt;2.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;reading&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;WAL&lt;/span&gt;
+&lt;span class="mf"&gt;3.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;each&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;XLogRecord&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;       &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;recordMap&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;txid&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;       &lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;bigger&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;than&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;threshold&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;spill&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;disk&lt;/span&gt;
+&lt;span class="w"&gt;       &lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="n"&gt;COMMIT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;then&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;emit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;of&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;recordMap&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rec&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;txid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;An important consequence of this "de-mixing" is that the LSN of records as seen by the client need not be in increasing order.
@@ -316,15 +648,15 @@ A: Since debezium reads pgoutput protocol, just alter the publication and restar
 &lt;/ul&gt;
 &lt;h1&gt;&lt;a name="anaconda-dont-start-at-shell" href="#anaconda-dont-start-at-shell"&gt;Anaconda dont start at shell&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;If you'd prefer that conda's base environment not be activated on startup, &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;conda config --set auto_activate_base &lt;span class="nb"&gt;false&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;conda&lt;span class="w"&gt; &lt;/span&gt;config&lt;span class="w"&gt; &lt;/span&gt;--set&lt;span class="w"&gt; &lt;/span&gt;auto_activate_base&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="how-to-mount-samba-folder-in-ubuntu" href="#how-to-mount-samba-folder-in-ubuntu"&gt;How to mount samba folder in ubuntu&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo mount -t cifs -o &lt;span class="nv"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;sharath //192.168.29.28/HOMEPI /mnt/pi
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;mount&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;cifs&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;sharath&lt;span class="w"&gt; &lt;/span&gt;//192.168.29.28/HOMEPI&lt;span class="w"&gt; &lt;/span&gt;/mnt/pi
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="how-to-use-du-to-search-for-hidden-folders" href="#how-to-use-du-to-search-for-hidden-folders"&gt;How to use du to search for hidden folders&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;du -schx .&lt;span class="o"&gt;[&lt;/span&gt;!.&lt;span class="o"&gt;]&lt;/span&gt;* *
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;du&lt;span class="w"&gt; &lt;/span&gt;-schx&lt;span class="w"&gt; &lt;/span&gt;.&lt;span class="o"&gt;[&lt;/span&gt;!.&lt;span class="o"&gt;]&lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;*
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To exclude other mount points use &lt;code&gt;--exclude&lt;/code&gt;&lt;/p&gt;
@@ -343,8 +675,8 @@ Verify that password login does not work
 For resolution, the key idea is that there should be no x server running already on the machine. If there is no x server, then nx will create its own, and by default try to match the client resolution, which is what we want. Unfortunately, when we install gnome desktop, it automatically changes the systemd runlevel to graphical.target which means systemd will spawn gdm and an xserver /usr/lib/xorg/Xorg (hope you dont get into wayland and shit). So we have to change the default systemd target to shell mode, which can be done by &lt;code&gt;sudo systemctl set-default multi-user.target&lt;/code&gt;* 
 And thats it, nx should automatically try to match client resolution if client is running in full screen mode!&lt;/p&gt;
 &lt;p&gt;Sometimes, you will see a black screen when you login, to solve this&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo service gdm stop
-/usr/NX/bin/nxserver --restart
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;service&lt;span class="w"&gt; &lt;/span&gt;gdm&lt;span class="w"&gt; &lt;/span&gt;stop
+/usr/NX/bin/nxserver&lt;span class="w"&gt; &lt;/span&gt;--restart
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="remote-desktop-to-raspberry-pi" href="#remote-desktop-to-raspberry-pi"&gt;Remote desktop to raspberry pi&lt;/a&gt;&lt;/h1&gt;
@@ -357,13 +689,13 @@ And thats it, nx should automatically try to match client resolution if client i
 &lt;p&gt;Client 
 &lt;code&gt;telnet ip 8888&lt;/code&gt;&lt;/p&gt;
 &lt;h1&gt;&lt;a name="mounting-a-disk-on-gcp" href="#mounting-a-disk-on-gcp"&gt;Mounting a disk on GCP&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo lsblk
-sudo mkdir -p /mnt/disks/sdb
-sudo cp /etc/fstab /etc/fstab.backup
-sudo blkid /dev/sdb
-In /etc/fstb
-&lt;span class="nv"&gt;UUID&lt;/span&gt;&lt;span class="o"&gt;=[&lt;/span&gt;UUID_VALUE&lt;span class="o"&gt;]&lt;/span&gt; /mnt/disks/&lt;span class="o"&gt;[&lt;/span&gt;MNT_DIR&lt;span class="o"&gt;]&lt;/span&gt; ext4 discard,defaults,nofail &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;
-Sudo mount -a 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;lsblk
+sudo&lt;span class="w"&gt; &lt;/span&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;/mnt/disks/sdb
+sudo&lt;span class="w"&gt; &lt;/span&gt;cp&lt;span class="w"&gt; &lt;/span&gt;/etc/fstab&lt;span class="w"&gt; &lt;/span&gt;/etc/fstab.backup
+sudo&lt;span class="w"&gt; &lt;/span&gt;blkid&lt;span class="w"&gt; &lt;/span&gt;/dev/sdb
+In&lt;span class="w"&gt; &lt;/span&gt;/etc/fstb
+&lt;span class="nv"&gt;UUID&lt;/span&gt;&lt;span class="o"&gt;=[&lt;/span&gt;UUID_VALUE&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/mnt/disks/&lt;span class="o"&gt;[&lt;/span&gt;MNT_DIR&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;ext4&lt;span class="w"&gt; &lt;/span&gt;discard,defaults,nofail&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
+Sudo&lt;span class="w"&gt; &lt;/span&gt;mount&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="describe-type-of-command" href="#describe-type-of-command"&gt;Describe type of command&lt;/a&gt;&lt;/h1&gt;
@@ -386,10 +718,10 @@ The netfilter hooks are exposed through various  userspace programs: notably &lt
 &lt;/ul&gt;
 &lt;h1&gt;&lt;a name="postgres" href="#postgres"&gt;Postgres&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;To create a data directory, first &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir -p /path/to/data
-chown postgres  /path/to/data
-Sudo -u postgres /usr/lib/postgresql/11/bin/Initdb -D /path/to/data
-vim /etc/postgresql/11/main/postgresql.conf &lt;span class="c1"&gt;#and modify the data_dir&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;/path/to/data
+chown&lt;span class="w"&gt; &lt;/span&gt;postgres&lt;span class="w"&gt;  &lt;/span&gt;/path/to/data
+Sudo&lt;span class="w"&gt; &lt;/span&gt;-u&lt;span class="w"&gt; &lt;/span&gt;postgres&lt;span class="w"&gt; &lt;/span&gt;/usr/lib/postgresql/11/bin/Initdb&lt;span class="w"&gt; &lt;/span&gt;-D&lt;span class="w"&gt; &lt;/span&gt;/path/to/data
+vim&lt;span class="w"&gt; &lt;/span&gt;/etc/postgresql/11/main/postgresql.conf&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;#and modify the data_dir&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To make postgres listen to remote connections in the same file:
@@ -400,28 +732,28 @@ Add this line (probably give stronger restrictions)&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Restart postgres. There are several ways. One of these should work:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;Sudo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;restart&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;Sudo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;restart&lt;/span&gt;
 &lt;span class="n"&gt;Or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;pg_ctlcluster&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;pg_ctlcluster&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;
 &lt;span class="n"&gt;Or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
-&lt;span class="n"&gt;pg_ctl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgres&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="n"&gt;Or&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;pg_ctl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;logfile&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="n"&gt;Or&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="n"&gt;sudo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;systemctl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="mi"&gt;@10&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;pg_ctl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgres&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;
+&lt;span class="n"&gt;Or&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;pg_ctl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;logfile&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;
+&lt;span class="n"&gt;Or&lt;/span&gt;
+&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="n"&gt;sudo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;systemctl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;postgresql&lt;/span&gt;&lt;span class="mi"&gt;@10&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Create users by first logging in &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo -u postgres psql
-create user sharath with encrypted password &lt;span class="s1"&gt;&amp;#39;foo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-ALTER USER sharath WITH SUPERUSER&lt;span class="p"&gt;;&lt;/span&gt;
-create database sharath&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;-u&lt;span class="w"&gt; &lt;/span&gt;postgres&lt;span class="w"&gt; &lt;/span&gt;psql
+create&lt;span class="w"&gt; &lt;/span&gt;user&lt;span class="w"&gt; &lt;/span&gt;sharath&lt;span class="w"&gt; &lt;/span&gt;with&lt;span class="w"&gt; &lt;/span&gt;encrypted&lt;span class="w"&gt; &lt;/span&gt;password&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;foo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+ALTER&lt;span class="w"&gt; &lt;/span&gt;USER&lt;span class="w"&gt; &lt;/span&gt;sharath&lt;span class="w"&gt; &lt;/span&gt;WITH&lt;span class="w"&gt; &lt;/span&gt;SUPERUSER&lt;span class="p"&gt;;&lt;/span&gt;
+create&lt;span class="w"&gt; &lt;/span&gt;database&lt;span class="w"&gt; &lt;/span&gt;sharath&lt;span class="p"&gt;;&lt;/span&gt;
 
 &lt;span class="c1"&gt;#To enable the logs in /etc/postgresql/11/main/postgresql.conf&lt;/span&gt;
-&lt;span class="nv"&gt;log_destination&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;csvlog&amp;#39;&lt;/span&gt;
-&lt;span class="nv"&gt;logging_collector&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; on
-&lt;span class="nv"&gt;log_rotation_age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 0d
-&lt;span class="nv"&gt;log_statement&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;all&amp;#39;&lt;/span&gt;
+&lt;span class="nv"&gt;log_destination&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;csvlog&amp;#39;&lt;/span&gt;
+&lt;span class="nv"&gt;logging_collector&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;on
+&lt;span class="nv"&gt;log_rotation_age&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;0d
+&lt;span class="nv"&gt;log_statement&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;all&amp;#39;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To view the logs
@@ -449,35 +781,35 @@ create database sharath&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/ul&gt;
 &lt;h1&gt;&lt;a name="how-to-setup-a-new-linux-machine" href="#how-to-setup-a-new-linux-machine"&gt;How to setup a new linux machine&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;First, login as root. Here nm&amp;gt; means new machine and local&amp;gt; means laptop&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;nm&amp;gt; 
-adduser -u &lt;span class="m"&gt;1001&lt;/span&gt; sharath&lt;span class="p"&gt;;&lt;/span&gt;
-usermod -aG sudo sharath
-su - sharath
-ssh-keygen -t rsa -N &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt; -f ~/.ssh/id_rsa
-&amp;lt;create a new key&amp;gt;
-&amp;lt;copy your localhost id_rsa.pub into clipboard&amp;gt;
-vim /home/sharath/.ssh/authorized_keys 
-&amp;lt;paste your id_rsa.pub and &lt;span class="nb"&gt;exit&lt;/span&gt; vim&amp;gt;
-chmod &lt;span class="m"&gt;644&lt;/span&gt; /home/sharath/.ssh/authorized_keys
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sharath ALL=(ALL) NOPASSWD: ALL&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /etc/sudoers.d/sharath
-sudo chmod &lt;span class="m"&gt;0440&lt;/span&gt; /etc/sudoers.d/sharath
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;nm&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;
+adduser&lt;span class="w"&gt; &lt;/span&gt;-u&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1001&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;sharath&lt;span class="p"&gt;;&lt;/span&gt;
+usermod&lt;span class="w"&gt; &lt;/span&gt;-aG&lt;span class="w"&gt; &lt;/span&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;sharath
+su&lt;span class="w"&gt; &lt;/span&gt;-&lt;span class="w"&gt; &lt;/span&gt;sharath
+ssh-keygen&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;rsa&lt;span class="w"&gt; &lt;/span&gt;-N&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;~/.ssh/id_rsa
+&amp;lt;create&lt;span class="w"&gt; &lt;/span&gt;a&lt;span class="w"&gt; &lt;/span&gt;new&lt;span class="w"&gt; &lt;/span&gt;key&amp;gt;
+&amp;lt;copy&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;localhost&lt;span class="w"&gt; &lt;/span&gt;id_rsa.pub&lt;span class="w"&gt; &lt;/span&gt;into&lt;span class="w"&gt; &lt;/span&gt;clipboard&amp;gt;
+vim&lt;span class="w"&gt; &lt;/span&gt;/home/sharath/.ssh/authorized_keys&lt;span class="w"&gt; &lt;/span&gt;
+&amp;lt;paste&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;id_rsa.pub&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;vim&amp;gt;
+chmod&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;644&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/home/sharath/.ssh/authorized_keys
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sharath ALL=(ALL) NOPASSWD: ALL&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;tee&lt;span class="w"&gt; &lt;/span&gt;/etc/sudoers.d/sharath
+sudo&lt;span class="w"&gt; &lt;/span&gt;chmod&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0440&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/etc/sudoers.d/sharath
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;IMPROVED (scriptable)&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;First, copy your public key to tmp on nm, like so
-scp ~/.ssh/id_rsa.pub root@&amp;lt;new_ip&amp;gt;:/tmp/ak 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;First,&lt;span class="w"&gt; &lt;/span&gt;copy&lt;span class="w"&gt; &lt;/span&gt;your&lt;span class="w"&gt; &lt;/span&gt;public&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;tmp&lt;span class="w"&gt; &lt;/span&gt;on&lt;span class="w"&gt; &lt;/span&gt;nm,&lt;span class="w"&gt; &lt;/span&gt;like&lt;span class="w"&gt; &lt;/span&gt;so
+scp&lt;span class="w"&gt; &lt;/span&gt;~/.ssh/id_rsa.pub&lt;span class="w"&gt; &lt;/span&gt;root@&amp;lt;new_ip&amp;gt;:/tmp/ak&lt;span class="w"&gt; &lt;/span&gt;
 
-Login to the new box as root and &lt;span class="k"&gt;do&lt;/span&gt; the following
-adduser --disabled-password --gecos ‘’ sharath
-usermod -aG sudo sharath
-su - sharath
-ssh-keygen -t rsa -N &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt; -f ~/.ssh/id_rsa
+Login&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;new&lt;span class="w"&gt; &lt;/span&gt;box&lt;span class="w"&gt; &lt;/span&gt;as&lt;span class="w"&gt; &lt;/span&gt;root&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;following
+adduser&lt;span class="w"&gt; &lt;/span&gt;--disabled-password&lt;span class="w"&gt; &lt;/span&gt;--gecos&lt;span class="w"&gt; &lt;/span&gt;‘’&lt;span class="w"&gt; &lt;/span&gt;sharath
+usermod&lt;span class="w"&gt; &lt;/span&gt;-aG&lt;span class="w"&gt; &lt;/span&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;sharath
+su&lt;span class="w"&gt; &lt;/span&gt;-&lt;span class="w"&gt; &lt;/span&gt;sharath
+ssh-keygen&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;rsa&lt;span class="w"&gt; &lt;/span&gt;-N&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;~/.ssh/id_rsa
 &lt;span class="nb"&gt;exit&lt;/span&gt;
-cp /tmp/ak /home/sharath/.ssh/authorized_keys
-chmod &lt;span class="m"&gt;644&lt;/span&gt; /home/sharath/.ssh/authorized_keys
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sharath ALL=(ALL) NOPASSWD: ALL&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /etc/sudoers.d/sharath
-sudo chmod &lt;span class="m"&gt;0440&lt;/span&gt; /etc/sudoers.d/sharath
-rm /tmp/ak
+cp&lt;span class="w"&gt; &lt;/span&gt;/tmp/ak&lt;span class="w"&gt; &lt;/span&gt;/home/sharath/.ssh/authorized_keys
+chmod&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;644&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/home/sharath/.ssh/authorized_keys
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sharath ALL=(ALL) NOPASSWD: ALL&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;tee&lt;span class="w"&gt; &lt;/span&gt;/etc/sudoers.d/sharath
+sudo&lt;span class="w"&gt; &lt;/span&gt;chmod&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0440&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/etc/sudoers.d/sharath
+rm&lt;span class="w"&gt; &lt;/span&gt;/tmp/ak
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Bob should be your uncle&lt;/p&gt;
@@ -524,11 +856,11 @@ named groups like this &lt;code&gt;(?P&amp;lt;name) access with x.group("name")&
 &lt;/ul&gt;
 &lt;h1&gt;&lt;a name="cscope-for-linux" href="#cscope-for-linux"&gt;Cscope for linux &lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;To apply debian patches use &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;LNX&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/sharath/os/linux/linux-5.4.0
-quilt push -a 
-find  &lt;span class="nv"&gt;$LNX&lt;/span&gt;  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/arch/*&amp;quot;&lt;/span&gt; ! -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/arch/x86*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/include/asm-*&amp;quot;&lt;/span&gt; ! -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/include/asm-i386*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/tmp*&amp;quot;&lt;/span&gt; -prune  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/Documentation*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/scripts*&amp;quot;&lt;/span&gt; -prune -o    -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/drivers*&amp;quot;&lt;/span&gt; -prune -o   -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/.pc/*&amp;quot;&lt;/span&gt; -prune -o  -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/debian/*&amp;quot;&lt;/span&gt; -prune -o   -path &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/sound/*&amp;quot;&lt;/span&gt; -prune -o    -name &lt;span class="s2"&gt;&amp;quot;*.[chxsS]&amp;quot;&lt;/span&gt; -print &amp;gt; kernel.cscope
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;LNX&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/sharath/os/linux/linux-5.4.0
+quilt&lt;span class="w"&gt; &lt;/span&gt;push&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;
+find&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/arch/*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;!&lt;span class="w"&gt; &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/arch/x86*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-prune&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt;  &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/include/asm-*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;!&lt;span class="w"&gt; &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/include/asm-i386*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-prune&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt;  &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/tmp*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-prune&lt;span class="w"&gt;  &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/Documentation*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-prune&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt;  &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/scripts*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-prune&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt;    &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/drivers*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-prune&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt;   &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/.pc/*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-prune&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt;  &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/debian/*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-prune&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt;   &lt;/span&gt;-path&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$LNX&lt;/span&gt;&lt;span class="s2"&gt;/sound/*&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-prune&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt;    &lt;/span&gt;-name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;*.[chxsS]&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-print&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;kernel.cscope
 
-cscope -q -R -b -i cscope.files
+cscope&lt;span class="w"&gt; &lt;/span&gt;-q&lt;span class="w"&gt; &lt;/span&gt;-R&lt;span class="w"&gt; &lt;/span&gt;-b&lt;span class="w"&gt; &lt;/span&gt;-i&lt;span class="w"&gt; &lt;/span&gt;cscope.files
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In vim&lt;/p&gt;
@@ -539,8 +871,8 @@ cscope -q -R -b -i cscope.files
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="cscope-for-ceph" href="#cscope-for-ceph"&gt;Cscope for ceph&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;find /mnt/disks/sdb/ceph-pristine -type f -and &lt;span class="se"&gt;\(&lt;/span&gt; -name &lt;span class="s2"&gt;&amp;quot;*.c&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.h&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.cc&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.cpp&amp;quot;&lt;/span&gt; -o -name &lt;span class="s2"&gt;&amp;quot;*.hh&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\)&lt;/span&gt; &amp;gt; zoo.cscope
-cscope -q -R -b -i zoo.cscope 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;find&lt;span class="w"&gt; &lt;/span&gt;/mnt/disks/sdb/ceph-pristine&lt;span class="w"&gt; &lt;/span&gt;-type&lt;span class="w"&gt; &lt;/span&gt;f&lt;span class="w"&gt; &lt;/span&gt;-and&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\(&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;*.c&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;-name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;*.h&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;-name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;*.cc&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;-name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;*.cpp&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;-name&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;*.hh&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;zoo.cscope
+cscope&lt;span class="w"&gt; &lt;/span&gt;-q&lt;span class="w"&gt; &lt;/span&gt;-R&lt;span class="w"&gt; &lt;/span&gt;-b&lt;span class="w"&gt; &lt;/span&gt;-i&lt;span class="w"&gt; &lt;/span&gt;zoo.cscope&lt;span class="w"&gt; &lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="building-linux" href="#building-linux"&gt;Building linux&lt;/a&gt;&lt;/h1&gt;
@@ -549,65 +881,65 @@ cscope -q -R -b -i zoo.cscope
 &lt;p&gt;You can get the config file from 
 &lt;code&gt;cp /boot/config-5.4.0-26-generic .config&lt;/code&gt;
 To install dependencies&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
-sudo apt-get build-dep linux linux-image-&lt;span class="k"&gt;$(&lt;/span&gt;uname -r&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;libncurses-dev&lt;span class="w"&gt; &lt;/span&gt;flex&lt;span class="w"&gt; &lt;/span&gt;bison&lt;span class="w"&gt; &lt;/span&gt;openssl&lt;span class="w"&gt; &lt;/span&gt;libssl-dev&lt;span class="w"&gt; &lt;/span&gt;dkms&lt;span class="w"&gt; &lt;/span&gt;libelf-dev&lt;span class="w"&gt; &lt;/span&gt;libudev-dev&lt;span class="w"&gt; &lt;/span&gt;libpci-dev&lt;span class="w"&gt; &lt;/span&gt;libiberty-dev&lt;span class="w"&gt; &lt;/span&gt;autoconf
+sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;build-dep&lt;span class="w"&gt; &lt;/span&gt;linux&lt;span class="w"&gt; &lt;/span&gt;linux-image-&lt;span class="k"&gt;$(&lt;/span&gt;uname&lt;span class="w"&gt; &lt;/span&gt;-r&lt;span class="k"&gt;)&lt;/span&gt;
 
-make &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86 &lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS -j14 &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make -j14 &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86 &lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS install &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make -j14 &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86 &lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS modules_install&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;------------------------- DONE --------------------------------&amp;quot;&lt;/span&gt;
-rm /boot/initrd.img-3.16.43-SS
-update-initramfs -c -k &lt;span class="m"&gt;3&lt;/span&gt;.16.43-SS
+make&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS&lt;span class="w"&gt; &lt;/span&gt;-j14&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;make&lt;span class="w"&gt; &lt;/span&gt;-j14&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;make&lt;span class="w"&gt; &lt;/span&gt;-j14&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;x86&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;EXTRAVERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;-SS&lt;span class="w"&gt; &lt;/span&gt;modules_install&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;------------------------- DONE --------------------------------&amp;quot;&lt;/span&gt;
+rm&lt;span class="w"&gt; &lt;/span&gt;/boot/initrd.img-3.16.43-SS
+update-initramfs&lt;span class="w"&gt; &lt;/span&gt;-c&lt;span class="w"&gt; &lt;/span&gt;-k&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;.16.43-SS
 update-grub
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="using-ftrace-to-trace-linux-functions" href="#using-ftrace-to-trace-linux-functions"&gt;Using Ftrace to trace linux functions&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee  /sys/kernel/debug/tracing/tracing_on
-And &lt;span class="k"&gt;then&lt;/span&gt; use brendan greggs perf-tools
-sudo ./funcgraph -D  ext4_readpages &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /mnt/tmpfs/write
-sudo ./funcgraph -Dp &lt;span class="m"&gt;51985&lt;/span&gt;  ext4_readpages &lt;span class="p"&gt;|&lt;/span&gt; sudo tee /mnt/tmpfs/write
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;tee&lt;span class="w"&gt;  &lt;/span&gt;/sys/kernel/debug/tracing/tracing_on
+And&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;use&lt;span class="w"&gt; &lt;/span&gt;brendan&lt;span class="w"&gt; &lt;/span&gt;greggs&lt;span class="w"&gt; &lt;/span&gt;perf-tools
+sudo&lt;span class="w"&gt; &lt;/span&gt;./funcgraph&lt;span class="w"&gt; &lt;/span&gt;-D&lt;span class="w"&gt;  &lt;/span&gt;ext4_readpages&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;tee&lt;span class="w"&gt; &lt;/span&gt;/mnt/tmpfs/write
+sudo&lt;span class="w"&gt; &lt;/span&gt;./funcgraph&lt;span class="w"&gt; &lt;/span&gt;-Dp&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;51985&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;ext4_readpages&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;tee&lt;span class="w"&gt; &lt;/span&gt;/mnt/tmpfs/write
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="how-to-build-linux-on-one-machine-and-deploy-on-another" href="#how-to-build-linux-on-one-machine-and-deploy-on-another"&gt;How to build linux on one machine and deploy on another&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Use “building linux” to build linux on one machine A. Suppose you want to install it on machine B
 On machine B&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Mkdir -p ~/kernel/boot
-Mkdir -p ~/kernel/modules
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Mkdir&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;~/kernel/boot
+Mkdir&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;~/kernel/modules
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;On machine A&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tar -cvzf ~/modules /lib/modules/3.16.43-SS
-scp -r *SS* &amp;lt;B&amp;gt;:~/kernel/boot
-scp ~/modules &amp;lt;B&amp;gt;:~/kernel/modules/
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tar&lt;span class="w"&gt; &lt;/span&gt;-cvzf&lt;span class="w"&gt; &lt;/span&gt;~/modules&lt;span class="w"&gt; &lt;/span&gt;/lib/modules/3.16.43-SS
+scp&lt;span class="w"&gt; &lt;/span&gt;-r&lt;span class="w"&gt; &lt;/span&gt;*SS*&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;B&amp;gt;:~/kernel/boot
+scp&lt;span class="w"&gt; &lt;/span&gt;~/modules&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;B&amp;gt;:~/kernel/modules/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;On machine B:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Cd ~/kernel/modules
-tar -xvzf modules
-sudo mv ~/kernel/modules/3.16.43-SS /lib/modules/
-sudo cp ~/kernel/boot/* /boot/
-sudo rm /boot/initrd.img-3.16.43-SS
-sudo update-initramfs -c -k &lt;span class="m"&gt;3&lt;/span&gt;.16.43-SS
-sudo update-grub
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Cd&lt;span class="w"&gt; &lt;/span&gt;~/kernel/modules
+tar&lt;span class="w"&gt; &lt;/span&gt;-xvzf&lt;span class="w"&gt; &lt;/span&gt;modules
+sudo&lt;span class="w"&gt; &lt;/span&gt;mv&lt;span class="w"&gt; &lt;/span&gt;~/kernel/modules/3.16.43-SS&lt;span class="w"&gt; &lt;/span&gt;/lib/modules/
+sudo&lt;span class="w"&gt; &lt;/span&gt;cp&lt;span class="w"&gt; &lt;/span&gt;~/kernel/boot/*&lt;span class="w"&gt; &lt;/span&gt;/boot/
+sudo&lt;span class="w"&gt; &lt;/span&gt;rm&lt;span class="w"&gt; &lt;/span&gt;/boot/initrd.img-3.16.43-SS
+sudo&lt;span class="w"&gt; &lt;/span&gt;update-initramfs&lt;span class="w"&gt; &lt;/span&gt;-c&lt;span class="w"&gt; &lt;/span&gt;-k&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;.16.43-SS
+sudo&lt;span class="w"&gt; &lt;/span&gt;update-grub
 
 
 &lt;span class="c1"&gt;#And… reboot!&lt;/span&gt;
-Sudo reboot now
+Sudo&lt;span class="w"&gt; &lt;/span&gt;reboot&lt;span class="w"&gt; &lt;/span&gt;now
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="jemalloc" href="#jemalloc"&gt;JeMalloc &lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Do a git clone.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;./autogen.sh 
-./configure --enable-prof --enable-stats --enable-debug
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;./autogen.sh&lt;span class="w"&gt; &lt;/span&gt;
+./configure&lt;span class="w"&gt; &lt;/span&gt;--enable-prof&lt;span class="w"&gt; &lt;/span&gt;--enable-stats&lt;span class="w"&gt; &lt;/span&gt;--enable-debug
 Make
 
 
-&lt;span class="o"&gt;[&lt;/span&gt;sharath.g@osboxes /home/sharath.g/code/jemalloc&lt;span class="o"&gt;]&lt;/span&gt;$ tree lib 
+&lt;span class="o"&gt;[&lt;/span&gt;sharath.g@osboxes&lt;span class="w"&gt; &lt;/span&gt;/home/sharath.g/code/jemalloc&lt;span class="o"&gt;]&lt;/span&gt;$&lt;span class="w"&gt; &lt;/span&gt;tree&lt;span class="w"&gt; &lt;/span&gt;lib&lt;span class="w"&gt; &lt;/span&gt;
 lib
-├── libjemalloc.a
-├── libjemalloc_pic.a
-├── libjemalloc.so -&amp;gt; libjemalloc.so.2
-└── libjemalloc.so.2
+├──&lt;span class="w"&gt; &lt;/span&gt;libjemalloc.a
+├──&lt;span class="w"&gt; &lt;/span&gt;libjemalloc_pic.a
+├──&lt;span class="w"&gt; &lt;/span&gt;libjemalloc.so&lt;span class="w"&gt; &lt;/span&gt;-&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;libjemalloc.so.2
+└──&lt;span class="w"&gt; &lt;/span&gt;libjemalloc.so.2
 
 &lt;span class="c1"&gt;#To generate the profile:&lt;/span&gt;
-&lt;span class="o"&gt;(&lt;/span&gt;reverse-i-search&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;java&lt;span class="s1"&gt;&amp;#39;: rm jeprof*; rm /tmp/prof.gif; MALLOC_CONF=prof:true,lg_prof_sample:0,lg_prof_interval:25 LD_PRELOAD=${JEMALLOC_PATH}/lib/libjemalloc.so.2 java -Xmx1096m -cp  &amp;#39;&lt;/span&gt;/home/sharath.g/diskbench/:/home/sharath.g/diskbench/*&lt;span class="err"&gt;&amp;#39;&lt;/span&gt; sha.Memory&lt;span class="p"&gt;;&lt;/span&gt; ls jeprof*&lt;span class="p"&gt;;&lt;/span&gt; ~/code/jemalloc/bin/jeprof --show_bytes --gif &lt;span class="sb"&gt;`&lt;/span&gt;which java&lt;span class="sb"&gt;`&lt;/span&gt; jeprof*.heap &amp;gt; /tmp/prof.gif 
+&lt;span class="o"&gt;(&lt;/span&gt;reverse-i-search&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;java&lt;span class="s1"&gt;&amp;#39;: rm jeprof*; rm /tmp/prof.gif; MALLOC_CONF=prof:true,lg_prof_sample:0,lg_prof_interval:25 LD_PRELOAD=${JEMALLOC_PATH}/lib/libjemalloc.so.2 java -Xmx1096m -cp  &amp;#39;&lt;/span&gt;/home/sharath.g/diskbench/:/home/sharath.g/diskbench/*&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;sha.Memory&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;ls&lt;span class="w"&gt; &lt;/span&gt;jeprof*&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;~/code/jemalloc/bin/jeprof&lt;span class="w"&gt; &lt;/span&gt;--show_bytes&lt;span class="w"&gt; &lt;/span&gt;--gif&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;which&lt;span class="w"&gt; &lt;/span&gt;java&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;jeprof*.heap&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;/tmp/prof.gif&lt;span class="w"&gt; &lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you’ve compiled jemalloc on some other machine and copied it to this machine, youget teh error Can't exec "objdump": No such file or directory at /home/sharath.g/jemalloc/bin/jeprof line 4459.
@@ -619,11 +951,11 @@ Resident: active + metadata
 Mapped: multiple of chunk size. Total chunks that have one byte of allocated 
 See that man pages for a clear explanation.&lt;/p&gt;
 &lt;h1&gt;&lt;a name="objdump" href="#objdump"&gt;Objdump&lt;/a&gt;&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;objdump -drSt hello.o
--d dissasemble
--r show relocation info inline
--S show C &lt;span class="nb"&gt;source&lt;/span&gt; code
--t show symbol table
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;objdump&lt;span class="w"&gt; &lt;/span&gt;-drSt&lt;span class="w"&gt; &lt;/span&gt;hello.o
+-d&lt;span class="w"&gt; &lt;/span&gt;dissasemble
+-r&lt;span class="w"&gt; &lt;/span&gt;show&lt;span class="w"&gt; &lt;/span&gt;relocation&lt;span class="w"&gt; &lt;/span&gt;info&lt;span class="w"&gt; &lt;/span&gt;inline
+-S&lt;span class="w"&gt; &lt;/span&gt;show&lt;span class="w"&gt; &lt;/span&gt;C&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;source&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;code
+-t&lt;span class="w"&gt; &lt;/span&gt;show&lt;span class="w"&gt; &lt;/span&gt;symbol&lt;span class="w"&gt; &lt;/span&gt;table
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h1&gt;&lt;a name="installing-latest-version-of-cmake" href="#installing-latest-version-of-cmake"&gt;Installing latest version of cmake&lt;/a&gt;&lt;/h1&gt;
@@ -637,8 +969,8 @@ If you’re lucky, you can download it and it works http://insightfullogic.com/h
 &lt;p&gt;Start the java program with     &lt;br&gt;
 &lt;code&gt;-agentpath:$HONEST_PROFILER_HOME/liblagent.so=host=localhost,port=4242,logPath=/grid/1/log/hadoop-yarn/yarn/honest-profiler.hpl&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Start and stop profiling with &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; start &lt;span class="p"&gt;|&lt;/span&gt; nc localhost &lt;span class="m"&gt;4242&lt;/span&gt;
- &lt;span class="nb"&gt;echo&lt;/span&gt; stop &lt;span class="p"&gt;|&lt;/span&gt; nc localhost &lt;span class="m"&gt;4242&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;start&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;nc&lt;span class="w"&gt; &lt;/span&gt;localhost&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4242&lt;/span&gt;
+&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;stop&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;nc&lt;span class="w"&gt; &lt;/span&gt;localhost&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4242&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Collapse the stacks with &lt;code&gt;java -cp $HONEST_PROFILER_HOME/honest-profiler.jar com.insightfullogic.honest_profiler.ports.console.FlameGraphDumperApplication netty.hpl netty.cstk&lt;/code&gt;&lt;/p&gt;
@@ -1094,7 +1426,7 @@ expected iops = ((3)+(1)/(2)) / 60
 &lt;p&gt;Furthermore, to launch a radosgw instance, you &lt;em&gt;need&lt;/em&gt; to have a section in your host file called &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and your  keyring should have a corresponding key section called  &lt;code&gt;client.rgw.&amp;lt;some_name&amp;gt;&lt;/code&gt; and you should have imported that key into ceph    via &lt;code&gt;sudo ceph auth import -i /etc/ceph/&amp;lt;keyring_file&amp;gt;&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;All the three names must match: the one in ceph.conf, in the keyring and in &lt;code&gt;ceph auth list&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Oh, and yeah, do &lt;strong&gt;NOT&lt;/strong&gt; put a line like this in your &lt;code&gt;ceph.conf&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;rgw &lt;span class="nv"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;rgw&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;data&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/var/lib/ceph/radosgw/ceph-rgw.prod-d42sa-rgw-a-287004
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you do, you'l get weird messages like &lt;/p&gt;
@@ -1104,33 +1436,33 @@ expected iops = ((3)+(1)/(2)) / 60
 &lt;p&gt;and you'll go crazy trying to debug it.&lt;/p&gt;
 &lt;p&gt;So the working &lt;code&gt;ceph.conf&lt;/code&gt; with comments is: &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;[&lt;/span&gt;global&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="nv"&gt;fsid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; a7f64266-0894-4f1e-a635-d0aeaca0e993 &lt;span class="c1"&gt;#anything random, generated from uuidgen&lt;/span&gt;
-auth cluster &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
-auth service &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
-auth client &lt;span class="nv"&gt;required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; cephx
-osd journal &lt;span class="nv"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1024&lt;/span&gt;
-filestore xattr use &lt;span class="nv"&gt;omap&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;
-osd pool default &lt;span class="nv"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt; 
-osd pool default min &lt;span class="nv"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; 
-osd pool default pg &lt;span class="nv"&gt;num&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;333&lt;/span&gt; 
-osd pool default pgp &lt;span class="nv"&gt;num&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;333&lt;/span&gt; 
-osd crush chooseleaf &lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; 
+&lt;span class="nv"&gt;fsid&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;a7f64266-0894-4f1e-a635-d0aeaca0e993&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;#anything random, generated from uuidgen&lt;/span&gt;
+auth&lt;span class="w"&gt; &lt;/span&gt;cluster&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;required&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;cephx
+auth&lt;span class="w"&gt; &lt;/span&gt;service&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;required&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;cephx
+auth&lt;span class="w"&gt; &lt;/span&gt;client&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;required&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;cephx
+osd&lt;span class="w"&gt; &lt;/span&gt;journal&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1024&lt;/span&gt;
+filestore&lt;span class="w"&gt; &lt;/span&gt;xattr&lt;span class="w"&gt; &lt;/span&gt;use&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;omap&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
+osd&lt;span class="w"&gt; &lt;/span&gt;pool&lt;span class="w"&gt; &lt;/span&gt;default&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+osd&lt;span class="w"&gt; &lt;/span&gt;pool&lt;span class="w"&gt; &lt;/span&gt;default&lt;span class="w"&gt; &lt;/span&gt;min&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+osd&lt;span class="w"&gt; &lt;/span&gt;pool&lt;span class="w"&gt; &lt;/span&gt;default&lt;span class="w"&gt; &lt;/span&gt;pg&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;num&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;333&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+osd&lt;span class="w"&gt; &lt;/span&gt;pool&lt;span class="w"&gt; &lt;/span&gt;default&lt;span class="w"&gt; &lt;/span&gt;pgp&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;num&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;333&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+osd&lt;span class="w"&gt; &lt;/span&gt;crush&lt;span class="w"&gt; &lt;/span&gt;chooseleaf&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
 &lt;span class="c1"&gt;# useful for debugging&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;mon&lt;span class="o"&gt;]&lt;/span&gt;
-  debug &lt;span class="nv"&gt;mon&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;20&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;debug&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mon&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;20&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;osd&lt;span class="o"&gt;]&lt;/span&gt;
-  debug &lt;span class="nv"&gt;osd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;20&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;debug&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;osd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;20&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;rgw&lt;span class="o"&gt;]&lt;/span&gt;
-  debug &lt;span class="nv"&gt;rgw&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;20&lt;/span&gt;
-&lt;span class="o"&gt;[&lt;/span&gt;mon.node1&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# as many sections as monitors&lt;/span&gt;
-  &lt;span class="nv"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; dev-d42sharath1-mon-a-0001-389313 &lt;span class="c1"&gt;#This NEEDS to be the actual hostname donno for what reasons&lt;/span&gt;
-  mon &lt;span class="nv"&gt;addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;10&lt;/span&gt;.33.29.199 &lt;span class="c1"&gt;# needs to be the actual address.&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;debug&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;rgw&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;20&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;mon.node1&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# as many sections as monitors&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;host&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;dev-d42sharath1-mon-a-0001-389313&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;#This NEEDS to be the actual hostname donno for what reasons&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;mon&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;addr&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;.33.29.199&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# needs to be the actual address.&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;client.rgw.foo&lt;span class="o"&gt;]&lt;/span&gt;
-    &lt;span class="nv"&gt;host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; dev-d42sharath1-rgw-a-0001-389309
-    &lt;span class="nv"&gt;keyring&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /etc/ceph/ceph.client.rgw.keyring
-    log &lt;span class="nv"&gt;file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /var/log/radosgw/client.radosgw.gateway.log
-    rgw &lt;span class="nv"&gt;frontends&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; civetweb &lt;span class="nv"&gt;port&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;80&lt;/span&gt;
-    rgw print &lt;span class="k"&gt;continue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nv"&gt;host&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;dev-d42sharath1-rgw-a-0001-389309
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nv"&gt;keyring&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/etc/ceph/ceph.client.rgw.keyring
+&lt;span class="w"&gt;    &lt;/span&gt;log&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;/var/log/radosgw/client.radosgw.gateway.log
+&lt;span class="w"&gt;    &lt;/span&gt;rgw&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;frontends&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;civetweb&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;port&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;80&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;rgw&lt;span class="w"&gt; &lt;/span&gt;print&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="misc"></category><category term="ceph"></category></entry><entry><title>I finally setup a blog</title><link href="/i-finally-setup-a-blog.html" rel="alternate"></link><published>2016-02-02T22:20:00+00:00</published><updated>2016-02-02T22:20:00+00:00</updated><author><name>Sharath Gururaj</name></author><id>tag:None,2016-02-02:/i-finally-setup-a-blog.html</id><summary type="html">&lt;p&gt;&lt;strong&gt;I finally setup my own blog!&lt;/strong&gt; and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on &lt;a href="www.digitalocean.com"&gt;digital ocean&lt;/a&gt;. &lt;/p&gt;
 &lt;p&gt;Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;I finally setup my own blog!&lt;/strong&gt; and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on &lt;a href="www.digitalocean.com"&gt;digital ocean&lt;/a&gt;. &lt;/p&gt;
 &lt;p&gt;Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can ssh into and have   root access. It cost me ~Re 300 per month for their most basic droplet. I set it up with a static ipv4.&lt;/p&gt;

@@ -96,15 +96,15 @@
 </ul>
 <h1><a name="anaconda-dont-start-at-shell" href="#anaconda-dont-start-at-shell">Anaconda dont start at shell</a></h1>
 <p>If you'd prefer that conda's base environment not be activated on startup, </p>
-<div class="highlight"><pre><span></span><code>conda config --set auto_activate_base <span class="nb">false</span>
+<div class="highlight"><pre><span></span><code>conda<span class="w"> </span>config<span class="w"> </span>--set<span class="w"> </span>auto_activate_base<span class="w"> </span><span class="nb">false</span>
 </code></pre></div>
 
 <h1><a name="how-to-mount-samba-folder-in-ubuntu" href="#how-to-mount-samba-folder-in-ubuntu">How to mount samba folder in ubuntu</a></h1>
-<div class="highlight"><pre><span></span><code>sudo mount -t cifs -o <span class="nv">user</span><span class="o">=</span>sharath //192.168.29.28/HOMEPI /mnt/pi
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>mount<span class="w"> </span>-t<span class="w"> </span>cifs<span class="w"> </span>-o<span class="w"> </span><span class="nv">user</span><span class="o">=</span>sharath<span class="w"> </span>//192.168.29.28/HOMEPI<span class="w"> </span>/mnt/pi
 </code></pre></div>
 
 <h1><a name="how-to-use-du-to-search-for-hidden-folders" href="#how-to-use-du-to-search-for-hidden-folders">How to use du to search for hidden folders</a></h1>
-<div class="highlight"><pre><span></span><code>du -schx .<span class="o">[</span>!.<span class="o">]</span>* *
+<div class="highlight"><pre><span></span><code>du<span class="w"> </span>-schx<span class="w"> </span>.<span class="o">[</span>!.<span class="o">]</span>*<span class="w"> </span>*
 </code></pre></div>
 
 <p>To exclude other mount points use <code>--exclude</code></p>
@@ -123,8 +123,8 @@ Verify that password login does not work
 For resolution, the key idea is that there should be no x server running already on the machine. If there is no x server, then nx will create its own, and by default try to match the client resolution, which is what we want. Unfortunately, when we install gnome desktop, it automatically changes the systemd runlevel to graphical.target which means systemd will spawn gdm and an xserver /usr/lib/xorg/Xorg (hope you dont get into wayland and shit). So we have to change the default systemd target to shell mode, which can be done by <code>sudo systemctl set-default multi-user.target</code>* 
 And thats it, nx should automatically try to match client resolution if client is running in full screen mode!</p>
 <p>Sometimes, you will see a black screen when you login, to solve this</p>
-<div class="highlight"><pre><span></span><code>sudo service gdm stop
-/usr/NX/bin/nxserver --restart
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>service<span class="w"> </span>gdm<span class="w"> </span>stop
+/usr/NX/bin/nxserver<span class="w"> </span>--restart
 </code></pre></div>
 
 <h1><a name="remote-desktop-to-raspberry-pi" href="#remote-desktop-to-raspberry-pi">Remote desktop to raspberry pi</a></h1>
@@ -137,13 +137,13 @@ And thats it, nx should automatically try to match client resolution if client i
 <p>Client 
 <code>telnet ip 8888</code></p>
 <h1><a name="mounting-a-disk-on-gcp" href="#mounting-a-disk-on-gcp">Mounting a disk on GCP</a></h1>
-<div class="highlight"><pre><span></span><code>sudo lsblk
-sudo mkdir -p /mnt/disks/sdb
-sudo cp /etc/fstab /etc/fstab.backup
-sudo blkid /dev/sdb
-In /etc/fstb
-<span class="nv">UUID</span><span class="o">=[</span>UUID_VALUE<span class="o">]</span> /mnt/disks/<span class="o">[</span>MNT_DIR<span class="o">]</span> ext4 discard,defaults,nofail <span class="m">0</span> <span class="m">2</span>
-Sudo mount -a 
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>lsblk
+sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/mnt/disks/sdb
+sudo<span class="w"> </span>cp<span class="w"> </span>/etc/fstab<span class="w"> </span>/etc/fstab.backup
+sudo<span class="w"> </span>blkid<span class="w"> </span>/dev/sdb
+In<span class="w"> </span>/etc/fstb
+<span class="nv">UUID</span><span class="o">=[</span>UUID_VALUE<span class="o">]</span><span class="w"> </span>/mnt/disks/<span class="o">[</span>MNT_DIR<span class="o">]</span><span class="w"> </span>ext4<span class="w"> </span>discard,defaults,nofail<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">2</span>
+Sudo<span class="w"> </span>mount<span class="w"> </span>-a<span class="w"> </span>
 </code></pre></div>
 
 <h1><a name="describe-type-of-command" href="#describe-type-of-command">Describe type of command</a></h1>
@@ -166,10 +166,10 @@ The netfilter hooks are exposed through various  userspace programs: notably </p
 </ul>
 <h1><a name="postgres" href="#postgres">Postgres</a></h1>
 <p>To create a data directory, first </p>
-<div class="highlight"><pre><span></span><code>mkdir -p /path/to/data
-chown postgres  /path/to/data
-Sudo -u postgres /usr/lib/postgresql/11/bin/Initdb -D /path/to/data
-vim /etc/postgresql/11/main/postgresql.conf <span class="c1">#and modify the data_dir</span>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/data
+chown<span class="w"> </span>postgres<span class="w">  </span>/path/to/data
+Sudo<span class="w"> </span>-u<span class="w"> </span>postgres<span class="w"> </span>/usr/lib/postgresql/11/bin/Initdb<span class="w"> </span>-D<span class="w"> </span>/path/to/data
+vim<span class="w"> </span>/etc/postgresql/11/main/postgresql.conf<span class="w"> </span><span class="c1">#and modify the data_dir</span>
 </code></pre></div>
 
 <p>To make postgres listen to remote connections in the same file:
@@ -180,28 +180,28 @@ Add this line (probably give stronger restrictions)</p>
 </code></pre></div>
 
 <p>Restart postgres. There are several ways. One of these should work:</p>
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="n">Sudo</span><span class="w"> </span><span class="n">service</span><span class="w"> </span><span class="n">postgresql</span><span class="w"> </span><span class="n">restart</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="n">Sudo</span><span class="w"> </span><span class="n">service</span><span class="w"> </span><span class="n">postgresql</span><span class="w"> </span><span class="n">restart</span>
 <span class="n">Or</span><span class="w"> </span>
-<span class="w">    </span><span class="n">pg_ctlcluster</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="n">start</span><span class="w"></span>
+<span class="w">    </span><span class="n">pg_ctlcluster</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="n">start</span>
 <span class="n">Or</span><span class="w"> </span>
-<span class="n">pg_ctl</span><span class="w"> </span><span class="o">-</span><span class="n">D</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span><span class="w"> </span><span class="n">start</span><span class="w"></span>
-<span class="n">Or</span><span class="w"></span>
-<span class="w">    </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pg_ctl</span><span class="w"> </span><span class="o">-</span><span class="n">D</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">main</span><span class="w"> </span><span class="o">-</span><span class="n">l</span><span class="w"> </span><span class="n">logfile</span><span class="w"> </span><span class="n">start</span><span class="w"></span>
-<span class="n">Or</span><span class="w"></span>
-<span class="w">   </span><span class="n">sudo</span><span class="w"> </span><span class="n">systemctl</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="n">postgresql</span><span class="mi">@10</span><span class="o">-</span><span class="n">main</span><span class="w"></span>
+<span class="n">pg_ctl</span><span class="w"> </span><span class="o">-</span><span class="n">D</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span><span class="w"> </span><span class="n">start</span>
+<span class="n">Or</span>
+<span class="w">    </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pg_ctl</span><span class="w"> </span><span class="o">-</span><span class="n">D</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">main</span><span class="w"> </span><span class="o">-</span><span class="n">l</span><span class="w"> </span><span class="n">logfile</span><span class="w"> </span><span class="n">start</span>
+<span class="n">Or</span>
+<span class="w">   </span><span class="n">sudo</span><span class="w"> </span><span class="n">systemctl</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="n">postgresql</span><span class="mi">@10</span><span class="o">-</span><span class="n">main</span>
 </code></pre></div>
 
 <p>Create users by first logging in </p>
-<div class="highlight"><pre><span></span><code>sudo -u postgres psql
-create user sharath with encrypted password <span class="s1">&#39;foo&#39;</span><span class="p">;</span>
-ALTER USER sharath WITH SUPERUSER<span class="p">;</span>
-create database sharath<span class="p">;</span>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>-u<span class="w"> </span>postgres<span class="w"> </span>psql
+create<span class="w"> </span>user<span class="w"> </span>sharath<span class="w"> </span>with<span class="w"> </span>encrypted<span class="w"> </span>password<span class="w"> </span><span class="s1">&#39;foo&#39;</span><span class="p">;</span>
+ALTER<span class="w"> </span>USER<span class="w"> </span>sharath<span class="w"> </span>WITH<span class="w"> </span>SUPERUSER<span class="p">;</span>
+create<span class="w"> </span>database<span class="w"> </span>sharath<span class="p">;</span>
 
 <span class="c1">#To enable the logs in /etc/postgresql/11/main/postgresql.conf</span>
-<span class="nv">log_destination</span> <span class="o">=</span> <span class="s1">&#39;csvlog&#39;</span>
-<span class="nv">logging_collector</span> <span class="o">=</span> on
-<span class="nv">log_rotation_age</span> <span class="o">=</span> 0d
-<span class="nv">log_statement</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span>
+<span class="nv">log_destination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;csvlog&#39;</span>
+<span class="nv">logging_collector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>on
+<span class="nv">log_rotation_age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0d
+<span class="nv">log_statement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;all&#39;</span>
 </code></pre></div>
 
 <p>To view the logs
@@ -229,35 +229,35 @@ create database sharath<span class="p">;</span>
 </ul>
 <h1><a name="how-to-setup-a-new-linux-machine" href="#how-to-setup-a-new-linux-machine">How to setup a new linux machine</a></h1>
 <p>First, login as root. Here nm&gt; means new machine and local&gt; means laptop</p>
-<div class="highlight"><pre><span></span><code>nm&gt; 
-adduser -u <span class="m">1001</span> sharath<span class="p">;</span>
-usermod -aG sudo sharath
-su - sharath
-ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
-&lt;create a new key&gt;
-&lt;copy your localhost id_rsa.pub into clipboard&gt;
-vim /home/sharath/.ssh/authorized_keys 
-&lt;paste your id_rsa.pub and <span class="nb">exit</span> vim&gt;
-chmod <span class="m">644</span> /home/sharath/.ssh/authorized_keys
-<span class="nb">echo</span> <span class="s1">&#39;sharath ALL=(ALL) NOPASSWD: ALL&#39;</span> <span class="p">|</span> sudo tee /etc/sudoers.d/sharath
-sudo chmod <span class="m">0440</span> /etc/sudoers.d/sharath
+<div class="highlight"><pre><span></span><code>nm&gt;<span class="w"> </span>
+adduser<span class="w"> </span>-u<span class="w"> </span><span class="m">1001</span><span class="w"> </span>sharath<span class="p">;</span>
+usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>sharath
+su<span class="w"> </span>-<span class="w"> </span>sharath
+ssh-keygen<span class="w"> </span>-t<span class="w"> </span>rsa<span class="w"> </span>-N<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>-f<span class="w"> </span>~/.ssh/id_rsa
+&lt;create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>key&gt;
+&lt;copy<span class="w"> </span>your<span class="w"> </span>localhost<span class="w"> </span>id_rsa.pub<span class="w"> </span>into<span class="w"> </span>clipboard&gt;
+vim<span class="w"> </span>/home/sharath/.ssh/authorized_keys<span class="w"> </span>
+&lt;paste<span class="w"> </span>your<span class="w"> </span>id_rsa.pub<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span><span class="w"> </span>vim&gt;
+chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>/home/sharath/.ssh/authorized_keys
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;sharath ALL=(ALL) NOPASSWD: ALL&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/sudoers.d/sharath
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">0440</span><span class="w"> </span>/etc/sudoers.d/sharath
 </code></pre></div>
 
 <p>IMPROVED (scriptable)</p>
-<div class="highlight"><pre><span></span><code>First, copy your public key to tmp on nm, like so
-scp ~/.ssh/id_rsa.pub root@&lt;new_ip&gt;:/tmp/ak 
+<div class="highlight"><pre><span></span><code>First,<span class="w"> </span>copy<span class="w"> </span>your<span class="w"> </span>public<span class="w"> </span>key<span class="w"> </span>to<span class="w"> </span>tmp<span class="w"> </span>on<span class="w"> </span>nm,<span class="w"> </span>like<span class="w"> </span>so
+scp<span class="w"> </span>~/.ssh/id_rsa.pub<span class="w"> </span>root@&lt;new_ip&gt;:/tmp/ak<span class="w"> </span>
 
-Login to the new box as root and <span class="k">do</span> the following
-adduser --disabled-password --gecos ‘’ sharath
-usermod -aG sudo sharath
-su - sharath
-ssh-keygen -t rsa -N <span class="s2">&quot;&quot;</span> -f ~/.ssh/id_rsa
+Login<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>new<span class="w"> </span>box<span class="w"> </span>as<span class="w"> </span>root<span class="w"> </span>and<span class="w"> </span><span class="k">do</span><span class="w"> </span>the<span class="w"> </span>following
+adduser<span class="w"> </span>--disabled-password<span class="w"> </span>--gecos<span class="w"> </span>‘’<span class="w"> </span>sharath
+usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>sharath
+su<span class="w"> </span>-<span class="w"> </span>sharath
+ssh-keygen<span class="w"> </span>-t<span class="w"> </span>rsa<span class="w"> </span>-N<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>-f<span class="w"> </span>~/.ssh/id_rsa
 <span class="nb">exit</span>
-cp /tmp/ak /home/sharath/.ssh/authorized_keys
-chmod <span class="m">644</span> /home/sharath/.ssh/authorized_keys
-<span class="nb">echo</span> <span class="s1">&#39;sharath ALL=(ALL) NOPASSWD: ALL&#39;</span> <span class="p">|</span> sudo tee /etc/sudoers.d/sharath
-sudo chmod <span class="m">0440</span> /etc/sudoers.d/sharath
-rm /tmp/ak
+cp<span class="w"> </span>/tmp/ak<span class="w"> </span>/home/sharath/.ssh/authorized_keys
+chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>/home/sharath/.ssh/authorized_keys
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;sharath ALL=(ALL) NOPASSWD: ALL&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/sudoers.d/sharath
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">0440</span><span class="w"> </span>/etc/sudoers.d/sharath
+rm<span class="w"> </span>/tmp/ak
 </code></pre></div>
 
 <p>Bob should be your uncle</p>
@@ -304,11 +304,11 @@ named groups like this <code>(?P&lt;name) access with x.group("name")</code></p>
 </ul>
 <h1><a name="cscope-for-linux" href="#cscope-for-linux">Cscope for linux </a></h1>
 <p>To apply debian patches use </p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">LNX</span><span class="o">=</span>/home/sharath/os/linux/linux-5.4.0
-quilt push -a 
-find  <span class="nv">$LNX</span>  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/arch/*&quot;</span> ! -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/arch/x86*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/include/asm-*&quot;</span> ! -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/include/asm-i386*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/tmp*&quot;</span> -prune  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/Documentation*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/scripts*&quot;</span> -prune -o    -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/drivers*&quot;</span> -prune -o   -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/.pc/*&quot;</span> -prune -o  -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/debian/*&quot;</span> -prune -o   -path <span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/sound/*&quot;</span> -prune -o    -name <span class="s2">&quot;*.[chxsS]&quot;</span> -print &gt; kernel.cscope
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">LNX</span><span class="o">=</span>/home/sharath/os/linux/linux-5.4.0
+quilt<span class="w"> </span>push<span class="w"> </span>-a<span class="w"> </span>
+find<span class="w">  </span><span class="nv">$LNX</span><span class="w">  </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/arch/*&quot;</span><span class="w"> </span>!<span class="w"> </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/arch/x86*&quot;</span><span class="w"> </span>-prune<span class="w"> </span>-o<span class="w">  </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/include/asm-*&quot;</span><span class="w"> </span>!<span class="w"> </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/include/asm-i386*&quot;</span><span class="w"> </span>-prune<span class="w"> </span>-o<span class="w">  </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/tmp*&quot;</span><span class="w"> </span>-prune<span class="w">  </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/Documentation*&quot;</span><span class="w"> </span>-prune<span class="w"> </span>-o<span class="w">  </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/scripts*&quot;</span><span class="w"> </span>-prune<span class="w"> </span>-o<span class="w">    </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/drivers*&quot;</span><span class="w"> </span>-prune<span class="w"> </span>-o<span class="w">   </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/.pc/*&quot;</span><span class="w"> </span>-prune<span class="w"> </span>-o<span class="w">  </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/debian/*&quot;</span><span class="w"> </span>-prune<span class="w"> </span>-o<span class="w">   </span>-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LNX</span><span class="s2">/sound/*&quot;</span><span class="w"> </span>-prune<span class="w"> </span>-o<span class="w">    </span>-name<span class="w"> </span><span class="s2">&quot;*.[chxsS]&quot;</span><span class="w"> </span>-print<span class="w"> </span>&gt;<span class="w"> </span>kernel.cscope
 
-cscope -q -R -b -i cscope.files
+cscope<span class="w"> </span>-q<span class="w"> </span>-R<span class="w"> </span>-b<span class="w"> </span>-i<span class="w"> </span>cscope.files
 </code></pre></div>
 
 <p>In vim</p>
@@ -319,8 +319,8 @@ cscope -q -R -b -i cscope.files
 </code></pre></div>
 
 <h1><a name="cscope-for-ceph" href="#cscope-for-ceph">Cscope for ceph</a></h1>
-<div class="highlight"><pre><span></span><code>find /mnt/disks/sdb/ceph-pristine -type f -and <span class="se">\(</span> -name <span class="s2">&quot;*.c&quot;</span> -o -name <span class="s2">&quot;*.h&quot;</span> -o -name <span class="s2">&quot;*.cc&quot;</span> -o -name <span class="s2">&quot;*.cpp&quot;</span> -o -name <span class="s2">&quot;*.hh&quot;</span> <span class="se">\)</span> &gt; zoo.cscope
-cscope -q -R -b -i zoo.cscope 
+<div class="highlight"><pre><span></span><code>find<span class="w"> </span>/mnt/disks/sdb/ceph-pristine<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-and<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;*.c&quot;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;*.h&quot;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;*.cc&quot;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;*.cpp&quot;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;*.hh&quot;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span>&gt;<span class="w"> </span>zoo.cscope
+cscope<span class="w"> </span>-q<span class="w"> </span>-R<span class="w"> </span>-b<span class="w"> </span>-i<span class="w"> </span>zoo.cscope<span class="w"> </span>
 </code></pre></div>
 
 <h1><a name="building-linux" href="#building-linux">Building linux</a></h1>
@@ -329,65 +329,65 @@ cscope -q -R -b -i zoo.cscope
 <p>You can get the config file from 
 <code>cp /boot/config-5.4.0-26-generic .config</code>
 To install dependencies</p>
-<div class="highlight"><pre><span></span><code>sudo apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
-sudo apt-get build-dep linux linux-image-<span class="k">$(</span>uname -r<span class="k">)</span>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>libncurses-dev<span class="w"> </span>flex<span class="w"> </span>bison<span class="w"> </span>openssl<span class="w"> </span>libssl-dev<span class="w"> </span>dkms<span class="w"> </span>libelf-dev<span class="w"> </span>libudev-dev<span class="w"> </span>libpci-dev<span class="w"> </span>libiberty-dev<span class="w"> </span>autoconf
+sudo<span class="w"> </span>apt-get<span class="w"> </span>build-dep<span class="w"> </span>linux<span class="w"> </span>linux-image-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
 
-make <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS -j14 <span class="o">&amp;&amp;</span> make -j14 <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS install <span class="o">&amp;&amp;</span> make -j14 <span class="nv">ARCH</span><span class="o">=</span>x86 <span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS modules_install<span class="p">;</span> <span class="nb">echo</span> <span class="s2">&quot;------------------------- DONE --------------------------------&quot;</span>
-rm /boot/initrd.img-3.16.43-SS
-update-initramfs -c -k <span class="m">3</span>.16.43-SS
+make<span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>x86<span class="w"> </span><span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS<span class="w"> </span>-j14<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>-j14<span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>x86<span class="w"> </span><span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>-j14<span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>x86<span class="w"> </span><span class="nv">EXTRAVERSION</span><span class="o">=</span>-SS<span class="w"> </span>modules_install<span class="p">;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;------------------------- DONE --------------------------------&quot;</span>
+rm<span class="w"> </span>/boot/initrd.img-3.16.43-SS
+update-initramfs<span class="w"> </span>-c<span class="w"> </span>-k<span class="w"> </span><span class="m">3</span>.16.43-SS
 update-grub
 </code></pre></div>
 
 <h1><a name="using-ftrace-to-trace-linux-functions" href="#using-ftrace-to-trace-linux-functions">Using Ftrace to trace linux functions</a></h1>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span> <span class="m">1</span> <span class="p">|</span> sudo tee  /sys/kernel/debug/tracing/tracing_on
-And <span class="k">then</span> use brendan greggs perf-tools
-sudo ./funcgraph -D  ext4_readpages <span class="p">|</span> sudo tee /mnt/tmpfs/write
-sudo ./funcgraph -Dp <span class="m">51985</span>  ext4_readpages <span class="p">|</span> sudo tee /mnt/tmpfs/write
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w">  </span>/sys/kernel/debug/tracing/tracing_on
+And<span class="w"> </span><span class="k">then</span><span class="w"> </span>use<span class="w"> </span>brendan<span class="w"> </span>greggs<span class="w"> </span>perf-tools
+sudo<span class="w"> </span>./funcgraph<span class="w"> </span>-D<span class="w">  </span>ext4_readpages<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/mnt/tmpfs/write
+sudo<span class="w"> </span>./funcgraph<span class="w"> </span>-Dp<span class="w"> </span><span class="m">51985</span><span class="w">  </span>ext4_readpages<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/mnt/tmpfs/write
 </code></pre></div>
 
 <h1><a name="how-to-build-linux-on-one-machine-and-deploy-on-another" href="#how-to-build-linux-on-one-machine-and-deploy-on-another">How to build linux on one machine and deploy on another</a></h1>
 <p>Use “building linux” to build linux on one machine A. Suppose you want to install it on machine B
 On machine B</p>
-<div class="highlight"><pre><span></span><code>Mkdir -p ~/kernel/boot
-Mkdir -p ~/kernel/modules
+<div class="highlight"><pre><span></span><code>Mkdir<span class="w"> </span>-p<span class="w"> </span>~/kernel/boot
+Mkdir<span class="w"> </span>-p<span class="w"> </span>~/kernel/modules
 </code></pre></div>
 
 <p>On machine A</p>
-<div class="highlight"><pre><span></span><code>tar -cvzf ~/modules /lib/modules/3.16.43-SS
-scp -r *SS* &lt;B&gt;:~/kernel/boot
-scp ~/modules &lt;B&gt;:~/kernel/modules/
+<div class="highlight"><pre><span></span><code>tar<span class="w"> </span>-cvzf<span class="w"> </span>~/modules<span class="w"> </span>/lib/modules/3.16.43-SS
+scp<span class="w"> </span>-r<span class="w"> </span>*SS*<span class="w"> </span>&lt;B&gt;:~/kernel/boot
+scp<span class="w"> </span>~/modules<span class="w"> </span>&lt;B&gt;:~/kernel/modules/
 </code></pre></div>
 
 <p>On machine B:</p>
-<div class="highlight"><pre><span></span><code>Cd ~/kernel/modules
-tar -xvzf modules
-sudo mv ~/kernel/modules/3.16.43-SS /lib/modules/
-sudo cp ~/kernel/boot/* /boot/
-sudo rm /boot/initrd.img-3.16.43-SS
-sudo update-initramfs -c -k <span class="m">3</span>.16.43-SS
-sudo update-grub
+<div class="highlight"><pre><span></span><code>Cd<span class="w"> </span>~/kernel/modules
+tar<span class="w"> </span>-xvzf<span class="w"> </span>modules
+sudo<span class="w"> </span>mv<span class="w"> </span>~/kernel/modules/3.16.43-SS<span class="w"> </span>/lib/modules/
+sudo<span class="w"> </span>cp<span class="w"> </span>~/kernel/boot/*<span class="w"> </span>/boot/
+sudo<span class="w"> </span>rm<span class="w"> </span>/boot/initrd.img-3.16.43-SS
+sudo<span class="w"> </span>update-initramfs<span class="w"> </span>-c<span class="w"> </span>-k<span class="w"> </span><span class="m">3</span>.16.43-SS
+sudo<span class="w"> </span>update-grub
 
 
 <span class="c1">#And… reboot!</span>
-Sudo reboot now
+Sudo<span class="w"> </span>reboot<span class="w"> </span>now
 </code></pre></div>
 
 <h1><a name="jemalloc" href="#jemalloc">JeMalloc </a></h1>
 <p>Do a git clone.</p>
-<div class="highlight"><pre><span></span><code>./autogen.sh 
-./configure --enable-prof --enable-stats --enable-debug
+<div class="highlight"><pre><span></span><code>./autogen.sh<span class="w"> </span>
+./configure<span class="w"> </span>--enable-prof<span class="w"> </span>--enable-stats<span class="w"> </span>--enable-debug
 Make
 
 
-<span class="o">[</span>sharath.g@osboxes /home/sharath.g/code/jemalloc<span class="o">]</span>$ tree lib 
+<span class="o">[</span>sharath.g@osboxes<span class="w"> </span>/home/sharath.g/code/jemalloc<span class="o">]</span>$<span class="w"> </span>tree<span class="w"> </span>lib<span class="w"> </span>
 lib
-├── libjemalloc.a
-├── libjemalloc_pic.a
-├── libjemalloc.so -&gt; libjemalloc.so.2
-└── libjemalloc.so.2
+├──<span class="w"> </span>libjemalloc.a
+├──<span class="w"> </span>libjemalloc_pic.a
+├──<span class="w"> </span>libjemalloc.so<span class="w"> </span>-&gt;<span class="w"> </span>libjemalloc.so.2
+└──<span class="w"> </span>libjemalloc.so.2
 
 <span class="c1">#To generate the profile:</span>
-<span class="o">(</span>reverse-i-search<span class="o">)</span><span class="sb">`</span>java<span class="s1">&#39;: rm jeprof*; rm /tmp/prof.gif; MALLOC_CONF=prof:true,lg_prof_sample:0,lg_prof_interval:25 LD_PRELOAD=${JEMALLOC_PATH}/lib/libjemalloc.so.2 java -Xmx1096m -cp  &#39;</span>/home/sharath.g/diskbench/:/home/sharath.g/diskbench/*<span class="err">&#39;</span> sha.Memory<span class="p">;</span> ls jeprof*<span class="p">;</span> ~/code/jemalloc/bin/jeprof --show_bytes --gif <span class="sb">`</span>which java<span class="sb">`</span> jeprof*.heap &gt; /tmp/prof.gif 
+<span class="o">(</span>reverse-i-search<span class="o">)</span><span class="sb">`</span>java<span class="s1">&#39;: rm jeprof*; rm /tmp/prof.gif; MALLOC_CONF=prof:true,lg_prof_sample:0,lg_prof_interval:25 LD_PRELOAD=${JEMALLOC_PATH}/lib/libjemalloc.so.2 java -Xmx1096m -cp  &#39;</span>/home/sharath.g/diskbench/:/home/sharath.g/diskbench/*<span class="err">&#39;</span><span class="w"> </span>sha.Memory<span class="p">;</span><span class="w"> </span>ls<span class="w"> </span>jeprof*<span class="p">;</span><span class="w"> </span>~/code/jemalloc/bin/jeprof<span class="w"> </span>--show_bytes<span class="w"> </span>--gif<span class="w"> </span><span class="sb">`</span>which<span class="w"> </span>java<span class="sb">`</span><span class="w"> </span>jeprof*.heap<span class="w"> </span>&gt;<span class="w"> </span>/tmp/prof.gif<span class="w"> </span>
 </code></pre></div>
 
 <p>If you’ve compiled jemalloc on some other machine and copied it to this machine, youget teh error Can't exec "objdump": No such file or directory at /home/sharath.g/jemalloc/bin/jeprof line 4459.
@@ -399,11 +399,11 @@ Resident: active + metadata
 Mapped: multiple of chunk size. Total chunks that have one byte of allocated 
 See that man pages for a clear explanation.</p>
 <h1><a name="objdump" href="#objdump">Objdump</a></h1>
-<div class="highlight"><pre><span></span><code>objdump -drSt hello.o
--d dissasemble
--r show relocation info inline
--S show C <span class="nb">source</span> code
--t show symbol table
+<div class="highlight"><pre><span></span><code>objdump<span class="w"> </span>-drSt<span class="w"> </span>hello.o
+-d<span class="w"> </span>dissasemble
+-r<span class="w"> </span>show<span class="w"> </span>relocation<span class="w"> </span>info<span class="w"> </span>inline
+-S<span class="w"> </span>show<span class="w"> </span>C<span class="w"> </span><span class="nb">source</span><span class="w"> </span>code
+-t<span class="w"> </span>show<span class="w"> </span>symbol<span class="w"> </span>table
 </code></pre></div>
 
 <h1><a name="installing-latest-version-of-cmake" href="#installing-latest-version-of-cmake">Installing latest version of cmake</a></h1>
@@ -417,8 +417,8 @@ If you’re lucky, you can download it and it works http://insightfullogic.com/h
 <p>Start the java program with     <br>
 <code>-agentpath:$HONEST_PROFILER_HOME/liblagent.so=host=localhost,port=4242,logPath=/grid/1/log/hadoop-yarn/yarn/honest-profiler.hpl</code></p>
 <p>Start and stop profiling with </p>
-<div class="highlight"><pre><span></span><code> <span class="nb">echo</span> start <span class="p">|</span> nc localhost <span class="m">4242</span>
- <span class="nb">echo</span> stop <span class="p">|</span> nc localhost <span class="m">4242</span>
+<div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nb">echo</span><span class="w"> </span>start<span class="w"> </span><span class="p">|</span><span class="w"> </span>nc<span class="w"> </span>localhost<span class="w"> </span><span class="m">4242</span>
+<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>stop<span class="w"> </span><span class="p">|</span><span class="w"> </span>nc<span class="w"> </span>localhost<span class="w"> </span><span class="m">4242</span>
 </code></pre></div>
 
 <p>Collapse the stacks with <code>java -cp $HONEST_PROFILER_HOME/honest-profiler.jar com.insightfullogic.honest_profiler.ports.console.FlameGraphDumperApplication netty.hpl netty.cstk</code></p>
