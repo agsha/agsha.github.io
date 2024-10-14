@@ -74,35 +74,41 @@ $$&lt;/div&gt;
 &lt;p&gt;The following are some important properties of linear maps&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;The value of the map on any given basis completely defines the map. This follows from the linearity property of the map&lt;/li&gt;
-&lt;li&gt;In matrix form, multiplication on the right side by a column vector gives a column vector which is a linear combination of the columns of the matrix. By this interpretation, the column rank is equal to the dimension of the range of &lt;span class="math"&gt;\(T\)&lt;/span&gt;&lt;/li&gt;
-&lt;/ol&gt;
+&lt;li&gt;
+&lt;p&gt;In matrix form, multiplication on the right side by a column vector gives a column vector which is a linear combination of the columns of the matrix. By this interpretation, the column rank is equal to the dimension of the range of &lt;span class="math"&gt;\(T\)&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Quick example:&lt;/p&gt;
+&lt;p&gt;
 &lt;div class="math"&gt;$$\begin{bmatrix}
 \vdots &amp;amp; \vdots &amp;amp; \vdots \\
 col1 &amp;amp; col2 &amp;amp; col3 \\
 \vdots &amp;amp; \vdots &amp;amp; \vdots
 \end{bmatrix} \cdot 
 \begin{bmatrix}a\\b\\c\end{bmatrix} = \begin{bmatrix} \vdots \\ a\cdot col1 + b\cdot col2 + c\cdot col3 \\ \vdots \end{bmatrix}$$&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;Similarly, multiplication from the left side by a row vector gives a row vector which is the linear combination of rows of the matrix. By this interpretation, the row rank is the dimension of the rowspace. &lt;/li&gt;
-&lt;/ol&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Similarly, multiplication from the left side by a row vector gives a row vector which is the linear combination of rows of the matrix. By this interpretation, the row rank is the dimension of the rowspace. &lt;/p&gt;
+&lt;p&gt;
 &lt;div class="math"&gt;$$\begin{bmatrix}a &amp;amp; b &amp;amp; c\end{bmatrix} \cdot \begin{bmatrix} 
 \cdots &amp;amp; row1 &amp;amp; \cdots \\
 \cdots &amp;amp; row2 &amp;amp; \cdots \\
 \cdots &amp;amp; row3 &amp;amp; \cdots \\
 \end{bmatrix} = \begin{bmatrix}\cdots &amp;amp; a\cdot row1 + b\cdot row2 + c\cdot row3 &amp;amp; \cdots\end{bmatrix}$$&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;range-nullspace theorem&lt;/strong&gt;: the set of all vectors &lt;span class="math"&gt;\(v \in X\)&lt;/span&gt; such that &lt;span class="math"&gt;\(T(v) = 0\)&lt;/span&gt; forms a subspace of &lt;span class="math"&gt;\(X\)&lt;/span&gt; and is called the nullspace &lt;span class="math"&gt;\(N_T\)&lt;/span&gt; of &lt;span class="math"&gt;\(T\)&lt;/span&gt;. We can show that &lt;span class="math"&gt;\(dim(X) = dim(R) + dim(N_T)\)&lt;/span&gt;. This is a very fundamental result.&lt;/li&gt;
-&lt;/ol&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;range-nullspace theorem&lt;/strong&gt;: the set of all vectors &lt;span class="math"&gt;\(v \in X\)&lt;/span&gt; such that &lt;span class="math"&gt;\(T(v) = 0\)&lt;/span&gt; forms a subspace of &lt;span class="math"&gt;\(X\)&lt;/span&gt; and is called the nullspace &lt;span class="math"&gt;\(N_T\)&lt;/span&gt; of &lt;span class="math"&gt;\(T\)&lt;/span&gt;. We can show that &lt;span class="math"&gt;\(dim(X) = dim(R) + dim(N_T)\)&lt;/span&gt;. This is a very fundamental result.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Intuitive proof&lt;/strong&gt;: It is easy to show that the complement of &lt;span class="math"&gt;\(N_T\)&lt;/span&gt; is isomorphic to &lt;span class="math"&gt;\(R\)&lt;/span&gt;. &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
 &lt;p&gt;&lt;strong&gt;Dot product or bilinear forms&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Once we choose a basis for a vector space, we can represent each vector by an element from &lt;span class="math"&gt;\(R^n\)&lt;/span&gt;. Having done so, we can define a &lt;em&gt;dot product&lt;/em&gt; of two vectors, which produces a scalar in the usual way, for example&lt;/p&gt;
+&lt;p&gt;Once we choose a basis for a vector space, we can represent each vector by an element from &lt;span class="math"&gt;\(\mathbb{R}^n\)&lt;/span&gt;. Having done so, we can define a &lt;em&gt;dot product&lt;/em&gt; of two vectors, which produces a scalar in the usual way, for example&lt;/p&gt;
 &lt;div class="math"&gt;$$\begin{bmatrix}a_1 &amp;amp; a_2 &amp;amp; a_3\end{bmatrix} \cdot \begin{bmatrix}b_1 \\ b_2 \\ b_3\end{bmatrix} = a_1b_1 + a_2b_2 + a_3b_3$$&lt;/div&gt;
 &lt;p&gt;In abstract terms, it is possible to define the dot product without the need for basis vectors. It is done by defining a &lt;em&gt;dual&lt;/em&gt; vector space consisting of linear functions operating on the primal vector space. It can be shown that the dual and the primal vector space have the same dimensions.&lt;/p&gt;
-&lt;p&gt;In concrete terms, when dealing with &lt;span class="math"&gt;\(R^n\)&lt;/span&gt;, if the vectors of primal space are denoted by column vectors, the elements of the dual space can be considered to be represented by row vectors&lt;/p&gt;
+&lt;p&gt;In concrete terms, when dealing with &lt;span class="math"&gt;\(\mathbb{R}^n\)&lt;/span&gt;, if the vectors of primal space are denoted by column vectors, the elements of the dual space can be considered to be represented by row vectors&lt;/p&gt;
 &lt;p&gt;While solving linear equations, the row vectors typically arise as coefficients, and the column vectors arise as the unknowns. The coefficients are dual to the unknowns. This is in some sense reminiscent of the duality that is also encountered in linear programming.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Change of Basis&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;While dealing with &lt;span class="math"&gt;\(R^n\)&lt;/span&gt;, when we don't explicitly specify the basis, we usually have in mind the &lt;strong&gt;standard basis&lt;/strong&gt;, which has a 1 in the &lt;span class="math"&gt;\(j^{th}\)&lt;/span&gt; position and zero everywhere else. Of course, there is nothing special about the standard basis, and any other basis can be used equally well. Suppose we want to use vectors &lt;span class="math"&gt;\(e_j\)&lt;/span&gt; where &lt;span class="math"&gt;\(j \in [1, n]\)&lt;/span&gt; as the basis, and suppose we want to convert between the old representation and the new representation, we can use a map which maps each old basis to its corresponding new basis. This is well defined, since a map is well defined if we specify the values on all the basis vectors. Furthermore, it is easy to see that this map is one-to-one. &lt;/p&gt;
+&lt;p&gt;While dealing with &lt;span class="math"&gt;\(\mathbb{R}^n\)&lt;/span&gt;, when we don't explicitly specify the basis, we usually have in mind the &lt;strong&gt;standard basis&lt;/strong&gt;, which has a 1 in the &lt;span class="math"&gt;\(j^{th}\)&lt;/span&gt; position and zero everywhere else. Of course, there is nothing special about the standard basis, and any other basis can be used equally well. Suppose we want to use vectors &lt;span class="math"&gt;\(e_j\)&lt;/span&gt; where &lt;span class="math"&gt;\(j \in [1, n]\)&lt;/span&gt; as the basis, and suppose we want to convert between the old representation and the new representation, we can use a map which maps each old basis to its corresponding new basis. This is well defined, since a map is well defined if we specify the values on all the basis vectors. Furthermore, it is easy to see that this map is one-to-one. &lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Complement of a subspace&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;For every subspace &lt;span class="math"&gt;\(Y\)&lt;/span&gt; of space &lt;span class="math"&gt;\(X\)&lt;/span&gt;, there is a complementary subspace &lt;span class="math"&gt;\(Z\)&lt;/span&gt; of &lt;span class="math"&gt;\(X\)&lt;/span&gt; such that every vector &lt;span class="math"&gt;\(x \in X\)&lt;/span&gt; can be written &lt;em&gt;uniquely&lt;/em&gt; as &lt;span class="math"&gt;\(x = y + z\)&lt;/span&gt; where &lt;span class="math"&gt;\(y \in Y\)&lt;/span&gt; and &lt;span class="math"&gt;\(z \in Z\)&lt;/span&gt;. Furthermore, &lt;span class="math"&gt;\(dim\ X = dim\ Y + dim\ Z\)&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Intuition: consider a basis &lt;span class="math"&gt;\(y_1, \cdots, y_m\)&lt;/span&gt; for &lt;span class="math"&gt;\(Y\)&lt;/span&gt;. These can be completed by adding more linearly independent vectors &lt;span class="math"&gt;\(z_1, \cdots, z_n\)&lt;/span&gt; to form a full basis of &lt;span class="math"&gt;\(X\)&lt;/span&gt;. The subspace spanned by the &lt;span class="math"&gt;\(z\)&lt;/span&gt;s is the basis for &lt;span class="math"&gt;\(Z\)&lt;/span&gt;&lt;/p&gt;
@@ -153,13 +159,13 @@ col1 &amp;amp; col2 &amp;amp; col3 \\
 &lt;p&gt;Note that, all the other properties of complements are still true for orthogonal complements.&lt;/p&gt;
 &lt;p&gt;In particular, &lt;span class="math"&gt;\(dim\ X = dim\ Y + dim\ Z\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;This fact is so important, but it is not usually part of the standard fare, that I will give the outline of a proof here.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Theorem&lt;/strong&gt;: Let &lt;span class="math"&gt;\(X\)&lt;/span&gt; be a vector space, &lt;span class="math"&gt;\(dim(X) = n\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(Y\)&lt;/span&gt; be a subspace of &lt;span class="math"&gt;\(X\)&lt;/span&gt;, spanned by &lt;span class="math"&gt;\(v_1, \cdots, v_r\)&lt;/span&gt;. &lt;span class="math"&gt;\(dim(Y)=r\)&lt;/span&gt;, then the orthogonal complement &lt;span class="math"&gt;\(Z\)&lt;/span&gt; has &lt;span class="math"&gt;\(dim(Z) = n-r\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Proof&lt;/strong&gt;: We will establish a 1:1 mapping between &lt;span class="math"&gt;\(Z\)&lt;/span&gt; and &lt;span class="math"&gt;\(R^{n-r}\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;First complete the partial basis of &lt;span class="math"&gt;\(Y\)&lt;/span&gt; to get a full basis &lt;span class="math"&gt;\(v_1, \cdots, v_n\)&lt;/span&gt;. Every vector can be represented as &lt;span class="math"&gt;\(\sum{a_iv_i}\)&lt;/span&gt;, so this is 1:1 with &lt;span class="math"&gt;\(\{a_i\}\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(z \in Z\)&lt;/span&gt;. Define the mapping &lt;span class="math"&gt;\(T:z \mapsto z'\)&lt;/span&gt; where &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Theorem&lt;/strong&gt;: Let &lt;span class="math"&gt;\(X\)&lt;/span&gt; be &lt;span class="math"&gt;\(\mathbb{R}^n\)&lt;/span&gt;, so &lt;span class="math"&gt;\(dim(X) = n\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(Y\)&lt;/span&gt; be a subspace of &lt;span class="math"&gt;\(X\)&lt;/span&gt;, spanned by &lt;span class="math"&gt;\(v_1, \cdots, v_r\)&lt;/span&gt;. &lt;span class="math"&gt;\(dim(Y)=r\)&lt;/span&gt;, then the orthogonal complement &lt;span class="math"&gt;\(Z\)&lt;/span&gt; has &lt;span class="math"&gt;\(dim(Z) = n-r\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Proof&lt;/strong&gt;: We will establish a 1:1 mapping between &lt;span class="math"&gt;\(Z\)&lt;/span&gt; and &lt;span class="math"&gt;\(\mathbb{R}^{n-r}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;First complete the partial basis of &lt;span class="math"&gt;\(Y\)&lt;/span&gt; to get a full basis &lt;span class="math"&gt;\(v_1, \cdots, v_n\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(z \in Z\)&lt;/span&gt;. Define the mapping &lt;span class="math"&gt;\(T:z \mapsto z'\)&lt;/span&gt; where &lt;/p&gt;
 &lt;div class="math"&gt;$$z' = [0, 0, \cdots, 0, z\cdot v_{r+1}, \cdots, z\cdot v_n]$$&lt;/div&gt;
 &lt;p&gt;Any such &lt;span class="math"&gt;\(z'\)&lt;/span&gt; also maps back to a unique &lt;span class="math"&gt;\(z \in Z\)&lt;/span&gt; by &lt;span class="math"&gt;\(z \cdot v_i = z'[i]\)&lt;/span&gt;. Here we use the fact that a vector is uniquely specified by its values on the dot product on the basis vectors&lt;/p&gt;
 &lt;p&gt;In abstract language, the orthogonal complement is called annihilator and represented as a subspace of the dual space (remember that the dual space is a space of all bilinear functions). The proof of dimension usually involves proving an isomorphism between the annihilator and the dual of the quotient space &lt;span class="math"&gt;\((X/Y)\)&lt;/span&gt;. Effectively quotient space of a subspace is what you get by throwing away components of the basis of the subspace. i.e., the "rest" of the space apart from the subspace. &lt;/p&gt;
-&lt;p&gt;Although the proof looks much cleaner there, I find the vesion I presented here to be more clear conceptually, where we establish an isomorphism between annihilator and &lt;span class="math"&gt;\(z' = [0, 0, \cdots, 0, l\cdot v_{r+1}, \cdots, l\cdot v_n]\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Although the proof looks much cleaner there, I find the vesion I presented here to be more clear conceptually, where we establish an isomorphism between annihilator and &lt;span class="math"&gt;\(z' = [0, 0, \cdots, 0, z\cdot v_{r+1}, \cdots, z\cdot v_n]\)&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Rowspace, columnspace and nullspace of a matrix&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The rows and columns of a matrix can be considered to be vectors. An &lt;span class="math"&gt;\(m \times n\)&lt;/span&gt; matrix has &lt;span class="math"&gt;\(m\)&lt;/span&gt; row vectors of dimension &lt;span class="math"&gt;\(n\)&lt;/span&gt; and &lt;span class="math"&gt;\(n\)&lt;/span&gt; column vectors of dimension &lt;span class="math"&gt;\(m\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;The rowspace is the subspace spanned by rows, and similarly for column space. The nullspace is the set of input vectors that maps to 0 vector under &lt;span class="math"&gt;\(T\)&lt;/span&gt;.&lt;/p&gt;
@@ -197,7 +203,7 @@ y &amp;amp;= dc - af \\
 z &amp;amp;= ae - bd 
 \end{eqnarray}$$&lt;/div&gt;
 &lt;p&gt;To me, it is surprising that a simple relationship between columns translates to such a complicated relationship among the rows. Now if you consider a &lt;span class="math"&gt;\(1000 \times 1000\)&lt;/span&gt; matrix with a complicated relationship among the columns, one can only imagine how complicated the relationship between the rows will be, and yet, the rank theorem guarantees that such a relationship must exist!&lt;/p&gt;
-&lt;p&gt;Having thus shown how surprising the result of the theorem is, lets explore some common approaches to proving the rank theorem.&lt;/p&gt;
+&lt;p&gt;Having thus shown how surprising the result of the theorem is, I want to present a somewhat intuitive proof of the theorem.&lt;/p&gt;
 &lt;h1&gt;An intuitive proof&lt;/h1&gt;
 &lt;p&gt;&lt;strong&gt;Transpose&lt;/strong&gt; of a matrix is the matrix obtained by swapping its rows and columns&lt;/p&gt;
 &lt;p&gt;Let &lt;span class="math"&gt;\(T: X \mapsto U\)&lt;/span&gt; be a linear map and &lt;span class="math"&gt;\(m \times n\)&lt;/span&gt; matrix. So &lt;span class="math"&gt;\(dim(X) = n\)&lt;/span&gt; and &lt;span class="math"&gt;\(dim(U) = m\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(T'\)&lt;/span&gt; be its transpose. Let &lt;span class="math"&gt;\(R \subset U\)&lt;/span&gt; be the range of &lt;span class="math"&gt;\(T\)&lt;/span&gt;, with &lt;span class="math"&gt;\(dim(R)=r\)&lt;/span&gt;. So the dimension of columnspace is &lt;span class="math"&gt;\(r\)&lt;/span&gt;. And we need to show that the dimension of rowspace of &lt;span class="math"&gt;\(T\)&lt;/span&gt; (which is dimension of colspace of &lt;span class="math"&gt;\(T'\)&lt;/span&gt;) = &lt;span class="math"&gt;\(r\)&lt;/span&gt;.&lt;/p&gt;
