@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  </head>
+  <body>
+    <nav class="navbar border-bottom border-body ">
+      <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link active" href="/">Latest Articles</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/archives.html">Archive</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages/about.html">About</a>
+        </li>
+        <li class="nav-item">
+          <div class="dropdown">
+            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Dark Mode
+            </button>
+            <ul class="dropdown-menu">
+              <li class="dropdown-item" data-bs-theme-value="dark">dark</li>
+              <li class="dropdown-item" data-bs-theme-value="light">light</li>
+              <li class="dropdown-item" data-bs-theme-value="auto">auto</li>
+            </ul>
+          </div>
+        </li>
+
+      </ul>
+    </nav>
+    <div class="container">
+        <h1><a href="/notes-on-the-rank-theorem-in-linear-algebra.html">Notes on the rank theorem in linear algebra</a></h1>
+        <small class="text-body-secondary">Fri, 11 Oct 2024</small>
+        <p>I have always been fascinated by the rank theorem in linear algebra. It is known sometimes by other names:</p>
+<ol>
+<li>The rank-nullity theorem</li>
+<li>Fundamental theorem of linear algebra (part 1)</li>
+</ol>
+<p>Stated simply, The rank theorem asserts that in any matrix, the row rank is equal to the column rank.</p>
+<p>The result …</p>
+        <h1><a href="/the-choice-of-programming-languages.html">The choice of programming languages</a></h1>
+        <small class="text-body-secondary">Sun, 10 Oct 2021</small>
+        <h1>Introduction</h1>
+<p>Thanks to advances in compiler technologies, Programmers today are spoilt for choice with the myriad of mainstream programming languages available your next big idea. However, the landscape can quickly get confusing. Many different languages seem to offer the same features and generally "looks the same". Consider the website description …</p>
+        <h1><a href="/notes-on-postgres-wal-and-logical-replication.html">Notes on Postgres WAL and logical replication</a></h1>
+        <small class="text-body-secondary">Mon, 20 Sep 2021</small>
+        <p>We are trying to implement change data capture (CDC) from several postgres databases and expose it as a stream of inserts/updates/deletes to any consumer. </p>
+<p>A couple of properties of all our tables, which makes the design much easier is:</p>
+<ul>
+<li>All tables have an immutable primary key (usually a …</li></ul>
+        <h1><a href="/cookbook.html">Cookbook</a></h1>
+        <small class="text-body-secondary">Mon, 31 Aug 2020</small>
+        <p>This article captures cookbooks or recipes that I don't use frequently enough to remember, but still use it enough to be painful to google from scratch every time I use it. Its a bunch of totally unrelated stuff that is too short to put as a blog article on its …</p>
+        <h1><a href="/the-quest-for-high-throughput-rpc.html">The quest for high throughput RPC</a></h1>
+        <small class="text-body-secondary">Sat, 07 Jul 2018</small>
+        <p>In this post, I compare the rpc throughput of some existing RPC frameworks and talk about a new technique of doing RPC . Dropwizard on a single connection gives around <code>1000 req/sec</code>, whereas a prototype implementation of this technique gives around <code>4 million req/sec</code> for a “hello world” rpc …</p>
+        <h1><a href="/a-bangalore-software-engineers-first-trip-to-bali.html">A bangalore software engineer's first trip to Bali</a></h1>
+        <small class="text-body-secondary">Thu, 23 Jun 2016</small>
+        <p>I have just returned from a 8 day trip to Bali. Here are some tips and info, fresh off my mind. These are points that I wish I knew before my trip to Bali, and the tips that I never came across online or on tripadvisor reviews.</p>
+<h3>Flight</h3>
+<p>If you're …</p>
+        <h1><a href="/the-affair-between-iostat-and-fio.html">The affair between iostat and fio</a></h1>
+        <small class="text-body-secondary">Thu, 02 Jun 2016</small>
+        <p>In the following analysis, I'm going to assume you already know what <code>fio</code> and <code>iostat</code> is (I'm too lazy to write it down, and there are better articles out there). This post merely explains the relationship between the numbers</p>
+<h3>fio output</h3>
+<div class="highlight"><pre><span></span><code>io = bw*runt
+io = iops*runt*bs
+issued(r …</code></pre></div>
+        <h1><a href="/i-finally-setup-a-blog.html">I finally setup a blog</a></h1>
+        <small class="text-body-secondary">Tue, 02 Feb 2016</small>
+        <p><strong>I finally setup my own blog!</strong> and i'm happy I did it the right way. No lame wordpress. I bought a virtual private server on <a href="www.digitalocean.com">digital ocean</a>. </p>
+<p>Virtual private server (or a droplet in digitalocean lingo) is a fancy name for your own computer in the cloud, which you can …</p>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="/theme/blog.js"></script>
+
+  </body>
+</html>
+
+
+
